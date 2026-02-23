@@ -1,12 +1,13 @@
 import BookDate from "@/Components/Module/BookDate/BookDate";
 import Header from "@/Components/Module/HeaderDate/Header";
-import React from "react";
+import ShowTours from "@/Components/Module/ShowTours/ShowTours";
 
 function MainPage() {
   return (
     <div>
       <Header />
       <BookDate />
+      <ShowTours/>
     </div>
   );
 }

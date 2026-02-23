@@ -307,9 +307,9 @@ export default function AuthToast({ onClose, mode = "login" }) {
                       maxLength={1}
                       className={otpError ? styles.errorInput : ""}
                       style={{
-                        width: "55px",
+                        width: "40px",
                         height: "45px",
-                        fontSize: "26px",
+                        fontSize: "20px",
                         textAlign: "center",
                         borderRadius: "8px",
                         border: "1px solid #00000040",
