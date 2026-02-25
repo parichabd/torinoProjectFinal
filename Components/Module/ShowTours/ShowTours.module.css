@@ -144,3 +144,35 @@
   font-size: 18px;
   margin-left: 4px;
 }
+
+
+.metaItem {
+  display: inline-block;
+  margin: 0 4px;
+  font-weight: 500;
+  color: #282828B2;
+  font-size: 16px;
+}
+
+.metaSeparator {
+  display: inline-block;
+  margin: 0 4px;
+  color: #999;
+}
+
+
+.showMoreBtn {
+  all: unset;
+  color:#00000080 ;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 15px;
+
+display: inline-flex;       /* اضافه شد */
+align-items: center;        /* وسط چین عمودی */
+gap: 4px;
+}
+
+.showMoreBtn:hover {
+  transform: scale(1.05);
+}
