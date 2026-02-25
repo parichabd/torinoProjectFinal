@@ -29,40 +29,42 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const [otpShake, setOtpShake] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
   const sendOtpMutation = useSendOtp();
   const verifyOtpMutation = useVerifyOtp();
 
-  // همگام‌سازی شماره موبایل با localStorage
   useEffect(() => {
     const syncMobile = () => setMobile(localStorage.getItem("mobile"));
     window.addEventListener("storage", syncMobile);
     return () => window.removeEventListener("storage", syncMobile);
   }, []);
 
-  // پیام خطا برای ثبت‌نام با نام
   useEffect(() => {
     if (isRegister) {
       toast.error(
         "ثبت نام با نام فعلاً در دسترس نیست. لطفاً با شماره تلفن در بخش ورود وارد شوید.",
-        { position: "top-center", duration: 4000 }
+        { position: "top-center", duration: 4000 },
       );
     }
   }, [isRegister]);
 
-  // تایمر OTP
   useEffect(() => {
     if (step !== "OTP" || timeLeft <= 0) return;
-    const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+    const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
   }, [step, timeLeft]);
 
-  // کمک‌ها برای موبایل و زمان
-  const persianToEnglish = (str) => str.replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-  const validateMobile = number => /^09\d{9}$/.test(persianToEnglish(number));
-  const formatTime = t => `${Math.floor(t / 60)}:${(t % 60).toString().padStart(2, "0")}`;
+  const persianToEnglish = (str) =>
+    str.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+  const validateMobile = (number) => /^09\d{9}$/.test(persianToEnglish(number));
+  const formatTime = (t) =>
+    `${Math.floor(t / 60)}:${(t % 60).toString().padStart(2, "0")}`;
 
-  // ---------------- PHONE STEP ----------------
   const submitPhone = async (data) => {
     const cleanedMobile = persianToEnglish(data.mobile);
     if (!validateMobile(cleanedMobile)) {
@@ -112,7 +114,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
     });
   };
 
-  // ---------------- OTP STEP ----------------
   const submitOtp = () => {
     if (otp.length !== 6) {
       setOtpError("کد تایید را کامل وارد کنید");
@@ -127,7 +128,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
       { mobile, otp },
       {
         onSuccess: (res) => {
-          // ✅ درست‌شده: refreshToken و accessToken همیشه ست می‌شود
           Cookies.set("accessToken", res.accessToken, { expires: 1 / 24 });
           Cookies.set("refreshToken", res.refreshToken, { expires: 7 });
           localStorage.setItem("mobile", mobile);
@@ -151,7 +151,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
           setTimeout(() => setOtpShake(false), 400);
           setIsLoggingIn(false);
         },
-      }
+      },
     );
   };
 
@@ -159,7 +159,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
     if (e.key === "Enter") submitOtp();
   };
 
-  // ---------------- UI همان نسخه اصلی ----------------
   return (
     <>
       <Toaster />
@@ -178,7 +177,9 @@ export default function AuthToast({ onClose, mode = "login" }) {
                 <FaArrowLeftLong />
               </button>
             ) : (
-              <button className={styles.close_btn} onClick={onClose}>✕</button>
+              <button className={styles.close_btn} onClick={onClose}>
+                ✕
+              </button>
             )
           ) : (
             <button
@@ -198,11 +199,19 @@ export default function AuthToast({ onClose, mode = "login" }) {
           {/* فرم شماره */}
           {step === "PHONE" && (
             <>
-              <h2 className={styles.title}>{isRegister ? "ثبت نام" : "ورود به تورینو"}</h2>
-              <form className={styles.form} onSubmit={handleSubmit(submitPhone)}>
+              <h2 className={styles.title}>
+                {isRegister ? "ثبت نام" : "ورود به تورینو"}
+              </h2>
+              <form
+                className={styles.form}
+                onSubmit={handleSubmit(submitPhone)}
+              >
                 {isRegister && (
                   <>
-                    <input placeholder="نام" {...register("name", { required: "نام الزامی است" })} />
+                    <input
+                      placeholder="نام"
+                      {...register("name", { required: "نام الزامی است" })}
+                    />
                     <span className={styles.error}>{errors.name?.message}</span>
                   </>
                 )}
@@ -210,27 +219,42 @@ export default function AuthToast({ onClose, mode = "login" }) {
                 <input
                   type="tel"
                   placeholder="۰۹۱۲***۶۶۰۶"
-                  {...register("mobile", { required: "شماره موبایل الزامی است" })}
+                  {...register("mobile", {
+                    required: "شماره موبایل الزامی است",
+                  })}
                   className={`${mobileShake ? styles.shake : ""} ${mobileError ? styles.errorInput : ""}`}
                 />
-                <span className={styles.error}>{errors.mobile?.message || mobileError}</span>
+                <span className={styles.error}>
+                  {errors.mobile?.message || mobileError}
+                </span>
 
                 {!isRegister && (
                   <div className={styles.loginPage}>
                     حساب کاربری ندارید؟
-                    <button type="button" onClick={() => setIsRegister(true)}>ثبت نام</button>
+                    <button type="button" onClick={() => setIsRegister(true)}>
+                      ثبت نام
+                    </button>
                   </div>
                 )}
 
                 {isRegister && (
                   <div className={styles.loginPage}>
                     قبلاً ثبت نام کرده‌اید؟
-                    <button type="button" onClick={() => setIsRegister(false)}>ورود</button>
+                    <button type="button" onClick={() => setIsRegister(false)}>
+                      ورود
+                    </button>
                   </div>
                 )}
 
-                <button className={styles.submit} disabled={sendOtpMutation.isPending}>
-                  {sendOtpMutation.isPending ? "در حال ارسال..." : isRegister ? "ثبت‌نام و ارسال کد" : "ارسال کد تایید"}
+                <button
+                  className={styles.submit}
+                  disabled={sendOtpMutation.isPending}
+                >
+                  {sendOtpMutation.isPending
+                    ? "در حال ارسال..."
+                    : isRegister
+                      ? "ثبت‌نام و ارسال کد"
+                      : "ارسال کد تایید"}
                 </button>
               </form>
             </>
@@ -240,13 +264,24 @@ export default function AuthToast({ onClose, mode = "login" }) {
           {step === "OTP" && (
             <>
               <h2 className={styles.title}>کد تایید را وارد کنید</h2>
-              <p className={styles.mobileHint}>کد به شماره <span>{mobile}</span> ارسال شد</p>
+              <p className={styles.mobileHint}>
+                کد به شماره <span>{mobile}</span> ارسال شد
+              </p>
 
-              <div className={`${styles.otpWrapper} ${otpShake ? styles.shake : ""}`} onKeyDown={handleKeyDown}>
+              <div
+                className={`${styles.otpWrapper} ${otpShake ? styles.shake : ""}`}
+                onKeyDown={handleKeyDown}
+              >
                 <OtpInput
                   value={otp}
                   onChange={(v) => {
-                    const clean = v.split("").map(c => "۰۱۲۳۴۵۶۷۸۹".includes(c) ? "۰۱۲۳۴۵۶۷۸۹".indexOf(c) : c).join("").replace(/[^0-9]/g, "");
+                    const clean = v
+                      .split("")
+                      .map((c) =>
+                        "۰۱۲۳۴۵۶۷۸۹".includes(c) ? "۰۱۲۳۴۵۶۷۸۹".indexOf(c) : c,
+                      )
+                      .join("")
+                      .replace(/[^0-9]/g, "");
                     setOtp(clean);
                     setOtpError(clean.length === 0 ? "فقط عدد مجاز است" : "");
                   }}
@@ -275,12 +310,20 @@ export default function AuthToast({ onClose, mode = "login" }) {
               {otpError && <div className={styles.errorBox}>{otpError}</div>}
 
               {timeLeft > 0 ? (
-                <p className={styles.timer}>{formatTime(timeLeft)} تا ارسال مجدد کد</p>
+                <p className={styles.timer}>
+                  {formatTime(timeLeft)} تا ارسال مجدد کد
+                </p>
               ) : (
-                <button className={styles.resend} onClick={resendHandler}>ارسال مجدد کد</button>
+                <button className={styles.resend} onClick={resendHandler}>
+                  ارسال مجدد کد
+                </button>
               )}
 
-              <button className={styles.submit} onClick={submitOtp} disabled={verifyOtpMutation.isPending || isLoggingIn}>
+              <button
+                className={styles.submit}
+                onClick={submitOtp}
+                disabled={verifyOtpMutation.isPending || isLoggingIn}
+              >
                 {isLoggingIn ? "در حال بررسی..." : "ورود به تورینو"}
               </button>
             </>

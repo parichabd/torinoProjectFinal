@@ -41,13 +41,11 @@ export default function Header() {
     setIsUserMenuOpen((prev) => !prev);
   };
 
-  // Sync mobile from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedMobile = localStorage.getItem("mobile");
 
       if (savedMobile !== null) {
-        // تغییر state به صورت async تا از cascading renders جلوگیری شود
         setTimeout(() => setMobile(savedMobile), 0);
       }
 
@@ -64,7 +62,6 @@ export default function Header() {
     }
   }, []);
 
-  // Close user menu on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       const isDesktop = window.innerWidth >= 1024;
@@ -81,22 +78,18 @@ export default function Header() {
   }, [isUserMenuOpen]);
 
   const router = useRouter();
-  // ------------------ LOGOUT ------------------
+  //  LOGOUT
   const handleLogout = () => {
-    // 1️⃣ پاک کردن localStorage
     localStorage.removeItem("mobile");
     localStorage.removeItem("userName");
 
-    // 2️⃣ پاک کردن کوکی‌ها
     Cookies.remove("accessToken", { path: "/" });
     Cookies.remove("refreshToken", { path: "/" });
 
-    // 3️⃣ پاک کردن state UI
     setMobile(null);
     setIsUserMenuOpen(false);
 
-    // 4️⃣ هدایت اجباری به صفحه اصلی
-    router.replace("/"); // ← جایگزین router.push برای جلوگیری از back button
+    router.replace("/");
   };
 
   const userMenuContent = (
