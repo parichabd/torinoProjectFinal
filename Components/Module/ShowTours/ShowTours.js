@@ -14,14 +14,24 @@ const BACKEND_BASE_URL =
 
 export default function ShowTours({ tours, isLoading }) {
   const [showAll, setShowAll] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(4); // پیش‌فرض موبایل/تبلت
 
-  console.log("🔥 ShowTours Render");
-  console.log("📦 tours:", tours);
-  console.log("⏳ isLoading:", isLoading);
-
+  // کنترل تعداد پیش‌فرض تورها بر اساس عرض صفحه
   useEffect(() => {
-    console.log("🟢 tours updated:", tours);
-  }, [tours]);
+    function updateVisibleCount() {
+      const width = window.innerWidth;
+      if (width >= 1024 && width <= 2860) {
+        setVisibleCount(6); // ویندوز
+      } else {
+        setVisibleCount(4); // موبایل و تبلت
+      }
+    }
+
+    updateVisibleCount(); // بار اول
+    window.addEventListener("resize", updateVisibleCount);
+
+    return () => window.removeEventListener("resize", updateVisibleCount);
+  }, []);
 
   if (isLoading) {
     return (
@@ -37,7 +47,6 @@ export default function ShowTours({ tours, isLoading }) {
   }
 
   if (!tours || tours.length === 0) {
-    console.warn("⚠️ tours is empty or undefined");
     return (
       <div className={styles.tourInfo_Mbobile}>
         <div className={styles.headerTours}>
@@ -50,7 +59,8 @@ export default function ShowTours({ tours, isLoading }) {
     );
   }
 
-  const visibleTours = showAll ? tours : tours.slice(0, 4);
+  // slice با توجه به تعداد پیش‌فرض
+  const visibleTours = showAll ? tours : tours.slice(0, visibleCount);
 
   return (
     <div className={styles.tourInfo_Mbobile}>
@@ -60,23 +70,10 @@ export default function ShowTours({ tours, isLoading }) {
 
       <ul className={styles.results}>
         {visibleTours.map((tour, index) => {
-          console.log("--------------");
-          console.log("🧩 Tour index:", index);
-          console.log("🧩 Tour object:", tour);
-          console.log("🆔 tour.id:", tour.id);
-          console.log("🔗 Link:", `/Tours/${tour.id}`);
-
-          if (!tour.id) {
-            console.error("🚨 tour.id is missing!", tour);
-          }
-
           const startDate = new Date(tour.startDate);
           const endDate = new Date(tour.endDate);
-          const monthName = startDate.toLocaleString("fa-IR", {
-            month: "long",
-          });
-          const days =
-            Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+          const monthName = startDate.toLocaleString("fa-IR", { month: "long" });
+          const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
           const vehicleMap = {
             bus: "اتوبوس",
@@ -85,20 +82,14 @@ export default function ShowTours({ tours, isLoading }) {
             airplane: "پرواز",
             suv: "SUV",
           };
-
-          const vehicleFa =
-            vehicleMap[tour.fleetVehicle?.toLowerCase()] || "پرواز";
-
+          const vehicleFa = vehicleMap[tour.fleetVehicle?.toLowerCase()] || "پرواز";
           const priceFa = tour.price ? tour.price.toLocaleString("fa-IR") : "—";
 
           let imageSrc = "/default-tour.jpg";
-
           if (tour?.image) {
             imageSrc = tour.image.startsWith("http")
               ? tour.image
-              : `${BACKEND_BASE_URL}${
-                  tour.image.startsWith("/") ? tour.image : `/${tour.image}`
-                }`;
+              : `${BACKEND_BASE_URL}${tour.image.startsWith("/") ? tour.image : `/${tour.image}`}`;
           }
 
           return (
@@ -112,9 +103,7 @@ export default function ShowTours({ tours, isLoading }) {
                   unoptimized={process.env.NODE_ENV === "development"}
                 />
                 <div className={styles.overlay}>
-                  <span className={styles.zoomIcon}>
-                    <TbMapSearch />
-                  </span>
+                  <span className={styles.zoomIcon}><TbMapSearch /></span>
                   <span className={styles.overlayText}>جزئیات تور</span>
                 </div>
               </Link>
@@ -135,16 +124,15 @@ export default function ShowTours({ tours, isLoading }) {
                 <Link href={`/bookTour/${tour.id}`}>
                   <button className={styles.bookBtn}>رزرو</button>
                 </Link>
-                <p className={styles.price}>
-                  <span>{priceFa}</span> تومان
-                </p>
+                <p className={styles.price}><span>{priceFa}</span> تومان</p>
               </div>
             </li>
           );
         })}
       </ul>
 
-      {tours.length > 4 && !showAll && (
+      {/* دکمه جزئیات بیشتر فقط زمانی که تورهای بیشتر از visibleCount داریم */}
+      {tours.length > visibleCount && !showAll && (
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <button
             className={styles.showMoreBtn}
