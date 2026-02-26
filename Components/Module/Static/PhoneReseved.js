@@ -1,6 +1,7 @@
 import styles from "./PhoneReseved.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { FaPhoneVolume } from "react-icons/fa6";
 
 function PhoneReseved() {
   return (
@@ -24,7 +25,10 @@ function PhoneReseved() {
       </div>
       <div className={styles.phoneNum}>
         <div className={styles.phone}>
-          <p></p>
+          <p>
+            {" "}
+            <FaPhoneVolume />
+          </p>
           <p>021-1840</p>
         </div>
         <div>
