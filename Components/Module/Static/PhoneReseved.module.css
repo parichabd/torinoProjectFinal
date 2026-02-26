@@ -201,3 +201,127 @@
     font-size: 15px;
   }
 }
+
+
+/* ────────── ویندوز بزرگ (1024px تا 2860px) ────────── */
+/* ویندوز بزرگ: عرض 1024 تا 2860px */
+@media (min-width: 1024px) and (max-width: 2860px) {
+  .mainRes {
+    display: flex;
+    width: 100%;
+    align-items: stretch; /* مهم برای هم‌تراز شدن */
+    gap: 0;
+  }
+
+  
+  .reserved {
+   flex: 3; /* سبز بزرگ‌تر */
+    height: 210px;
+    border-radius: 0 10px 10px 0;
+    padding: 32px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    background-color: #28a745;
+  }
+
+  .reservedImage {
+    position: absolute;
+    width: 380px;
+    height: auto;
+    top: 53px;
+    left: -155px;
+    transform: none;
+  }
+
+    .buyPhone {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1; /* بالاتر از تصویر */
+  }
+
+  .buyPhone h1 {
+    width: 371px;
+    height: 74px;
+    font-size: 48px;
+    margin: 0 0 3px 0;
+  }
+
+  .buyPhone h1 span {
+    font-size: 48px;
+    padding: 12px;
+  }
+
+  .buyPhone p {
+    font-size: 28px;
+  }
+
+.phoneNum {
+  flex: 2; /* سفید کوچک‌تر */
+  min-height: 210px;
+  max-height: 210px;
+  border-radius: 10px 0 0 10px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* وسط محتوا */
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-sizing: border-box; /* مهم: پدینگ داخل ارتفاع لحاظ بشه */
+}
+
+  .phone {
+    font-size: 20px;
+    gap: 16px;
+  }
+
+  .phone p:first-child {
+    font-size: 24px;
+  }
+
+  .phoneNum button {
+    width: 200px;
+    height: 50px;
+    font-size: 16px;
+  }
+
+  .mainRes {
+    display: flex;
+    width: 100%;
+    align-items: center;       /* ← stretch رو عوض کن به center */
+    gap: 0;
+  }
+
+  .reserved {
+    flex: 3;
+    height: 210px;
+    border-radius: 0 10px 10px 0;
+    padding: 32px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    background-color: #28a745;
+    align-items: center;       /* ← اضافه کن */
+  }
+
+  .phoneNum {
+    margin-top: 50px;
+    flex: 2;
+    height: 210px;             /* min و max رو بردار، فقط height بذار */
+    border-radius: 10px 0 0 10px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 38px 32px 26px 32px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+  }
+}
+
+

@@ -5,11 +5,11 @@ import { FaPhoneVolume } from "react-icons/fa6";
 
 function PhoneReseved() {
   return (
-    <>
+    <div className={styles.mainRes}>
       <div className={styles.reserved}>
         <div className={styles.buyPhone}>
           <h1>
-            خرید تلفی از
+            خرید تلفنی از
             <span>تورینو</span>
           </h1>
           <p>به هرکجا که میخواهید!</p>
@@ -36,7 +36,7 @@ function PhoneReseved() {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
