@@ -24,7 +24,7 @@
     "react-multi-date-picker": "^4.5.2",
     "react-otp-input": "^3.1.1",
     "react-spinners": "^0.17.0",
-    "swiper": "^12.1.0",
+    "swiper": "^12.1.2",
     "yup": "^1.7.1",
     "zaman": "^2.1.1",
     "zustand": "^5.0.11"
