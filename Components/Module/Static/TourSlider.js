@@ -71,13 +71,15 @@ export default function TourSlider() {
             <GoArrowRight />
           </button>
           <span>
-            {active + 1} / {images.length}
+             {(active + 1).toLocaleString("fa-IR")} / {images.length.toLocaleString("fa-IR")}
           </span>
           <button onClick={next}>
             <GoArrowLeft />
           </button>
         </div>
       </div>
+      <div  className={styles.divider}></div>
     </div>
+    
   );
 }
