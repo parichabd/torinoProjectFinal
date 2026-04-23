@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./bookTour.module.css";
 import { useSearchParams, usePathname } from "next/navigation";
-import Link from "next/link";
 
 const BACKEND_BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
@@ -13,28 +12,20 @@ export default function BookingForm({ initialTourId }) {
   const pathname = usePathname();
   const source = searchParams.get("source");
 
-  // 1. اولویت اول: اگر initialTourId از سمت سرور پاس داده شده، استفاده کن
   let tourId = initialTourId;
 
-  // 2. اولویت دوم: اگر initialTourId نبود، سعی کن از pathname استخراج کنی
   if (!tourId && pathname) {
-    // حذف اسلش‌های اضافی اول و آخر
     const cleanPathname = pathname.replace(/^\/|\/$/g, "");
     const parts = cleanPathname.split("/");
 
-    // در ساختار /bookTour/[id]، اگر cleanPathname برابر باشد با "bookTour/5"
-    // parts[0] -> "bookTour"
-    // parts[1] -> "5"
 
     if (parts[0] === "bookTour" && parts[1]) {
       tourId = parts[1];
     } else if (parts[1] === "bookTour" && parts[2]) {
-      // اگر ساختار متفاوت بود
       tourId = parts[2];
     }
   }
 
-  // 3. اولویت سوم: اگر باز هم نبود، از پارامتر جستجو بگیر (اگر کاربر دستی اضافه کرد)
   if (!tourId) {
     tourId = searchParams.get("id");
   }
@@ -120,7 +111,6 @@ export default function BookingForm({ initialTourId }) {
     ? Number(tourData.price).toLocaleString("fa-IR")
     : "0";
 
-  // آدرس درگاه نمونه
   const GATEWAY_URL = "https://bpm.shaparak.ir/pgwchannel/startpay.mellat";
 
   return (
@@ -144,7 +134,7 @@ export default function BookingForm({ initialTourId }) {
         <input placeholder="نام و نام خانوادگی" className={styles.formInput} />
 
         <select className={`${styles.formInput} ${styles.secoundInput}`}>
-          <option value="disable" disabled selected>
+          <option value="default" disabled selected>
             جنسیت
           </option>
           <option value="male">مرد</option>
@@ -160,7 +150,7 @@ export default function BookingForm({ initialTourId }) {
         <div className={styles.tourSummaryContent}>
           <div className={styles.formFooterInfo}>
             <p className={styles.tourTitle}>
-              تور {tourData?.title || "نامشخص"}
+               {tourData?.title || "نامشخص"}
             </p>
             {durationInDays > 0 && (
               <p className={styles.tourDuration}>
