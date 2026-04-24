@@ -60,26 +60,32 @@ const persianToEnglish = (str) => {
   return str.replace(/[۰-۹]/g, (d) => englishDigits[persianDigits.indexOf(d)]);
 };
 
-// ✅ تبدیل تاریخ شمسی به میلادی (برای اعتبارسنجی سن)
+// ✅ تبدیل تاریخ شمسی به میلادی
 const shamsiToGregorian = (shamsiDate) => {
   if (!shamsiDate) return null;
-  
-  // اگر فرمت YYYY/MM/DD باشد
   const parts = shamsiDate.split("/");
   if (parts.length === 3) {
     const year = parseInt(parts[0]);
     const month = parseInt(parts[1]);
     const day = parseInt(parts[2]);
-    
-    // تبدیل ساده شمسی به میلادی
     const d = new Date();
     d.setFullYear(year + 621);
     d.setMonth(month - 1);
     d.setDate(day);
     return d;
   }
-  
   return null;
+};
+
+// ✅ کامپوننت پیام خطا با لرزش (ساده‌ترین روش)
+const ErrorMessage = ({ message }) => {
+  if (!message) return null;
+
+  return (
+    <small key={message} className={styles.errorMessage}>
+      ⚠️ {message}
+    </small>
+  );
 };
 
 export default function BookingForm({ initialTourId }) {
@@ -202,11 +208,10 @@ export default function BookingForm({ initialTourId }) {
     return true;
   };
 
-  // ✅ اعتبارسنجی سن (با تاریخ شمسی)
+  // ✅ اعتبارسنجی سن
   const validateAge = (value) => {
     if (!value) return true;
 
-    // تبدیل تاریخ شمسی به میلادی برای محاسبه سن
     const birthDate = shamsiToGregorian(value);
     if (!birthDate) return true;
 
@@ -234,14 +239,13 @@ export default function BookingForm({ initialTourId }) {
   // ✅ ارسال فرم
   const onSubmit = (data) => {
     console.log("داده‌های فرم:", data);
-    // تاریخ شمسی ذخیره می‌شود: "1378/03/15"
     window.open(GATEWAY_URL, "_blank");
   };
 
   useEffect(() => {
     if (!tourId) {
       setError(
-        "شناسه تور در آدرس URL پیدا نشد. لطفاً از صفحه تور به اینجا مراجعه کنید."
+        "شناسه تور در آدرس URL پیدا نشد. لطفاً از صفحه تور به اینجا مراجعه کنید.",
       );
       setIsLoading(false);
       return;
@@ -308,7 +312,7 @@ export default function BookingForm({ initialTourId }) {
 
   const { days: durationInDays, nights: durationInNights } = calculateDuration(
     tourData?.startDate,
-    tourData?.endDate
+    tourData?.endDate,
   );
 
   const formattedPrice = tourData?.price
@@ -346,11 +350,7 @@ export default function BookingForm({ initialTourId }) {
               validate: validatePersianName,
             })}
           />
-          {errors.fullName && (
-            <small className={styles.errorMessage}>
-              ⚠️ {errors.fullName.message}
-            </small>
-          )}
+          <ErrorMessage message={errors.fullName?.message} />
 
           {/* ✅ جنسیت */}
           <select
@@ -368,11 +368,7 @@ export default function BookingForm({ initialTourId }) {
             <option value="female">زن</option>
             <option value="other">سایر</option>
           </select>
-          {errors.gender && (
-            <small className={styles.errorMessage}>
-              ⚠️ {errors.gender.message}
-            </small>
-          )}
+          <ErrorMessage message={errors.gender?.message} />
 
           {/* ✅ کد ملی */}
           <input
@@ -388,7 +384,7 @@ export default function BookingForm({ initialTourId }) {
                   .map((c) =>
                     "0123456789".includes(c)
                       ? "۰۱۲۳۴۵۶۷۸۹"["0123456789".indexOf(c)]
-                      : c
+                      : c,
                   )
                   .join("")
                   .replace(/[^۰-۹]/g, "");
@@ -396,13 +392,9 @@ export default function BookingForm({ initialTourId }) {
               },
             })}
           />
-          {errors.nationalId && (
-            <small className={styles.errorMessage}>
-              ⚠️ {errors.nationalId.message}
-            </small>
-          )}
+          <ErrorMessage message={errors.nationalId?.message} />
 
-          {/* ✅ تاریخ تولد - ذخیره به فرمت شمسی */}
+          {/* ✅ تاریخ تولد */}
           <Controller
             name="birthDate"
             control={control}
@@ -415,7 +407,6 @@ export default function BookingForm({ initialTourId }) {
                 value={field.value || null}
                 onChange={(date) => {
                   if (date) {
-                    // ✅ ذخیره به فرمت شمسی "YYYY/MM/DD"
                     const shamsiDate = date.format("YYYY/MM/DD");
                     field.onChange(shamsiDate);
                   } else {
@@ -430,27 +421,19 @@ export default function BookingForm({ initialTourId }) {
                 containerClassName={styles.datePickerContainer}
                 format="YYYY/MM/DD"
                 maxDate={new Date()}
-                minDate={
-                  new Date().setFullYear(new Date().getFullYear() - 120)
-                }
+                minDate={new Date().setFullYear(new Date().getFullYear() - 120)}
                 editable={false}
               />
             )}
           />
-          {errors.birthDate && (
-            <small className={styles.errorMessage}>
-              ⚠️ {errors.birthDate.message}
-            </small>
-          )}
+          <ErrorMessage message={errors.birthDate?.message} />
         </div>
 
         {/* ✅ خلاصه سفارش */}
         <div className={styles.summarySection}>
           <div className={styles.tourSummaryContent}>
             <div className={styles.formFooterInfo}>
-              <p className={styles.tourTitle}>
-                {tourData?.title || "نامشخص"}
-              </p>
+              <p className={styles.tourTitle}>{tourData?.title || "نامشخص"}</p>
               {durationInDays > 0 && (
                 <p className={styles.tourDuration}>
                   {toPersianNumberLocal(durationInDays)} روز و{" "}
