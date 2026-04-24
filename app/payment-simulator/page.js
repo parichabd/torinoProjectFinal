@@ -44,7 +44,7 @@ export default function PaymentSimulator() {
         <div className={styles.headerContent}>
           <div className={styles.logo}>
             <Image
-              src="/SVG/shaparak-logo.svg"
+              src="/SVG/static/download.png"
               alt="شاپرک"
               width={50}
               height={50}
@@ -65,7 +65,7 @@ export default function PaymentSimulator() {
             <h2>اطلاعات پرداخت</h2>
             <div className={styles.infoRow}>
               <span>فروشگاه:</span>
-              <span>آژانس مسافرتی آنلاین</span>
+              <span>آژانس مسافرتی تورینو</span>
             </div>
             <div className={styles.infoRow}>
               <span>کالا:</span>
@@ -94,7 +94,7 @@ export default function PaymentSimulator() {
               <label>شماره کارت</label>
               <input
                 type="text"
-                placeholder="XXXX XXXX XXXX XXXX"
+                placeholder="XXXX-XXXX-XXXX-XXXX"
                 maxLength={19}
                 className={styles.cardInput}
                 dir="ltr"

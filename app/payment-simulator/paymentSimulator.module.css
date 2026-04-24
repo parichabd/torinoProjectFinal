@@ -1,7 +1,6 @@
 /* app/payment-simulator/paymentSimulator.module.css */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-family: "Vazirmatn", sans-serif;
 }
 
@@ -29,9 +28,14 @@
   align-items: center;
   justify-content: center;
 }
+.headerContent{
+  background-color: #12ade1b0;
+  padding: 20px;
+  border-radius: 12px;
+}
 
 .headerText h1 {
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 18px;
   margin: 0;
 }
@@ -223,7 +227,7 @@
 .bankLogos {
   text-align: center;
   margin-top: 30px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(5, 4, 4, 0.8);
   font-size: 12px;
 }
 
@@ -236,7 +240,7 @@
 }
 
 .logos span {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(16, 13, 13, 0.2);
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 11px;
