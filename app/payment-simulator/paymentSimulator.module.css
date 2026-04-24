@@ -1,0 +1,297 @@
+/* app/payment-simulator/paymentSimulator.module.css */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: "Vazirmatn", sans-serif;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.headerContent {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerText h1 {
+  color: white;
+  font-size: 18px;
+  margin: 0;
+}
+
+.headerText p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  margin: 5px 0 0;
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.paymentBox {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.merchantInfo h2 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.infoRow span:first-child {
+  color: #666;
+  font-size: 14px;
+}
+
+.infoRow span:last-child {
+  color: #333;
+  font-size: 14px;
+}
+
+.amountRow {
+  background: #f8f9fa;
+  margin: 15px -30px -30px;
+  padding: 20px 30px;
+  border-radius: 0 0 16px 16px;
+  border-bottom: none;
+}
+
+.amount {
+  font-size: 24px;
+  font-weight: bold;
+  color: #10b981 !important;
+}
+
+.amount small {
+  font-size: 12px;
+  font-weight: normal;
+  margin-right: 5px;
+}
+
+.divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 25px 0;
+}
+
+.cardForm h3 {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.cardInput {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: "Vazirmatn", sans-serif;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.cardInput:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #f59e0b;
+  background: #fffbeb;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.payButton {
+  flex: 1;
+  padding: 15px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: "Vazirmatn", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.payButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+}
+
+.payButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.processing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btnSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.cancelButton {
+  padding: 15px 30px;
+  background: #f3f4f6;
+  color: #666;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: "Vazirmatn", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancelButton:hover {
+  background: #e5e7eb;
+}
+
+.bankLogos {
+  text-align: center;
+  margin-top: 30px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+.logos {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.logos span {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+/* نتیجه پرداخت */
+.resultOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(16, 185, 129, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.resultBox {
+  text-align: center;
+  color: white;
+}
+
+.successIcon {
+  width: 80px;
+  height: 80px;
+  background: white;
+  color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin: 0 auto 20px;
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.resultBox h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.resultBox p {
+  font-size: 14px;
+  opacity: 0.9;
+}

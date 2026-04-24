@@ -205,15 +205,13 @@
   overflow: hidden;
 }
 
-.bookBtn:hover {
+.bookBtn button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 158, 202, 0.4);
   background: linear-gradient(135deg, #344515 0%, #69e10e 100%);
 }
 
-.bookBtn:active {
+.bookBtn button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(0, 158, 202, 0.2);
 }
 
 /* ✅ فوتر فرم */
