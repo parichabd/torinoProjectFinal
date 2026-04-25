@@ -242,3 +242,143 @@
     transform: translateX(4px);
   }
 }
+
+/* ============================================
+   ✅ گرید دسکتاپ (1024px - 1500px)
+   ============================================ */
+@media (min-width: 1024px) and (max-width: 1500px) {
+  /* ✅ کانتینر اصلی - تمام عرض */
+  .mainContainer {
+    max-width: 100% !important;
+    padding: 30px 40px !important;
+  }
+
+  /* ✅ فرم به صورت گرید دو ستونه */
+  .deskfORM {
+    display: grid !important;
+    grid-template-columns: 1fr 240px !important; /* ✅ ستون دوم 240px */
+    gap: 30px !important;
+    align-items: start !important;
+    width: 100% !important;
+  }
+
+  /* ✅ بخش مشخصات مسافر */
+  .formSection {
+    margin-bottom: 0 !important;
+    padding: 24px !important;
+  }
+
+  /* ✅ گرید داخلی برای فیلدها - ۳ ستونه */
+  .formDesign {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  /* ✅ هر فیلد با wrapper */
+  .formDesign > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ✅ حذف margin اضافی از فیلدها */
+  .formDesign .formInput {
+    margin: 0 !important;
+    width: 100% !important; /* ✅ اصلاح شد */
+    height: 48px !important;
+  }
+
+  .formDesign .datePickerContainer {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .formDesign .datePickerInput {
+    height: 48px !important;
+    width: 100% !important;
+  }
+
+  /* ✅ بخش خلاصه تور - دقیقاً 240px عرض */
+  .summarySection {
+    width: 307px !important;
+    min-height: 213px !important;
+    position: sticky !important;
+    top: 20px !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .tourSummaryContent {
+    width: 307px !important;
+    height: 213px !important;
+    background: #fff !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ✅ اطلاعات تور */
+  .formFooterInfo {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px !important;
+    padding: 10px 0 0 0 ;
+  }
+
+  .tourTitle {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+  }
+
+  .tourDuration {
+    font-size: 12px !important;
+  }
+
+  /* ✅ divider */
+ .divider_two {
+    margin:  0 !important;
+  } 
+
+  /* ✅ قیمت و دکمه */
+  .priceBoxFooter {
+    display: flex !important;
+    gap: 10px !important;
+    margin-top: 0 !important;
+  }
+
+  .priceFooter {
+    flex-direction: flex !important;
+    gap: 4px !important;
+    text-align: center !important;
+    padding: 10px !important;
+    height: 20px;
+    background-color: #fff;
+    padding: 20px 0;
+  }
+
+  .priceFooter p:first-child {
+    font-size: 12px !important;
+    font-weight: normal !important;
+  }
+
+  .priceFooter p:nth-child(2) {
+    font-size: 18px !important;
+  }
+
+  .priceFooter p:nth-child(2) span {
+    font-size: 11px !important;
+  }
+
+  .bookBtn button {
+    height: 42px !important;
+    font-size: 14px !important;
+    margin-top: 9px;
+  }
+}

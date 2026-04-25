@@ -1,3 +1,4 @@
+// app/bookTour/page.jsx
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -11,20 +12,49 @@ import toast, { Toaster } from "react-hot-toast";
 import { getCookie } from "../../../utils/cookie";
 import PaymentLoadingModal from "../../../Components/Spinner/PaymentLoadingModal";
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
+const BACKEND_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
 
 // ✅ کلمات غیرمجاز فارسی
 const INVALID_PERSIAN_WORDS = [
-  "نام", "نام خانوادگی", "نام و نام خانوادگی", "نام ونام خانوادگی",
-  "test", "asdf", "qwerty", "abc", "test123", "name", "username",
-  "کاربر", "مسافر", "مشتری", "خریدار", "ثبت نام", "ثبت", "آزمایشی", "فیک",
-  "نامشخص", "نامحدود",
+  "نام",
+  "نام خانوادگی",
+  "نام و نام خانوادگی",
+  "نام ونام خانوادگی",
+  "test",
+  "asdf",
+  "qwerty",
+  "abc",
+  "test123",
+  "name",
+  "username",
+  "کاربر",
+  "مسافر",
+  "مشتری",
+  "خریدار",
+  "ثبت نام",
+  "ثبت",
+  "آزمایشی",
+  "فیک",
+  "نامشخص",
+  "نامحدود",
 ];
 
 // ✅ کلمات غیرمجاز انگلیسی
 const INVALID_ENGLISH_WORDS = [
-  "test", "asdf", "qwerty", "abc", "name", "username", "user",
-  "fake", "dummy", "sample", "example", "demo", "temp",
+  "test",
+  "asdf",
+  "qwerty",
+  "abc",
+  "name",
+  "username",
+  "user",
+  "fake",
+  "dummy",
+  "sample",
+  "example",
+  "demo",
+  "temp",
 ];
 
 // ✅ تبدیل اعداد فارسی به انگلیسی
@@ -50,17 +80,9 @@ export default function BookingForm({ initialTourId }) {
   useEffect(() => {
     const paymentStatus = searchParams.get("payment");
     if (paymentStatus === "success") {
-      toast.success("تور شما با موفقیت ثبت شد! برای بررسی اطلاعات بیشتر به پروفایل مراجعه کنید.", {
-        duration: 6000,
-        position: "top-center",
-        style: {
-          background: "#10b981",
-          color: "#fff",
-          fontSize: "16px",
-          fontFamily: "Vazirmatn, sans-serif",
-        },
-      });
-      // پاک کردن پارامتر از URL
+      toast.success(
+        "تور شما با موفقیت ثبت شد! برای بررسی اطلاعات بیشتر به پروفایل مراجعه کنید.",
+      );
       router.replace("/bookTour");
     }
   }, [searchParams, router]);
@@ -98,18 +120,23 @@ export default function BookingForm({ initialTourId }) {
   const validatePersianName = (value) => {
     if (!value) return true;
     const trimmedValue = value.trim();
-    if (trimmedValue.length < 5) return "نام و نام خانوادگی باید حداقل ۵ کاراکتر باشد";
-    if (trimmedValue.length > 100) return "نام و نام خانوادگی نباید بیشتر از ۱۰۰ کاراکتر باشد";
+    if (trimmedValue.length < 5)
+      return "نام و نام خانوادگی باید حداقل ۵ کاراکتر باشد";
+    if (trimmedValue.length > 100)
+      return "نام و نام خانوادگی نباید بیشتر از ۱۰۰ کاراکتر باشد";
     const parts = trimmedValue.split(/\s+/);
-    if (parts.length < 2) return "لطفاً نام و نام خانوادگی را با فاصله جدا کنید";
-    if (parts.length > 4) return "نام و نام خانوادگی نباید بیشتر از ۴ کلمه باشد";
+    if (parts.length < 2)
+      return "لطفاً نام و نام خانوادگی را با فاصله جدا کنید";
+    if (parts.length > 4)
+      return "نام و نام خانوادگی نباید بیشتر از ۴ کلمه باشد";
     for (const part of parts) {
       if (part.length < 2) return "هر بخش از نام باید حداقل ۲ کاراکتر باشد";
     }
     const persianPattern = /^[\u0600-\u06FF\s]+$/;
     if (!persianPattern.test(trimmedValue)) return "فقط حروف فارسی مجاز است";
     const repeatedPattern = /^(.)\1+$/;
-    if (repeatedPattern.test(trimmedValue.replace(/\s/g, ""))) return "کاراکترهای تکراری مجاز نیست";
+    if (repeatedPattern.test(trimmedValue.replace(/\s/g, "")))
+      return "کاراکترهای تکراری مجاز نیست";
     const lowerValue = trimmedValue.toLowerCase();
     for (const word of INVALID_PERSIAN_WORDS) {
       if (lowerValue.includes(word.toLowerCase())) return "این نام معتبر نیست";
@@ -183,7 +210,7 @@ export default function BookingForm({ initialTourId }) {
   const addToBasket = async (tourId, token) => {
     const response = await fetch(`${BACKEND_BASE_URL}/basket/${tourId}`, {
       method: "PUT",
-      headers: { "Authorization": `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) {
       const errorData = await response.json();
@@ -195,26 +222,15 @@ export default function BookingForm({ initialTourId }) {
   // ✅ ارسال فرم و ریدایرکت به درگاه شبیه‌سازی
   const onSubmit = async (data) => {
     const refreshToken = getCookie("refreshToken");
-    
+
     if (!refreshToken) {
-      toast.error("ابتدا ثبت نام کنید و سپس میتوانید خرید کنید", {
-        duration: 4000,
-        position: "top-center",
-        style: {
-          background: "#ff4444",
-          color: "#fff",
-          fontSize: "16px",
-          fontFamily: "Vazirmatn, sans-serif",
-        },
-      });
+      toast.error("ابتدا ثبت نام کنید و سپس میتوانید خرید کنید");
       return;
     }
-
     if (birthDateError) {
       toast.error("لطفاً خطاهای فرم را برطرف کنید");
       return;
     }
-
     if (Object.keys(errors).length > 0) {
       toast.error("لطفاً تمام فیلدها را به درستی پر کنید");
       return;
@@ -222,11 +238,7 @@ export default function BookingForm({ initialTourId }) {
 
     try {
       setIsSubmitting(true);
-
-      // ۱. افزودن تور به سبد
       await addToBasket(tourId, refreshToken);
-
-      // ۲. ساخت داده‌های سفارش
       const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
       const orderData = {
         nationalCode: persianToEnglish(data.nationalId),
@@ -234,48 +246,31 @@ export default function BookingForm({ initialTourId }) {
         gender: data.gender,
         birthDate: gregorianBirthDate,
       };
-
-      // ۳. ارسال درخواست ثبت سفارش
       const response = await fetch(`${BACKEND_BASE_URL}/order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${refreshToken}`,
+          Authorization: `Bearer ${refreshToken}`,
         },
         body: JSON.stringify(orderData),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "خطا در ثبت سفارش");
       }
-
       const result = await response.json();
       console.log("نتیجه ثبت سفارش:", result);
-
-      // ۴. نمایش لودینگ "در حال بررسی موجودیت"
       setShowLoadingModal(true);
-
-      // ۵. صبر کن ۳ ثانیه (شبیه‌سازی بررسی)
       await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // ۶. مخفی کردن لودینگ
       setShowLoadingModal(false);
-
-      // ۷. ریدایرکت به صفحه شبیه‌سازی درگاه
       const orderId = result.orderId || `ORD-${Date.now()}`;
-      const amount = (tourData?.price || 0) * 10; // تبدیل به ریال
-      
+      const amount = (tourData?.price || 0) * 10;
       router.push(
-        `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`
+        `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`,
       );
-
     } catch (error) {
       console.error("خطا در ثبت سفارش:", error);
-      toast.error(error.message || "مشکلی در ثبت سفارش پیش آمد", {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast.error(error.message || "مشکلی در ثبت سفارش پیش آمد");
     } finally {
       setIsSubmitting(false);
     }
@@ -287,7 +282,6 @@ export default function BookingForm({ initialTourId }) {
       setIsLoading(false);
       return;
     }
-
     const fetchTourDetails = async () => {
       try {
         setIsLoading(true);
@@ -306,7 +300,6 @@ export default function BookingForm({ initialTourId }) {
         setIsLoading(false);
       }
     };
-
     fetchTourDetails();
   }, [tourId]);
 
@@ -330,7 +323,9 @@ export default function BookingForm({ initialTourId }) {
   if (isLoading) {
     return (
       <div className={styles.mainContainer}>
-        <p style={{ textAlign: "center", marginTop: "50px" }}>در حال دریافت اطلاعات تور...</p>
+        <p style={{ textAlign: "center", marginTop: "50px" }}>
+          در حال دریافت اطلاعات تور...
+        </p>
       </div>
     );
   }
@@ -338,7 +333,9 @@ export default function BookingForm({ initialTourId }) {
   if (error) {
     return (
       <div className={styles.mainContainer}>
-        <p style={{ textAlign: "center", marginTop: "50px", color: "red" }}>{error}</p>
+        <p style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          {error}
+        </p>
       </div>
     );
   }
@@ -347,7 +344,6 @@ export default function BookingForm({ initialTourId }) {
     tourData?.startDate,
     tourData?.endDate,
   );
-
   const formattedPrice = tourData?.price
     ? Number(tourData.price).toLocaleString("fa-IR")
     : "0";
@@ -355,15 +351,20 @@ export default function BookingForm({ initialTourId }) {
   return (
     <div className={styles.mainContainer}>
       <Toaster />
-      
-      {/* مودال لودینگ */}
       <PaymentLoadingModal isOpen={showLoadingModal} />
-
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {/* بخش فرم */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className={styles.deskfORM}
+      >
         <div className={styles.formSection}>
           <div className={styles.formInfo}>
-            <Image width={24} height={24} alt="user" src="/SVG/profile/psrofile.svg" />
+            <Image
+              width={24}
+              height={24}
+              alt="user"
+              src="/SVG/profile/psrofile.svg"
+            />
             <h1>مشخصات مسافر</h1>
             {source && (
               <span style={{ fontSize: "12px", color: "#666" }}>
@@ -371,79 +372,92 @@ export default function BookingForm({ initialTourId }) {
               </span>
             )}
           </div>
-
-          <input
-            placeholder="نام و نام خانوادگی"
-            className={styles.formInput}
-            {...register("fullName", {
-              required: "نام و نام خانوادگی الزامی است",
-              validate: validatePersianName,
-            })}
-          />
-          <ErrorMessage message={errors.fullName?.message} />
-
-          <select
-            className={`${styles.formInput} ${styles.secoundInput}`}
-            {...register("gender", {
-              required: "انتخاب جنسیت الزامی است",
-              validate: (value) => value !== "default" || "لطفاً جنسیت را انتخاب کنید",
-            })}
-          >
-            <option value="default" disabled>جنسیت</option>
-            <option value="male">مرد</option>
-            <option value="female">زن</option>
-            <option value="other">سایر</option>
-          </select>
-          <ErrorMessage message={errors.gender?.message} />
-
-          <input
-            placeholder="کد ملی"
-            className={styles.formInput}
-            maxLength={10}
-            {...register("nationalId", {
-              required: "کد ملی الزامی است",
-              validate: validateNationalId,
-              onChange: (e) => {
-                const clean = e.target.value
-                  .split("")
-                  .map((c) =>
-                    "0123456789".includes(c)
-                      ? "۰۱۲۳۴۵۶۷۸۹"["0123456789".indexOf(c)]
-                      : c
-                  )
-                  .join("")
-                  .replace(/[^۰-۹]/g, "");
-                e.target.value = clean;
-              },
-            })}
-          />
-          <ErrorMessage message={errors.nationalId?.message} />
-
-          <Controller
-            name="birthDate"
-            control={control}
-            rules={{ required: "تاریخ تولد الزامی است" }}
-            render={({ field }) => (
-              <DatePicker
-                value={field.value || null}
-                onChange={(date) => handleBirthDateChange(date, field.onChange)}
-                calendar={persian}
-                locale={persian_fa}
-                calendarPosition="bottom-right"
-                placeholder="تاریخ تولد"
-                inputClass={styles.datePickerInput}
-                containerClassName={styles.datePickerContainer}
-                format="YYYY/MM/DD"
-                maxDate={new Date()}
-                minDate={new Date().setFullYear(new Date().getFullYear() - 120)}
-                editable={false}
+          <div className={styles.formDesign}>
+            <div>
+              <input
+                placeholder="نام و نام خانوادگی"
+                className={styles.formInput}
+                {...register("fullName", {
+                  required: "نام و نام خانوادگی الزامی است",
+                  validate: validatePersianName,
+                })}
               />
-            )}
-          />
-          <ErrorMessage message={birthDateError || errors.birthDate?.message} />
+              <ErrorMessage message={errors.fullName?.message} />
+            </div>
+            <div>
+              <select
+                className={`${styles.formInput} ${styles.secoundInput}`}
+                {...register("gender", {
+                  required: "انتخاب جنسیت الزامی است",
+                  validate: (value) =>
+                    value !== "default" || "لطفاً جنسیت را انتخاب کنید",
+                })}
+              >
+                <option value="default" disabled>
+                  جنسیت
+                </option>
+                <option value="male">مرد</option>
+                <option value="female">زن</option>
+                <option value="other">سایر</option>
+              </select>
+              <ErrorMessage message={errors.gender?.message} />
+            </div>
+            <div>
+              <input
+                placeholder="کد ملی"
+                className={styles.formInput}
+                maxLength={10}
+                {...register("nationalId", {
+                  required: "کد ملی الزامی است",
+                  validate: validateNationalId,
+                  onChange: (e) => {
+                    const clean = e.target.value
+                      .split("")
+                      .map((c) =>
+                        "0123456789".includes(c)
+                          ? "۰۱۲۳۴۵۶۷۸۹"["0123456789".indexOf(c)]
+                          : c,
+                      )
+                      .join("")
+                      .replace(/[^۰-۹]/g, "");
+                    e.target.value = clean;
+                  },
+                })}
+              />
+              <ErrorMessage message={errors.nationalId?.message} />
+            </div>
+            <div>
+              <Controller
+                name="birthDate"
+                control={control}
+                rules={{ required: "تاریخ تولد الزامی است" }}
+                render={({ field }) => (
+                  <DatePicker
+                    value={field.value || null}
+                    onChange={(date) =>
+                      handleBirthDateChange(date, field.onChange)
+                    }
+                    calendar={persian}
+                    locale={persian_fa}
+                    calendarPosition="bottom-right"
+                    placeholder="تاریخ تولد"
+                    inputClass={styles.datePickerInput}
+                    containerClassName={styles.datePickerContainer}
+                    format="YYYY/MM/DD"
+                    maxDate={new Date()}
+                    minDate={new Date().setFullYear(
+                      new Date().getFullYear() - 120,
+                    )}
+                    editable={false}
+                  />
+                )}
+              />
+              <ErrorMessage
+                message={birthDateError || errors.birthDate?.message}
+              />
+            </div>
+          </div>
         </div>
-
-        {/* خلاصه سفارش */}
         <div className={styles.summarySection}>
           <div className={styles.tourSummaryContent}>
             <div className={styles.formFooterInfo}>
