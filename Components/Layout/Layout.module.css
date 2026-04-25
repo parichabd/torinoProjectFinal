@@ -456,12 +456,12 @@ body {
 /* ✅ استایل Badge زنگوله (کنار پروفایل) */
 .bellBadge {
   position: absolute;
-  top: 2px;
-  right:3px;
+  top: -15px;
+  right:-12px;
   background: #ef4444;
   color: #ffffff;
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -476,8 +476,8 @@ body {
 /* ✅ استایل Badge عدد (بالای شماره تلفن) */
 .numberBadge {
   position: absolute;
-  top: -12px;
-  right: -9px;
+  top: 2px !important;
+  right: 4px !important;
    color: #D40000 !important; 
   font-size: 11px;
   font-weight: bold;
@@ -526,31 +526,22 @@ body {
   }
 }
 
-/* ✅ انیمیشن shake برای عدد */
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-2px);
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(2px);
-  }
-}
 
 
 
-@media (min-width: 1024px) and (max-width : 1445px) {
+
+@media (min-width: 1024px) and (max-width : 1449px) {
+
+
 
   .bellBadge {
   position: absolute;
-  top: -12px;
-  right:4px; }
+  top: -20px !important;
+  right:-18px !important; }
   
 
   .userMenu {
-    width: 239px;
+    width: 239px !important;
     right: auto;
     top: 35px;
     left: 50%;
@@ -563,35 +554,9 @@ body {
   }
   .item h1 {
   font-size: 16px;}
-}
-
-/* ✅ استایل Badge عدد (پیش‌فرض - موبایل/تبلت) */
-.numberBadge {
-  position: absolute;
-  top: -12px;
-  right: -9px;
-  color: #D40000;
-  font-size: 11px;
-  font-weight: bold;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 3px;
-  border: 2px solid white;
-  animation: shake 6s ease-in-out infinite;
-  font-family: "Vazirmatn", sans-serif;
-  z-index: 100;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* ✅ استایل Badge عدد در دسکتاپ */
-@media (min-width: 1024px) {
-  .numberBadge {
-    top: -19px;   /* ✅ کمی بالاتر */
-    right: -17px; /* ✅ کمی سمت راست‌تر */
+    .numberBadge {
+    top: 2px;   /* ✅ کمی بالاتر */
+    right: 4px; /* ✅ کمی سمت راست‌تر */
     font-size: 10px !important;
   }
   
@@ -611,3 +576,24 @@ body {
     white-space: nowrap;
   }
 }
+
+/* ✅ استایل Badge عدد (پیش‌فرض - موبایل/تبلت) */
+.numberBadge {
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  color: #D40000;
+  font-size: 11px !important;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border: 2px solid white;
+  font-family: "Vazirmatn", sans-serif;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.591);
+}
+

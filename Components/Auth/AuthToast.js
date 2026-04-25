@@ -1,25 +1,21 @@
+// app/Components/Auth/AuthToast.jsx
 "use client";
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useSendOtp } from "@/Hooks/useSendOtp";
 import { useVerifyOtp } from "@/Hooks/useVerifyOtp";
 import { registerUser } from "@/Services/Auth";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
-
 import OtpInput from "react-otp-input";
 import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
-
 import styles from "./AuthToast.module.css";
 
 export default function AuthToast({ onClose, mode = "login" }) {
   const router = useRouter();
-
   const [step, setStep] = useState("PHONE");
   const [isRegister, setIsRegister] = useState(mode === "register");
-
   const [timeLeft, setTimeLeft] = useState(120);
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
@@ -29,12 +25,16 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const [otpShake, setOtpShake] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
+  // ✅ ریف برای ردیابی اولین تغییر isRegister
+  const hasShownRegisterToast = useRef(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
+
   const sendOtpMutation = useSendOtp();
   const verifyOtpMutation = useVerifyOtp();
 
@@ -44,10 +44,12 @@ export default function AuthToast({ onClose, mode = "login" }) {
     return () => window.removeEventListener("storage", syncMobile);
   }, []);
 
+  // ✅ اصلاح شده: فقط یک بار هنگام mount با isRegister=true اجرا میشه
   useEffect(() => {
-    if (isRegister) {
+    if (isRegister && !hasShownRegisterToast.current) {
+      hasShownRegisterToast.current = true;
       toast.error(
-        "ثبت نام با نام فعلاً در دسترس نیست. لطفاً با شماره تلفن در بخش ورود وارد شوید.",
+        " 🚫 ثبت نام با نام فعلاً در دسترس نیست. لطفاً با شماره تلفن در بخش ورود وارد شوید.",
         { position: "top-center", duration: 4000 },
       );
     }
@@ -61,18 +63,22 @@ export default function AuthToast({ onClose, mode = "login" }) {
 
   const persianToEnglish = (str) =>
     str.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+
   const validateMobile = (number) => /^09\d{9}$/.test(persianToEnglish(number));
+
   const formatTime = (t) =>
     `${Math.floor(t / 60)}:${(t % 60).toString().padStart(2, "0")}`;
 
   const submitPhone = async (data) => {
     const cleanedMobile = persianToEnglish(data.mobile);
+
     if (!validateMobile(cleanedMobile)) {
       setMobileError("شماره موبایل معتبر نیست. باید با ۰۹ شروع و ۱۱ رقم باشد.");
       setMobileShake(true);
       setTimeout(() => setMobileShake(false), 400);
       return;
     }
+
     setMobileError("");
     setMobile(cleanedMobile);
 
@@ -90,8 +96,8 @@ export default function AuthToast({ onClose, mode = "login" }) {
         setStep("OTP");
         setTimeLeft(120);
         setOtp("");
-        toast.success("کد تایید ارسال شد و تا ۲ دقیقه معتبر است", {
-          position: "top-left",
+        toast.success(" ⏳ کد تایید ارسال شد و تا ۲ دقیقه معتبر است", {
+          position: "top-center",
           duration: 4000,
         });
       },
@@ -106,8 +112,8 @@ export default function AuthToast({ onClose, mode = "login" }) {
       onSuccess: () => {
         setTimeLeft(120);
         setOtp("");
-        toast.success("کد تایید ارسال شد و تا ۲ دقیقه معتبر است", {
-          position: "top-right",
+        toast.success(" ⏳ کد تایید ارسال شد و تا ۲ دقیقه معتبر است", {
+          position: "top-center",
           duration: 4000,
         });
       },
@@ -133,12 +139,10 @@ export default function AuthToast({ onClose, mode = "login" }) {
           localStorage.setItem("mobile", mobile);
           localStorage.setItem("userName", res.user?.firstName || "");
           window.dispatchEvent(new Event("auth:login-success"));
-
           toast.success("ورود موفق بود! خوش آمدید 🎉", {
-            position: "top-right",
+            position: "top-center",
             duration: 4000,
           });
-
           setTimeout(() => {
             setIsLoggingIn(false);
             onClose();
@@ -171,6 +175,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                 className={styles.back_btn}
                 onClick={() => {
                   setIsRegister(false);
+                  hasShownRegisterToast.current = false; // ✅ ریست ریف
                   reset();
                 }}
               >
@@ -187,6 +192,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
               onClick={() => {
                 setStep("PHONE");
                 setIsRegister(false);
+                hasShownRegisterToast.current = false; // ✅ ریست ریف
                 setOtp("");
                 setOtpError("");
                 setTimeLeft(120);
@@ -267,7 +273,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
               <p className={styles.mobileHint}>
                 کد به شماره <span>{mobile}</span> ارسال شد
               </p>
-
               <div
                 className={`${styles.otpWrapper} ${otpShake ? styles.shake : ""}`}
                 onKeyDown={handleKeyDown}
@@ -306,7 +311,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
                   )}
                 />
               </div>
-
               {otpError && <div className={styles.errorBox}>{otpError}</div>}
 
               {timeLeft > 0 ? (

@@ -1,9 +1,9 @@
-import UserProfileInfo from '@/Components/Template/UserProfileInfo/UserProfileInfo'
+import UserProfileInfo from "@/Components/Module/UserProfileInfo/UserProfileInfo"
 
 function ProfileInfo() {
   return (
       <div>
-          <UserProfileInfo/>
+         <UserProfileInfo/>
     </div>
   )
 }

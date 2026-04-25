@@ -21,9 +21,7 @@ const BellBadge = () => (
 );
 
 // ✅ کامپوننت Badge عدد
-const NumberBadge = () => (
-  <span className={styles.numberBadge}>۱</span>
-);
+const NumberBadge = () => <span className={styles.numberBadge}>۱</span>;
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -177,7 +175,7 @@ export default function Header() {
         />
         <h1>اطلاعات حساب کاربری</h1>
         {/* ✅ زنگوله در کنار پروفایل */}
-        {hasNotification && <BellBadge />}
+        {hasNotification && <NumberBadge />}
       </Link>
 
       <div className={styles.divider_profile}></div>
@@ -231,26 +229,25 @@ export default function Header() {
             >
               {mobile ? (
                 <div className={styles.userWrapper} ref={desktopRef}>
-                  <div
-                    className={styles.userSection}
-                    onClick={toggleUserMenu}
-                  >
+                  <div className={styles.userSection} onClick={toggleUserMenu}>
                     <Image
                       src="/icon/profile.png"
                       alt="profile"
                       width={19}
                       height={14}
                     />
-                    
+
                     {/* ✅ شماره تلفن با Badge عدد */}
                     <div className={styles.phoneWrapper}>
                       <span className={styles.user_mobile}>
                         {toPersianNumber(mobile)}
                       </span>
                       {/* ✅ عدد ۱ بالای شماره تلفن */}
-                      {hasNotification && <NumberBadge />}
+                      {hasNotification && <BellBadge />}
+
+
                     </div>
-                    
+
                     <Image
                       src="/SVG/arrow-down.svg"
                       alt="arrow"
@@ -285,26 +282,24 @@ export default function Header() {
           <div className={styles.mobile_menu}>
             {mobile ? (
               <div className={styles.userWrapper} ref={mobileRef}>
-                <div
-                  className={styles.userSection}
-                  onClick={toggleUserMenu}
-                >
+                <div className={styles.userSection} onClick={toggleUserMenu}>
                   <Image
                     src="/icon/profile.png"
                     alt="profile"
                     width={22}
                     height={22}
                   />
-                  
+
                   {/* ✅ شماره تلفن با Badge عدد */}
                   <div className={styles.phoneWrapper}>
                     <span className={styles.user_mobile}>
                       {toPersianNumber(mobile)}
                     </span>
                     {/* ✅ عدد ۱ بالای شماره تلفن */}
-                    {hasNotification && <NumberBadge />}
+                      {hasNotification && <BellBadge />}
+
                   </div>
-                  
+
                   <Image
                     src="/SVG/arrow-down.svg"
                     alt="arrow"
