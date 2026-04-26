@@ -1,12 +1,25 @@
+// src/components/profile/Profile.jsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber } from "@/utils/number";
-import { profileApi } from "@/lib/api"; // ✅ ایمپورت API
+import { profileApi } from "@/lib/api";
+import {
+  toEnglishDigits,
+  formatCardNumber,
+  validateCardNumber,
+  validateSheba,
+  validateAccountNumber,
+  getCardType,
+  formatSheba,
+} from "@/utils/bankValidation";
 import styles from "./Profile.module.css";
 import Image from "next/image";
 
+// ============================================
+// کمکی‌ها
+// ============================================
 const getCookieValue = (name) => {
   if (typeof window === "undefined") return "";
   const value = `; ${document.cookie}`;
@@ -21,10 +34,15 @@ const truncateEmail = (email, maxLength = 25) => {
   return email.substring(0, maxLength) + "...";
 };
 
+// ============================================
+// کامپوننت اصلی
+// ============================================
 export default function Profile() {
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false); // ✅ برای نمایش وضعیت ذخیره
+  const [saving, setSaving] = useState(false);
   const [editingSection, setEditingSection] = useState(null);
+  
+  // داده‌های فرم
   const [accountData, setAccountData] = useState({ mobile: "", email: "" });
   const [personalData, setPersonalData] = useState({
     fullName: "",
@@ -38,8 +56,145 @@ export default function Profile() {
     accountNumber: "",
   });
 
+  // اعتبارسنجی real-time برای بانک
+  const [cardValidation, setCardValidation] = useState({
+    valid: null,
+    message: "",
+    cardType: null,
+  });
+  const [shebaValidation, setShebaValidation] = useState({
+    valid: null,
+    message: "",
+  });
+  const [accountValidation, setAccountValidation] = useState({
+    valid: null,
+    message: "",
+  });
+
+  // ============================================
+  // useForm با custom validation
+  // ============================================
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
+
+  // Watch برای فیلدهای بانکی (اعتبارسنجی real-time)
+  const watchedCard = watch("cardNumber", "");
+  const watchedSheba = watch("sheba", "");
+  const watchedAccount = watch("accountNumber", "");
+
+  // ============================================
+  // اعتبارسنجی real-time شماره کارت
+  // ============================================
   useEffect(() => {
-    // ✅ ابتدا از localStorage بارگذاری کن
+    if (editingSection !== "bank" || !watchedCard) {
+      setCardValidation({ valid: null, message: "", cardType: null });
+      return;
+    }
+
+    const cleaned = watchedCard.replace(/\s/g, "");
+    
+    // بررسی طول
+    if (cleaned.length > 0 && cleaned.length < 16) {
+      setCardValidation({
+        valid: false,
+        message: `${toPersianNumber(16 - cleaned.length)} رقم باقیمانده`,
+        cardType: null,
+      });
+      return;
+    }
+
+    if (cleaned.length === 16) {
+      const result = validateCardNumber(cleaned);
+      const cardType = getCardType(cleaned);
+      setCardValidation({
+        valid: result.valid,
+        message: result.message,
+        cardType,
+      });
+    } else if (cleaned.length === 0) {
+      setCardValidation({ valid: null, message: "", cardType: null });
+    }
+  }, [watchedCard, editingSection]);
+
+  // ============================================
+  // اعتبارسنجی real-time شبا
+  // ============================================
+  useEffect(() => {
+    if (editingSection !== "bank" || !watchedSheba) {
+      setShebaValidation({ valid: null, message: "" });
+      return;
+    }
+
+    const cleaned = toEnglishDigits(watchedSheba).toUpperCase().replace(/\s/g, "");
+    
+    // بررسی‌های اولیه
+    if (cleaned.length > 0 && !cleaned.startsWith("IR")) {
+      setShebaValidation({
+        valid: false,
+        message: "با IR شروع شود",
+      });
+      return;
+    }
+
+    if (cleaned.startsWith("IR") && cleaned.length < 26) {
+      setShebaValidation({
+        valid: false,
+        message: `${toPersianNumber(26 - cleaned.length)} رقم باقیمانده`,
+      });
+      return;
+    }
+
+    if (cleaned.length === 26) {
+      const result = validateSheba(cleaned);
+      setShebaValidation({
+        valid: result.valid,
+        message: result.message,
+      });
+    } else if (cleaned.length === 0) {
+      setShebaValidation({ valid: null, message: "" });
+    }
+  }, [watchedSheba, editingSection]);
+
+  // ============================================
+  // اعتبارسنجی real-time شماره حساب
+  // ============================================
+  useEffect(() => {
+    if (editingSection !== "bank" || !watchedAccount) {
+      setAccountValidation({ valid: null, message: "" });
+      return;
+    }
+
+    const cleaned = toEnglishDigits(watchedAccount);
+    
+    if (cleaned.length > 0 && (cleaned.length < 10 || cleaned.length > 13)) {
+      setAccountValidation({
+        valid: false,
+        message: "۱۰ تا ۱۳ رقم",
+      });
+      return;
+    }
+
+    if (cleaned.length >= 10 && cleaned.length <= 13) {
+      const result = validateAccountNumber(cleaned);
+      setAccountValidation({
+        valid: result.valid,
+        message: result.message,
+      });
+    } else if (cleaned.length === 0) {
+      setAccountValidation({ valid: null, message: "" });
+    }
+  }, [watchedAccount, editingSection]);
+
+  // ============================================
+  // بارگذاری اولیه داده‌ها
+  // ============================================
+  useEffect(() => {
     const mobile = localStorage.getItem("mobile") || "";
     const storedName =
       localStorage.getItem("userName") || getCookieValue("userName") || "";
@@ -56,68 +211,63 @@ export default function Profile() {
     setPersonalData({ fullName, gender, nationalId, birthDate });
     setBankData({ cardNumber: cardToShow, sheba: "", accountNumber: "" });
 
-    // ✅ سعی کن اطلاعات را از سرور هم بگیری
     fetchServerData();
-
     setLoading(false);
   }, []);
 
-  // ✅ تابع برای دریافت اطلاعات از سرور
+  // ============================================
+  // دریافت داده از سرور
+  // ============================================
   const fetchServerData = async () => {
     try {
       const data = await profileApi.getProfile();
-      
-      // بروزرسانی state ها با داده‌های سرور
+
       if (data.email) {
-        setAccountData(prev => ({ ...prev, email: data.email }));
+        setAccountData((prev) => ({ ...prev, email: data.email }));
       }
-      
+
       if (data.firstName || data.lastName) {
         const fullName = `${data.firstName || ""} ${data.lastName || ""}`.trim();
-        setPersonalData(prev => ({ ...prev, fullName }));
+        setPersonalData((prev) => ({ ...prev, fullName }));
         localStorage.setItem("passengerFullName", fullName);
       }
-      
+
       if (data.gender) {
-        setPersonalData(prev => ({ ...prev, gender: data.gender }));
+        setPersonalData((prev) => ({ ...prev, gender: data.gender }));
         localStorage.setItem("passengerGender", data.gender);
       }
-      
+
       if (data.nationalCode) {
-        setPersonalData(prev => ({ ...prev, nationalId: String(data.nationalCode) }));
+        setPersonalData((prev) => ({
+          ...prev,
+          nationalId: String(data.nationalCode),
+        }));
         localStorage.setItem("passengerNationalId", String(data.nationalCode));
       }
-      
+
       if (data.birthDate) {
-        setPersonalData(prev => ({ ...prev, birthDate: data.birthDate }));
+        setPersonalData((prev) => ({ ...prev, birthDate: data.birthDate }));
         localStorage.setItem("passengerBirthDate", data.birthDate);
       }
-      
+
       if (data.payment) {
         setBankData({
           cardNumber: data.payment.debitCard_code || "",
           sheba: data.payment.shaba_code || "",
           accountNumber: data.payment.accountIdentifier || "",
         });
-        
         if (data.payment.debitCard_code) {
           localStorage.setItem("fullCardNumber", data.payment.debitCard_code);
         }
       }
     } catch (error) {
       console.log("Could not fetch server data:", error);
-      // اگر خطا داد، مهم نیست - از localStorage استفاده می‌کنیم
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
+  // ============================================
+  // تبدیل اعداد فارسی به انگلیسی
+  // ============================================
   const handlePersianInput = (e, fieldName) => {
     const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
     let value = e.target.value;
@@ -133,8 +283,20 @@ export default function Profile() {
     setValue(fieldName, persianValue);
   };
 
+  // ============================================
+  // مدیریت ورودی شماره کارت (فرمت خودکار)
+  // ============================================
+  const handleCardInput = useCallback((e) => {
+    const formatted = formatCardNumber(e.target.value);
+    setValue("cardNumber", formatted);
+  }, [setValue]);
+
+  // ============================================
+  // ورود به حالت ویرایش
+  // ============================================
   const handleEditClick = (section) => {
     setEditingSection(section);
+    
     if (section === "account") {
       reset({ mobile: accountData.mobile, email: accountData.email });
     } else if (section === "personal") {
@@ -150,35 +312,68 @@ export default function Profile() {
         accountNumber: toPersianNumber(bankData.accountNumber),
         sheba: toPersianNumber(bankData.sheba),
       });
+      // ریست اعتبارسنجی‌ها
+      setCardValidation({ valid: null, message: "", cardType: null });
+      setShebaValidation({ valid: null, message: "" });
+      setAccountValidation({ valid: null, message: "" });
     }
   };
 
+  // ============================================
+  // انصراف از ویرایش
+  // ============================================
   const handleCancel = () => {
     setEditingSection(null);
+    setCardValidation({ valid: null, message: "", cardType: null });
+    setShebaValidation({ valid: null, message: "" });
+    setAccountValidation({ valid: null, message: "" });
     reset();
   };
 
-  // ✅ تابع ذخیره‌سازی اصلاح شده
+  // ============================================
+  // اعتبارسنجی نهایی قبل از ارسال
+  // ============================================
+  const validateBankData = (data) => {
+    const errors = [];
+
+    // اعتبارسنجی کارت
+    const cardResult = validateCardNumber(data.cardNumber);
+    if (!cardResult.valid) {
+      errors.push(cardResult.message);
+    }
+
+    // اعتبارسنجی شبا
+    const shebaResult = validateSheba(data.sheba);
+    if (!shebaResult.valid) {
+      errors.push(shebaResult.message);
+    }
+
+    // اعتبارسنجی حساب
+    const accountResult = validateAccountNumber(data.accountNumber);
+    if (!accountResult.valid) {
+      errors.push(accountResult.message);
+    }
+
+    return errors;
+  };
+
+  // ============================================
+  // ارسال فرم
+  // ============================================
   const onSubmit = async (data) => {
-    setSaving(true); // شروع لودینگ
+    setSaving(true);
 
     try {
       if (editingSection === "account") {
-        // ذخیره ایمیل
-        const response = await profileApi.updateProfile({
-          email: data.email,
-        });
-        
+        const response = await profileApi.updateProfile({ email: data.email });
         setAccountData((prev) => ({ ...prev, email: data.email }));
         toast.success("ایمیل با موفقیت ذخیره شد");
-        
+
       } else if (editingSection === "personal") {
-        // تبدیل نام کامل به firstName و lastName
         const nameParts = data.fullName.trim().split(" ");
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
 
-        // تبدیل اعداد فارسی به انگلیسی برای ارسال به سرور
         const convertToEnglishDigits = (str) => {
           const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
           return str.replace(/[۰-۹]/g, (d) => persianDigits.indexOf(d));
@@ -192,24 +387,28 @@ export default function Profile() {
           birthDate: convertToEnglishDigits(data.birthDate),
         });
 
-        // بروزرسانی localStorage
         localStorage.setItem("passengerFullName", data.fullName);
         localStorage.setItem("passengerGender", data.gender);
         localStorage.setItem("passengerNationalId", data.nationalId);
         localStorage.setItem("passengerBirthDate", data.birthDate);
 
-        // بروزرسانی state
         setPersonalData({
           fullName: data.fullName,
           gender: data.gender,
           nationalId: data.nationalId,
           birthDate: data.birthDate,
         });
-
         toast.success("مشخصات مسافر با موفقیت ذخیره شد");
-        
+
       } else if (editingSection === "bank") {
-        // تبدیل اعداد فارسی به انگلیسی
+        // اعتبارسنجی نهایی
+        const validationErrors = validateBankData(data);
+        if (validationErrors.length > 0) {
+          toast.error(validationErrors[0]);
+          setSaving(false);
+          return;
+        }
+
         const convertToEnglishDigits = (str) => {
           const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
           return str.replace(/[۰-۹]/g, (d) => persianDigits.indexOf(d));
@@ -223,33 +422,30 @@ export default function Profile() {
           },
         });
 
-        // بروزرسانی localStorage
         localStorage.setItem("fullCardNumber", data.cardNumber);
 
-        // بروزرسانی state
         setBankData({
           cardNumber: data.cardNumber,
           sheba: data.sheba,
           accountNumber: data.accountNumber,
         });
-
         toast.success("اطلاعات بانکی با موفقیت ذخیره شد");
       }
 
       setEditingSection(null);
       reset();
-      
     } catch (error) {
       console.error("❌ Error saving profile:", error);
-      
-      // نمایش پیام خطای مناسب
       const errorMessage = error?.message || "خطا در ذخیره اطلاعات";
       toast.error(errorMessage);
     } finally {
-      setSaving(false); // پایان لودینگ
+      setSaving(false);
     }
   };
 
+  // ============================================
+  // عنوان بخش
+  // ============================================
   const getSectionTitle = (section, defaultTitle) => {
     if (editingSection === section) {
       if (section === "personal") return "ویرایش اطلاعات شخصی";
@@ -259,24 +455,51 @@ export default function Profile() {
     return defaultTitle;
   };
 
+  // ============================================
+  // کامپوننت‌های کمکی
+  // ============================================
+  
+  // نشانگر وضعیت اعتبارسنجی
+  const ValidationBadge = ({ valid, message }) => {
+    if (valid === null) return null;
+    
+    return (
+      <span className={`${styles.validationBadge} ${valid ? styles.validBadge : styles.invalidBadge}`}>
+        {valid ? "✓" : "✗"} {message}
+      </span>
+    );
+  };
+
+  // نمایش نوع کارت بانکی
+  const CardTypeBadge = ({ cardType }) => {
+    if (!cardType) return null;
+    
+    return (
+      <span 
+        className={styles.cardTypeBadge}
+        style={{ backgroundColor: cardType.color }}
+      >
+        {cardType.name}
+      </span>
+    );
+  };
+
   if (loading) return <div className={styles.loading}>در حال بارگذاری...</div>;
 
   return (
     <div className={styles.container}>
       <Toaster position="top-center" />
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* --- ۱. اطلاعات حساب کاربری --- */}
+        
+        {/* ============================================ */}
+        {/* ۱. اطلاعات حساب کاربری */}
+        {/* ============================================ */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("account", "اطلاعات حساب کاربری")}</h3>
             {editingSection !== "account" && (
               <div className={styles.headerActions}>
-                <Image
-                  width={14}
-                  height={14}
-                  alt="icon"
-                  src="/SVG/profile/edit-2.svg"
-                />
+                <Image width={14} height={14} alt="icon" src="/SVG/profile/edit-2.svg" />
                 <button
                   type="button"
                   className={styles.editBtn}
@@ -287,6 +510,7 @@ export default function Profile() {
               </div>
             )}
           </div>
+
           <div className={styles.content}>
             {editingSection === "account" ? (
               <div className={styles.accountEditForm}>
@@ -309,18 +533,12 @@ export default function Profile() {
                       className={errors.email ? styles.errorInput : ""}
                     />
                     {errors.email && (
-                      <span className={styles.errorText}>
-                        {errors.email.message}
-                      </span>
+                      <span className={styles.errorText}>{errors.email.message}</span>
                     )}
                   </div>
                 </div>
                 <div className={styles.accountActions}>
-                  <button 
-                    type="submit" 
-                    className={styles.saveBtnOne}
-                    disabled={saving}
-                  >
+                  <button type="submit" className={styles.saveBtnOne} disabled={saving}>
                     {saving ? "در حال ذخیره..." : "تایید"}
                   </button>
                   <button
@@ -354,18 +572,15 @@ export default function Profile() {
 
         <div className={styles.divider}></div>
 
-        {/* --- ۲. اطلاعات شخصی --- */}
+        {/* ============================================ */}
+        {/* ۲. اطلاعات شخصی */}
+        {/* ============================================ */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("personal", "اطلاعات شخصی")}</h3>
             {editingSection !== "personal" && (
               <div className={styles.headerActions}>
-                <Image
-                  width={14}
-                  height={14}
-                  alt="icon"
-                  src="/SVG/profile/edit-2.svg"
-                />
+                <Image width={14} height={14} alt="icon" src="/SVG/profile/edit-2.svg" />
                 <button
                   type="button"
                   className={styles.editBtn}
@@ -376,6 +591,7 @@ export default function Profile() {
               </div>
             )}
           </div>
+
           <div className={styles.content}>
             {editingSection === "personal" ? (
               <div className={styles.formGroup}>
@@ -388,9 +604,7 @@ export default function Profile() {
                       className={errors.fullName ? styles.errorInput : ""}
                     />
                     {errors.fullName && (
-                      <span className={styles.errorText}>
-                        {errors.fullName.message}
-                      </span>
+                      <span className={styles.errorText}>{errors.fullName.message}</span>
                     )}
                   </div>
                   <div>
@@ -409,9 +623,7 @@ export default function Profile() {
                       onChange={(e) => handlePersianInput(e, "nationalId")}
                     />
                     {errors.nationalId && (
-                      <span className={styles.errorText}>
-                        {errors.nationalId.message}
-                      </span>
+                      <span className={styles.errorText}>{errors.nationalId.message}</span>
                     )}
                   </div>
                 </div>
@@ -436,18 +648,12 @@ export default function Profile() {
                       onChange={(e) => handlePersianInput(e, "birthDate")}
                     />
                     {errors.birthDate && (
-                      <span className={styles.errorText}>
-                        {errors.birthDate.message}
-                      </span>
+                      <span className={styles.errorText}>{errors.birthDate.message}</span>
                     )}
                   </div>
                 </div>
                 <div className={styles.saveBtn}>
-                  <button 
-                    type="submit" 
-                    className={styles.saveBtnOne}
-                    disabled={saving}
-                  >
+                  <button type="submit" className={styles.saveBtnOne} disabled={saving}>
                     {saving ? "در حال ذخیره..." : "تایید"}
                   </button>
                   <button
@@ -464,9 +670,7 @@ export default function Profile() {
               <div className={styles.infoGrid}>
                 <div className={styles.infoRow}>
                   <span className={styles.label}>نام و نام خانوادگی:</span>
-                  <span className={styles.value}>
-                    {personalData.fullName || "-"}
-                  </span>
+                  <span className={styles.value}>{personalData.fullName || "-"}</span>
                 </div>
                 <div className={styles.infoRow}>
                   <span className={styles.label}>کد ملی:</span>
@@ -499,18 +703,15 @@ export default function Profile() {
 
         <div className={styles.divider}></div>
 
-        {/* --- ۳. اطلاعات حساب بانکی --- */}
+        {/* ============================================ */}
+        {/* ۳. اطلاعات حساب بانکی - نسخه بهبود یافته */}
+        {/* ============================================ */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("bank", "اطلاعات حساب بانکی")}</h3>
             {editingSection !== "bank" && (
               <div className={styles.headerActions}>
-                <Image
-                  width={14}
-                  height={14}
-                  alt="icon"
-                  src="/SVG/profile/edit-2.svg"
-                />
+                <Image width={14} height={14} alt="icon" src="/SVG/profile/edit-2.svg" />
                 <button
                   type="button"
                   className={styles.editBtn}
@@ -521,63 +722,138 @@ export default function Profile() {
               </div>
             )}
           </div>
+
           <div className={styles.content}>
             {editingSection === "bank" ? (
               <div className={styles.formGroup}>
-                <div className={styles.twoCols}>
-                  <div>
+                
+                {/* شماره کارت با اعتبارسنجی پیشرفته */}
+                <div className={styles.bankFieldWrapper}>
+                  <div className={styles.bankFieldHeader}>
+                    <label>شماره کارت</label>
+                    <CardTypeBadge cardType={cardValidation.cardType} />
+                  </div>
+                  <div className={styles.bankInputWrapper}>
                     <input
                       type="text"
-                      {...register("cardNumber", { required: "الزامی است" })}
-                      placeholder="شماره کارت"
+                      {...register("cardNumber", {
+                        required: "الزامی است",
+                        validate: (value) => {
+                          const result = validateCardNumber(value);
+                          return result.valid || result.message;
+                        },
+                      })}
+                      placeholder="XXXX XXXX XXXX XXXX"
                       dir="ltr"
-                      className={errors.cardNumber ? styles.errorInput : ""}
-                      onChange={(e) => handlePersianInput(e, "cardNumber")}
+                      maxLength={19}
+                      className={`${styles.bankInput} ${
+                        cardValidation.valid === false ? styles.inputError : ""
+                      } ${cardValidation.valid === true ? styles.inputValid : ""}`}
+                      onChange={handleCardInput}
                     />
-                    {errors.cardNumber && (
-                      <span className={styles.errorText}>
-                        {errors.cardNumber.message}
-                      </span>
+                    <ValidationBadge 
+                      valid={cardValidation.valid} 
+                      message={cardValidation.message} 
+                    />
+                  </div>
+                  {errors.cardNumber && (
+                    <span className={styles.errorText}>{errors.cardNumber.message}</span>
+                  )}
+                </div>
+
+                {/* شماره شبا با اعتبارسنجی MOD-97 */}
+                <div className={styles.bankFieldWrapper}>
+                  <div className={styles.bankFieldHeader}>
+                    <label>شماره شبا</label>
+                    {shebaValidation.valid === true && (
+                      <span className={styles.validBadge}>✓ معتبر</span>
                     )}
                   </div>
-                  <div>
-                    <input
-                      placeholder="شماره حساب"
-                      type="text"
-                      {...register("accountNumber", { required: "الزامی است" })}
-                      dir="ltr"
-                      className={errors.accountNumber ? styles.errorInput : ""}
-                      onChange={(e) => handlePersianInput(e, "accountNumber")}
-                    />
-                    {errors.accountNumber && (
-                      <span className={styles.errorText}>
-                        {errors.accountNumber.message}
-                      </span>
-                    )}
-                  </div>
-                  <div>
+                  <div className={styles.bankInputWrapper}>
                     <input
                       type="text"
-                      {...register("sheba", { required: "الزامی است" })}
-                      placeholder="شماره شبا"
+                      {...register("sheba", {
+                        required: "الزامی است",
+                        validate: (value) => {
+                          const result = validateSheba(value);
+                          return result.valid || result.message;
+                        },
+                      })}
+                      placeholder="IR XX XXXX XXXX XXXX XXXX XXXX XX"
                       dir="ltr"
-                      className={errors.sheba ? styles.errorInput : ""}
+                      maxLength={26}
+                      className={`${styles.bankInput} ${
+                        shebaValidation.valid === false ? styles.inputError : ""
+                      } ${shebaValidation.valid === true ? styles.inputValid : ""}`}
                       onChange={(e) => handlePersianInput(e, "sheba")}
                     />
-                    {errors.sheba && (
-                      <span className={styles.errorText}>
-                        {errors.sheba.message}
-                      </span>
+                    <ValidationBadge 
+                      valid={shebaValidation.valid} 
+                      message={shebaValidation.message} 
+                    />
+                  </div>
+                  {errors.sheba && (
+                    <span className={styles.errorText}>{errors.sheba.message}</span>
+                  )}
+                </div>
+
+                {/* شماره حساب */}
+                <div className={styles.bankFieldWrapper}>
+                  <div className={styles.bankFieldHeader}>
+                    <label>شماره حساب</label>
+                    {accountValidation.valid === true && (
+                      <span className={styles.validBadge}>✓ معتبر</span>
                     )}
                   </div>
+                  <div className={styles.bankInputWrapper}>
+                    <input
+                      placeholder="شماره حساب بانکی"
+                      type="text"
+                      {...register("accountNumber", {
+                        required: "الزامی است",
+                        validate: (value) => {
+                          const result = validateAccountNumber(value);
+                          return result.valid || result.message;
+                        },
+                      })}
+                      dir="ltr"
+                      maxLength={13}
+                      className={`${styles.bankInput} ${
+                        accountValidation.valid === false ? styles.inputError : ""
+                      } ${accountValidation.valid === true ? styles.inputValid : ""}`}
+                      onChange={(e) => handlePersianInput(e, "accountNumber")}
+                    />
+                    <ValidationBadge 
+                      valid={accountValidation.valid} 
+                      message={accountValidation.message} 
+                    />
+                  </div>
+                  {errors.accountNumber && (
+                    <span className={styles.errorText}>{errors.accountNumber.message}</span>
+                  )}
                 </div>
+
+                {/* راهنمای اعتبارسنجی */}
+                <div className={styles.validationGuide}>
+                  <p>💡 نکات مهم:</p>
+                  <ul>
+                    <li>شماره کارت با الگوریتم Luhn بررسی می‌شود</li>
+                    <li>شماره شبا با الگوریتم MOD-97 اعتبارسنجی می‌شود</li>
+                    <li>شماره حساب باید ۱۰ تا ۱۳ رقم باشد</li>
+                  </ul>
+                </div>
+
                 <div className={styles.saveBtn}>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className={styles.saveBtnOne}
-                    disabled={saving}
+                    disabled={saving || 
+                      cardValidation.valid === false || 
+                      shebaValidation.valid === false ||
+                      accountValidation.valid === false
+                    }
                   >
-                    {saving ? "در حال ذخیره..." : "تایید"}
+                    {saving ? "در حال ذخیره..." : "تایید و ذخیره"}
                   </button>
                   <button
                     type="button"
@@ -594,7 +870,7 @@ export default function Profile() {
                 <div className={styles.infoRow}>
                   <span className={styles.label}>شماره شبا:</span>
                   <span className={styles.value} dir="ltr">
-                    {toPersianNumber(bankData.sheba) || "-"}
+                    {bankData.sheba ? formatSheba(bankData.sheba) : "-"}
                   </span>
                 </div>
                 <div className={styles.infoRow}>
