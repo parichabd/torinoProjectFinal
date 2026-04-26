@@ -64,7 +64,7 @@
   font-size: 17px;
   font-weight: 900;
   color:#282828;
-  direction: ltr;
+  direction: rtl;
   text-align: right;
 }
 
@@ -127,7 +127,7 @@
   font-size: 0.8rem;
   margin-top: 4px;
 }
-
+ltr
 .saveBtn {
   background-color: #28a745;
   color: white;
@@ -139,9 +139,7 @@
   margin-top: 10px;
 }
 
-.saveBtn:hover {
-  background-color: #218838;
-}
+
 
 .loading {
   text-align: center;
@@ -160,9 +158,7 @@
   margin-right: 8px;
 }
 
-.addBtn:hover {
-  background-color: #45a049;
-}
+
 
 .addButt button {
   color: #009ECA !important;
@@ -211,4 +207,36 @@
     width: 110px;
     font-size: 15px;
     color: #000000b9;
+}
+
+.saveBtn{
+  display: flex;
+  justify-content: space-between;
+}
+
+.saveBtn button {
+  width: 136px;
+  gap: 13px;
+  height: 42px;
+  background-color: #28a745;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+}
+
+.twoCols input{
+  font-family: inherit;
+  padding: 3px 6px;
+}
+.saveBtn button:nth-child(2){
+  background-color: #fff;
+  color: #28A745;
+  border: 2px solid #28A745;
+}
+
+.twoCols select {
+  font-family: inherit;
+  padding: 3px 6px;
 }

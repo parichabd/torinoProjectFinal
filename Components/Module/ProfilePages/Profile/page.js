@@ -110,7 +110,7 @@ export default function Profile() {
                 </div>
                 <div className={styles.inputEmail}>
                   <input
-                  placeholder="آدرس ایمیل"
+                    placeholder="آدرس ایمیل"
                     type="email"
                     {...register("email", { required: "الزامی است" })}
                     className={errors.email ? styles.errorInput : ""}
@@ -186,8 +186,8 @@ export default function Profile() {
               <div className={styles.formGroup}>
                 <div className={styles.twoCols}>
                   <div>
-                    <label>نام و نام خانوادگی</label>
                     <input
+                      placeholder="نام و نام خانوادگی"
                       type="text"
                       {...register("fullName", { required: "الزامی است" })}
                       className={errors.fullName ? styles.errorInput : ""}
@@ -199,22 +199,9 @@ export default function Profile() {
                     )}
                   </div>
                   <div>
-                    <label>جنسیت</label>
-                    <select
-                      {...register("gender", { required: "الزامی است" })}
-                      className={errors.gender ? styles.errorInput : ""}
-                    >
-                      <option value="male">مرد</option>
-                      <option value="female">زن</option>
-                      <option value="other">سایر</option>
-                    </select>
-                  </div>
-                </div>
-                <div className={styles.twoCols}>
-                  <div>
-                    <label>کد ملی</label>
                     <input
                       type="text"
+                      placeholder="کد ملی"
                       {...register("nationalId", {
                         required: "الزامی است",
                         pattern: {
@@ -231,12 +218,23 @@ export default function Profile() {
                       </span>
                     )}
                   </div>
+                </div>
+                <div className={styles.twoCols}>
                   <div>
-                    <label>تاریخ تولد</label>
+                    <select
+                      {...register("gender", { required: "الزامی است" })}
+                      className={errors.gender ? styles.errorInput : ""}
+                    >
+                      <option value="male">مرد</option>
+                      <option value="female">زن</option>
+                      <option value="other">سایر</option>
+                    </select>
+                  </div>
+                  <div>
                     <input
                       type="text"
                       {...register("birthDate", { required: "الزامی است" })}
-                      placeholder="1370/01/01"
+                      placeholder="تاریخ تولد"
                       className={errors.birthDate ? styles.errorInput : ""}
                     />
                     {errors.birthDate && (
@@ -246,9 +244,14 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
-                <button type="submit" className={styles.saveBtn}>
-                  ذخیره
-                </button>
+                <div className={styles.saveBtn}>
+                  <button type="submit" className={styles.saveBtnOne}>
+                    تایید
+                  </button>
+                  <button type="submit" className={styles.saveBtnTwo}>
+                    انصراف
+                  </button>
+                </div>
               </div>
             ) : (
               <div className={styles.infoGrid}>
@@ -298,6 +301,7 @@ export default function Profile() {
                 alt="icon"
                 src="/SVG/profile/edit-2.svg"
               />
+
               <button
                 type="button"
                 className={styles.editBtn}
@@ -356,9 +360,14 @@ export default function Profile() {
                     </span>
                   )}
                 </div>
-                <button type="submit" className={styles.saveBtn}>
-                  ذخیره
-                </button>
+                <div className={styles.saveBtn}>
+                  <button type="submit" className={styles.saveBtnOne}>
+                    تایید
+                  </button>
+                  <button type="submit" className={styles.saveBtnTwo}>
+                    انصراف
+                  </button>
+                </div>
               </div>
             ) : (
               <div className={styles.infoGrid}>
