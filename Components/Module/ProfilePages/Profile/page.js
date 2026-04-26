@@ -178,7 +178,7 @@ export default function Profile() {
           <div className={styles.content}>
             {editingSection === "account" ? (
               <div className={styles.formGroup}>
-                {/* ✅ دکمه لغو بالای فرم */}
+                {/* دکمه لغو بالای فرم */}
                 <div className={styles.cancelTop}>
                   <button
                     type="button"
@@ -271,21 +271,24 @@ export default function Profile() {
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("personal", "اطلاعات شخصی")}</h3>
-            <div>
-              <Image
-                width={14}
-                height={14}
-                alt="icon"
-                src="/SVG/profile/edit-2.svg"
-              />
-              <button
-                type="button"
-                className={styles.editBtn}
-                onClick={() => handleEditClick("personal")}
-              >
-                {editingSection === "personal" ? "لغو" : "ویرایش اطلاعات"}
-              </button>
-            </div>
+            {/* ✅ مخفی کردن دکمه در حالت ویرایش */}
+            {editingSection !== "personal" && (
+              <div>
+                <Image
+                  width={14}
+                  height={14}
+                  alt="icon"
+                  src="/SVG/profile/edit-2.svg"
+                />
+                <button
+                  type="button"
+                  className={styles.editBtn}
+                  onClick={() => handleEditClick("personal")}
+                >
+                  ویرایش اطلاعات
+                </button>
+              </div>
+            )}
           </div>
 
           <div className={styles.content}>
@@ -353,6 +356,7 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
+                {/* دکمه انصراف زیر فرم */}
                 <div className={styles.saveBtn}>
                   <button type="submit" className={styles.saveBtnOne}>
                     تایید
@@ -407,21 +411,24 @@ export default function Profile() {
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("bank", "اطلاعات حساب بانکی")}</h3>
-            <div>
-              <Image
-                width={14}
-                height={14}
-                alt="icon"
-                src="/SVG/profile/edit-2.svg"
-              />
-              <button
-                type="button"
-                className={styles.editBtn}
-                onClick={() => handleEditClick("bank")}
-              >
-                {editingSection === "bank" ? "لغو" : "ویرایش اطلاعات"}
-              </button>
-            </div>
+            {/* ✅ مخفی کردن دکمه در حالت ویرایش */}
+            {editingSection !== "bank" && (
+              <div>
+                <Image
+                  width={14}
+                  height={14}
+                  alt="icon"
+                  src="/SVG/profile/edit-2.svg"
+                />
+                <button
+                  type="button"
+                  className={styles.editBtn}
+                  onClick={() => handleEditClick("bank")}
+                >
+                  ویرایش اطلاعات
+                </button>
+              </div>
+            )}
           </div>
 
           <div className={styles.content}>
@@ -474,6 +481,7 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
+                {/* دکمه انصراف زیر فرم */}
                 <div className={styles.saveBtn}>
                   <button type="submit" className={styles.saveBtnOne}>
                     تایید
