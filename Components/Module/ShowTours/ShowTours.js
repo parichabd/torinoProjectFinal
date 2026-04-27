@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { TbMapSearch } from "react-icons/tb";
@@ -14,37 +13,67 @@ const BACKEND_BASE_URL =
 
 export default function ShowTours({ tours, isLoading }) {
   const [showAll, setShowAll] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(4); // پیش‌فرض موبایل/تبلت
+  const [visibleCount, setVisibleCount] = useState(4);
+  const [showSkeleton, setShowSkeleton] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-  // کنترل تعداد پیش‌فرض تورها بر اساس عرض صفحه
   useEffect(() => {
     function updateVisibleCount() {
       const width = window.innerWidth;
       if (width >= 1024 && width <= 2860) {
-        setVisibleCount(6); // ویندوز
+        setVisibleCount(6);
       } else {
-        setVisibleCount(4); // موبایل و تبلت
+        setVisibleCount(4);
       }
     }
-
-    updateVisibleCount(); // بار اول
+    updateVisibleCount();
     window.addEventListener("resize", updateVisibleCount);
-
     return () => window.removeEventListener("resize", updateVisibleCount);
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className={styles.tourInfo_Mbobile}>
-        <div className={styles.headerTours}>
-          <h1>همه تور ها</h1>
-        </div>
-        <div className={styles.skeletonWrapper}>
-          <Skeleton height={200} count={3} style={{ marginBottom: 20 }} />
-        </div>
+  // لودینگ اولیه - 2 ثانیه skeleton
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSkeleton(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // اگه isLoading تموم شد و خطا داریم
+  useEffect(() => {
+    if (!isLoading && hasError) {
+      setShowSkeleton(false);
+    }
+  }, [isLoading, hasError]);
+
+ if (showSkeleton) {
+  return (
+    <div className={styles.tourInfo_Mbobile}>
+      <div className={styles.headerTours}>
+        <h1>همه تور ها</h1>
       </div>
-    );
-  }
+      <div className={styles.skeletonGrid}>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className={styles.skeletonCard}>
+            <Skeleton 
+              height={180} 
+              style={{ display: 'block' }}
+            />
+            <div className={styles.skeletonContent}>
+              <Skeleton width="60%" height={20} />
+              <Skeleton width="40%" height={16} />
+              <div className={styles.skeletonRow}>
+                <Skeleton width="30%" height={14} />
+                <Skeleton width="25%" height={14} />
+              </div>
+              <Skeleton width="50%" height={24} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
   if (!tours || tours.length === 0) {
     return (
@@ -53,13 +82,12 @@ export default function ShowTours({ tours, isLoading }) {
           <h1>همه تور ها</h1>
         </div>
         <p style={{ textAlign: "center", marginTop: 20 }}>
-          هیچ توری موجود نیست
+          {hasError ? "مشکل در اتصال به سرور" : "هیچ توری موجود نیست"}
         </p>
       </div>
     );
   }
 
-  // slice با توجه به تعداد پیش‌فرض
   const visibleTours = showAll ? tours : tours.slice(0, visibleCount);
 
   return (
@@ -67,7 +95,6 @@ export default function ShowTours({ tours, isLoading }) {
       <div className={styles.headerTours}>
         <h1>همه تور ها</h1>
       </div>
-
       <ul className={styles.results}>
         {visibleTours.map((tour, index) => {
           const startDate = new Date(tour.startDate);
@@ -77,7 +104,6 @@ export default function ShowTours({ tours, isLoading }) {
           });
           const days =
             Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-
           const vehicleMap = {
             bus: "اتوبوس",
             train: "قطار",
@@ -88,7 +114,6 @@ export default function ShowTours({ tours, isLoading }) {
           const vehicleFa =
             vehicleMap[tour.fleetVehicle?.toLowerCase()] || "پرواز";
           const priceFa = tour.price ? tour.price.toLocaleString("fa-IR") : "—";
-
           let imageSrc = "/default-tour.jpg";
           if (tour?.image) {
             imageSrc = tour.image.startsWith("http")
@@ -113,9 +138,7 @@ export default function ShowTours({ tours, isLoading }) {
                   <span className={styles.overlayText}>جزئیات تور</span>
                 </div>
               </Link>
-
               <h2 className={styles.tourTitle}>{tour.title}</h2>
-
               <p className={styles.tourMeta}>
                 <span className={styles.metaItem}>{monthName} ماه</span>
                 <span className={styles.metaSeparator}>·</span>
@@ -123,9 +146,7 @@ export default function ShowTours({ tours, isLoading }) {
                 <span className={styles.metaSeparator}>·</span>
                 <span className={styles.metaItem}>{vehicleFa}</span>
               </p>
-
               <div className={styles.divider}></div>
-
               <div className={styles.bottomRow}>
                 <Link href={`/bookTour/${tour.id}`}>
                   <button className={styles.bookBtn}>رزرو</button>
@@ -138,8 +159,6 @@ export default function ShowTours({ tours, isLoading }) {
           );
         })}
       </ul>
-
-      {/* دکمه جزئیات بیشتر فقط زمانی که تورهای بیشتر از visibleCount داریم */}
       {tours.length > visibleCount && !showAll && (
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <button

@@ -8,7 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import styles from "./BookDate.module.css";
 
-function BookDate({ setFoundTours, setIsLoading }) {
+function BookDate({ setFoundTours, setIsLoading, setHasError }) {
   const [tours, setTours] = useState([]);
   const [origins, setOrigins] = useState([]);
   const [destinations, setDestinations] = useState([]);
@@ -43,7 +43,7 @@ function BookDate({ setFoundTours, setIsLoading }) {
     Italy: "ایتالیا",
     Offroad: "آفرود",
     "offRoad Center": "آفرود",
-    "sulaymaniyahTour": "سلیمانیه",
+    sulaymaniyahTour: "سلیمانیه",
   };
 
   useEffect(() => {
@@ -58,23 +58,34 @@ function BookDate({ setFoundTours, setIsLoading }) {
           },
           destination: {
             ...tour.destination,
-            name: translateToFa[tour.destination.name.trim()] || tour.destination.name,
+            name:
+              translateToFa[tour.destination.name.trim()] ||
+              tour.destination.name,
           },
         }));
         setTours(normalizedTours);
-        const uniqueOrigins = [...new Set(normalizedTours.map((t) => t.origin.name))].sort();
-        const uniqueDestinations = [...new Set(normalizedTours.map((t) => t.destination.name))].sort();
+        const uniqueOrigins = [
+          ...new Set(normalizedTours.map((t) => t.origin.name)),
+        ].sort();
+        const uniqueDestinations = [
+          ...new Set(normalizedTours.map((t) => t.destination.name)),
+        ].sort();
         setOrigins(uniqueOrigins);
         setDestinations(uniqueDestinations);
         setFoundTours(normalizedTours);
       })
-      .catch(() => showToastMessage("مشکل در اتصال به سرور!"));
+      .catch(() => {
+        showToastMessage("مشکل در اتصال به سرور!");
+        setHasError(true);
+      });
   }, [setFoundTours]);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (startRef.current && !startRef.current.contains(event.target)) setStartOpen(false);
-      if (endRef.current && !endRef.current.contains(event.target)) setEndOpen(false);
+      if (startRef.current && !startRef.current.contains(event.target))
+        setStartOpen(false);
+      if (endRef.current && !endRef.current.contains(event.target))
+        setEndOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -124,8 +135,16 @@ function BookDate({ setFoundTours, setIsLoading }) {
 
         let dateMatch = true;
         if (userStartDate && tourStartDate) {
-          const userStartNormalized = new Date(userStartDate.getFullYear(), userStartDate.getMonth(), userStartDate.getDate());
-          const tourStartNormalized = new Date(tourStartDate.getFullYear(), tourStartDate.getMonth(), tourStartDate.getDate());
+          const userStartNormalized = new Date(
+            userStartDate.getFullYear(),
+            userStartDate.getMonth(),
+            userStartDate.getDate(),
+          );
+          const tourStartNormalized = new Date(
+            tourStartDate.getFullYear(),
+            tourStartDate.getMonth(),
+            tourStartDate.getDate(),
+          );
           dateMatch = userStartNormalized >= tourStartNormalized;
         }
 
@@ -260,10 +279,10 @@ function BookDate({ setFoundTours, setIsLoading }) {
         <div className={styles.skeletonGrid}>
           {[1, 2, 3].map((i) => (
             <div key={i} className={styles.skeletonCard}>
-              <Skeleton 
-                height={180} 
+              <Skeleton
+                height={180}
                 borderRadius="12px 12px 0 0"
-                style={{ display: 'block' }}
+                style={{ display: "block" }}
               />
               <div className={styles.skeletonContent}>
                 <Skeleton width="60%" height={20} borderRadius="8px" />

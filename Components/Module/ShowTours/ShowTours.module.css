@@ -177,3 +177,30 @@ gap: 4px;
   transform: scale(1.05);
 }
 
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+  padding: 0 20px;
+}
+
+.skeletonCard {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.skeletonContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeletonRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
