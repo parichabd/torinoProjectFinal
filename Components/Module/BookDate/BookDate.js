@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
@@ -11,16 +10,13 @@ function BookDate({ setFoundTours, setIsLoading }) {
   const [tours, setTours] = useState([]);
   const [origins, setOrigins] = useState([]);
   const [destinations, setDestinations] = useState([]);
-
   const [startOpen, setStartOpen] = useState(false);
   const [endOpen, setEndOpen] = useState(false);
   const [startLoc, setStartLoc] = useState("مبدا");
   const [endLoc, setEndLoc] = useState("مقصد");
   const [selectedDate, setSelectedDate] = useState([null, null]);
-
   const [toast, setToast] = useState("");
   const [showToast, setShowToast] = useState(false);
-
   const startRef = useRef(null);
   const endRef = useRef(null);
   const dateRef = useRef(null);
@@ -62,15 +58,11 @@ function BookDate({ setFoundTours, setIsLoading }) {
             name: translateToFa[tour.destination.name.trim()] || tour.destination.name,
           },
         }));
-
         setTours(normalizedTours);
-
         const uniqueOrigins = [...new Set(normalizedTours.map((t) => t.origin.name))].sort();
         const uniqueDestinations = [...new Set(normalizedTours.map((t) => t.destination.name))].sort();
-
         setOrigins(uniqueOrigins);
         setDestinations(uniqueDestinations);
-
         setFoundTours(normalizedTours);
       })
       .catch(() => showToastMessage("مشکل در اتصال به سرور!"));
@@ -84,6 +76,21 @@ function BookDate({ setFoundTours, setIsLoading }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // ✅ تابع تبدیل تاریخ شمسی به میلادی
+  const shamsiToGregorian = (shamsiDate) => {
+    if (!shamsiDate) return null;
+    const date = new Date(shamsiDate.toDate?.() || shamsiDate);
+    if (isNaN(date.getTime())) return null;
+    return date;
+  };
+
+  // ✅ تابع تبدیل string تاریخ به Date
+  const parseTourDate = (dateStr) => {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? null : date;
+  };
 
   const handleSearch = () => {
     const [startSelected, endSelected] = selectedDate;
@@ -110,12 +117,16 @@ function BookDate({ setFoundTours, setIsLoading }) {
         const originMatch = t.origin.name === originFa;
         const destMatch = t.destination.name === destFa;
 
-        // شرط تاریخ شل شده (فقط شروع کاربر بعد یا همزمان با شروع تور)
+        // ✅ تبدیل صحیح تاریخ‌ها
+        const userStartDate = shamsiToGregorian(startSelected);
+        const tourStartDate = parseTourDate(t.startDate);
+
         let dateMatch = true;
-        if (startSelected) {
-          const startCheck = new Date(startSelected.toDate());
-          const tourStart = new Date(t.startDate);
-          dateMatch = startCheck >= tourStart;
+        if (userStartDate && tourStartDate) {
+          // فقط تورهایی که تاریخ شروعشان بعد یا همزمان با تاریخ انتخابی کاربر است
+          const userStartNormalized = new Date(userStartDate.getFullYear(), userStartDate.getMonth(), userStartDate.getDate());
+          const tourStartNormalized = new Date(tourStartDate.getFullYear(), tourStartDate.getMonth(), tourStartDate.getDate());
+          dateMatch = userStartNormalized >= tourStartNormalized;
         }
 
         return originMatch && destMatch && dateMatch;
@@ -136,7 +147,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
         <span style={{ color: "#28A745" }}>تورینو </span>
         برگزار کننده بهترین تور های داخلی و خارجی
       </h1>
-
       <div className={styles.searchBar_desktop}>
         <div className={styles.booktour}>
           {/* مبدا */}
@@ -180,7 +190,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
             )}
           </div>
           <div className={styles.divider} />
-
           {/* مقصد */}
           <div className={styles.dropdown} ref={endRef}>
             <button
@@ -222,7 +231,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
           </div>
           <div className={styles.divider} />
         </div>
-
         {/* تاریخ */}
         <div className={styles.dateBox} ref={dateRef}>
           <DatePicker
@@ -245,12 +253,10 @@ function BookDate({ setFoundTours, setIsLoading }) {
             }`}
           />
         </div>
-
         <button className={styles.searchButton} onClick={handleSearch}>
           جست‌وجو
         </button>
       </div>
-
       <div className={`${styles.toast} ${showToast ? styles.show : ""}`}>
         {toast}
       </div>

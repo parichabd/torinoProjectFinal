@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Styles from "./tourDetails.module.css";
 import Link from "next/link";
-import { notFound } from 'next/navigation'; 
+import { notFound } from 'next/navigation';
 import { toPersianNumber } from "../../../utils/number";
 import { formatShamsiDate } from "../../../utils/dateUtils";
 import { originTranslations, vehicleMap } from "../../../utils/translations";
@@ -9,7 +9,6 @@ import { originTranslations, vehicleMap } from "../../../utils/translations";
 const BACKEND_BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
 
-// تابع کمکی برای محاسبه دقیق روزها
 const calculateDuration = (startStr, endStr) => {
   if (!startStr || !endStr) return { days: 0, nights: 0 };
   const startDate = new Date(startStr);
@@ -23,34 +22,27 @@ const calculateDuration = (startStr, endStr) => {
 };
 
 export default async function TourPage({ params }) {
-  // notFound(); 
-  const { slug: id } = await params;
-  
-  // 1. تعریف متغیر tour در اینجا تا در تمام تابع قابل دسترسی باشد
-  let tour = null;
+  // ✅ اصلاح: await params برای Next.js 15
+  const resolvedParams = await params;
+  const id = resolvedParams.slug || resolvedParams.id;
 
+  let tour = null;
   try {
     const res = await fetch(`${BACKEND_BASE_URL}/tour/${id}`, {
       cache: "no-store",
       headers: { Accept: "application/json" },
     });
-
     if (!res.ok) {
       if (res.status === 404) {
-        notFound(); 
+        notFound();
       }
       throw new Error(`خطا در دریافت اطلاعات: ${res.status}`);
     }
-    
-    // 2. مقداردهی به tour بدون const مجدد
     tour = await res.json();
-    
   } catch (err) {
-    // اگر خطایی رخ دهد، Next.js فایل error.js را لود می‌کند
-    throw err; 
+    throw err;
   }
 
-  // حالا tour تعریف شده است و می‌توانیم از آن استفاده کنیم
   const { days: durationInDays, nights: durationInNights } = calculateDuration(
     tour.startDate,
     tour.endDate,
