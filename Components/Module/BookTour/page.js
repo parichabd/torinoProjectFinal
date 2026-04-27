@@ -11,11 +11,10 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import toast, { Toaster } from "react-hot-toast";
 import { getCookie } from "../../../utils/cookie";
 import PaymentLoadingModal from "../../../Components/Spinner/PaymentLoadingModal";
-
 const BACKEND_BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
-
 // ✅ کلمات غیرمجاز فارسی
+
 const INVALID_PERSIAN_WORDS = [
   "نام",
   "نام خانوادگی",
@@ -39,7 +38,6 @@ const INVALID_PERSIAN_WORDS = [
   "نامشخص",
   "نامحدود",
 ];
-
 // ✅ کلمات غیرمجاز انگلیسی
 const INVALID_ENGLISH_WORDS = [
   "test",
@@ -56,26 +54,22 @@ const INVALID_ENGLISH_WORDS = [
   "demo",
   "temp",
 ];
-
 // ✅ تبدیل اعداد فارسی به انگلیسی
 const persianToEnglish = (str) => {
   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
   const englishDigits = "0123456789";
   return str.replace(/[۰-۹]/g, (d) => englishDigits[persianDigits.indexOf(d)]);
 };
-
 // ✅ کامپوننت پیام خطا
 const ErrorMessage = ({ message }) => {
   if (!message) return null;
   return <small className={styles.errorMessage}>⚠️ {message}</small>;
 };
-
 export default function BookingForm({ initialTourId }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const source = searchParams.get("source");
-
   // بررسی موفقیت پرداخت از URL
   useEffect(() => {
     const paymentStatus = searchParams.get("payment");
@@ -86,7 +80,6 @@ export default function BookingForm({ initialTourId }) {
       router.replace("/bookTour");
     }
   }, [searchParams, router]);
-
   // استخراج tourId
   let tourId = initialTourId;
   if (!tourId && pathname) {
@@ -101,21 +94,18 @@ export default function BookingForm({ initialTourId }) {
   if (!tourId) {
     tourId = searchParams.get("id");
   }
-
   const [tourData, setTourData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [birthDateError, setBirthDateError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
-
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm({ mode: "onChange" });
-
   // ✅ اعتبارسنجی نام فارسی کامل
   const validatePersianName = (value) => {
     if (!value) return true;
@@ -149,7 +139,6 @@ export default function BookingForm({ initialTourId }) {
     if (specialChars.test(trimmedValue)) return "کاراکترهای خاص مجاز نیست";
     return true;
   };
-
   // ✅ اعتبارسنجی کد ملی ایران
   const validateNationalId = (value) => {
     if (!value) return true;
@@ -166,7 +155,6 @@ export default function BookingForm({ initialTourId }) {
     if (calculatedCheck !== checkDigit) return "کد ملی معتبر نیست";
     return true;
   };
-
   // ✅ هندلر تغییر تاریخ
   const handleBirthDateChange = (date, onChange) => {
     if (date) {
@@ -189,7 +177,6 @@ export default function BookingForm({ initialTourId }) {
       onChange("");
     }
   };
-
   // ✅ تبدیل تاریخ شمسی به میلادی
   const convertShamsiToGregorian = (shamsiDate) => {
     if (!shamsiDate) return null;
@@ -205,7 +192,6 @@ export default function BookingForm({ initialTourId }) {
     const gregorianDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     return gregorianDate;
   };
-
   // ✅ افزودن تور به سبد خرید
   const addToBasket = async (tourId, token) => {
     const response = await fetch(`${BACKEND_BASE_URL}/basket/${tourId}`, {
@@ -218,11 +204,9 @@ export default function BookingForm({ initialTourId }) {
     }
     return true;
   };
-
   // ✅ ارسال فرم و ریدایرکت به درگاه شبیه‌سازی
   const onSubmit = async (data) => {
     const refreshToken = getCookie("refreshToken");
-
     if (!refreshToken) {
       toast.error(
         " 📋 ابتدا برای احراز هویت وارد سایت شوید و سپس میتوانید خرید کنید",
@@ -231,7 +215,6 @@ export default function BookingForm({ initialTourId }) {
           duration: 5000,
         },
       );
-
       return;
     }
     if (birthDateError) {
@@ -242,7 +225,6 @@ export default function BookingForm({ initialTourId }) {
       toast.error("لطفاً تمام فیلدها را به درستی پر کنید");
       return;
     }
-
     try {
       setIsSubmitting(true);
       await addToBasket(tourId, refreshToken);
@@ -286,7 +268,6 @@ export default function BookingForm({ initialTourId }) {
       setIsSubmitting(false);
     }
   };
-
   useEffect(() => {
     if (!tourId) {
       setError("شناسه تور در آدرس URL پیدا نشد.");
@@ -313,7 +294,6 @@ export default function BookingForm({ initialTourId }) {
     };
     fetchTourDetails();
   }, [tourId]);
-
   const calculateDuration = (startStr, endStr) => {
     if (!startStr || !endStr) return { days: 0, nights: 0 };
     const startDate = new Date(startStr);
@@ -325,12 +305,10 @@ export default function BookingForm({ initialTourId }) {
     const nights = days > 0 ? days - 1 : 0;
     return { days, nights };
   };
-
   const toPersianNumberLocal = (num) => {
     if (num === undefined || num === null) return "—";
     return num.toLocaleString("fa-IR");
   };
-
   if (isLoading) {
     return (
       <div className={styles.mainContainer}>
@@ -340,7 +318,6 @@ export default function BookingForm({ initialTourId }) {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.mainContainer}>
@@ -350,7 +327,6 @@ export default function BookingForm({ initialTourId }) {
       </div>
     );
   }
-
   const { days: durationInDays, nights: durationInNights } = calculateDuration(
     tourData?.startDate,
     tourData?.endDate,
@@ -358,7 +334,6 @@ export default function BookingForm({ initialTourId }) {
   const formattedPrice = tourData?.price
     ? Number(tourData.price).toLocaleString("fa-IR")
     : "0";
-
   return (
     <div className={styles.mainContainer}>
       <Toaster />

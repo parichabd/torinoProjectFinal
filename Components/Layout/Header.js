@@ -11,6 +11,7 @@ import Link from "next/link";
 import AuthToast from "@/Components/Auth/AuthToast";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import { getCookie, removeCookie } from "@/utils/cookie";
 import styles from "./Layout.module.css";
 
 // ✅ کامپوننت Badge زنگوله
@@ -54,11 +55,12 @@ export default function Header() {
     setIsUserMenuOpen((prev) => !prev);
   };
 
-  // ✅ بررسی نوتیفیکیشن‌ها
+  // ✅ بررسی نوتیفیکیشن‌ها از کوکی
   useEffect(() => {
     const checkNotifications = () => {
-      const hasNew = localStorage.getItem("hasNewOrder");
-      const count = localStorage.getItem("newOrderCount");
+      const hasNew = getCookie("hasNewOrder");
+      const count = getCookie("newOrderCount");
+
       if (hasNew === "true") {
         setHasNotification(true);
         setNotificationCount(parseInt(count || "0", 10));
@@ -70,10 +72,10 @@ export default function Header() {
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ پاک کردن نوتیفیکیشن
+  // ✅ پاک کردن نوتیفیکیشن از کوکی
   const clearNotification = () => {
-    localStorage.removeItem("hasNewOrder");
-    localStorage.removeItem("newOrderCount");
+    removeCookie("hasNewOrder");
+    removeCookie("newOrderCount");
     setHasNotification(false);
     setNotificationCount(0);
   };
@@ -115,15 +117,26 @@ export default function Header() {
   const router = useRouter();
 
   const handleLogout = () => {
+    // ✅ پاک کردن localStorage
     localStorage.removeItem("mobile");
     localStorage.removeItem("userName");
-    localStorage.removeItem("hasNewOrder");
-    localStorage.removeItem("newOrderCount");
+
+    // ✅ پاک کردن کوکی‌های پرداخت
+    removeCookie("lastUsedCard");
+    removeCookie("fullCardNumber");
+    removeCookie("hasNewOrder");
+    removeCookie("newOrderCount");
+
+    // ✅ پاک کردن توکن‌ها
     Cookies.remove("accessToken", { path: "/" });
     Cookies.remove("refreshToken", { path: "/" });
+
+    // ✅ ریست وضعیت‌ها
     setMobile(null);
     setIsUserMenuOpen(false);
     setHasNotification(false);
+    setNotificationCount(0);
+
     router.replace("/");
   };
 
@@ -179,6 +192,7 @@ export default function Header() {
       </Link>
 
       <div className={styles.divider_profile}></div>
+
       <div className={`${styles.item} ${styles.exit}`} onClick={handleLogout}>
         <Image
           src="/SVG/profile/logout.svg"
@@ -236,7 +250,6 @@ export default function Header() {
                       width={19}
                       height={14}
                     />
-
                     {/* ✅ شماره تلفن با Badge عدد */}
                     <div className={styles.phoneWrapper}>
                       <span className={styles.user_mobile}>
@@ -244,10 +257,7 @@ export default function Header() {
                       </span>
                       {/* ✅ عدد ۱ بالای شماره تلفن */}
                       {hasNotification && <BellBadge />}
-
-
                     </div>
-
                     <Image
                       src="/SVG/arrow-down.svg"
                       alt="arrow"
@@ -289,17 +299,14 @@ export default function Header() {
                     width={22}
                     height={22}
                   />
-
                   {/* ✅ شماره تلفن با Badge عدد */}
                   <div className={styles.phoneWrapper}>
                     <span className={styles.user_mobile}>
                       {toPersianNumber(mobile)}
                     </span>
                     {/* ✅ عدد ۱ بالای شماره تلفن */}
-                      {hasNotification && <BellBadge />}
-
+                    {hasNotification && <BellBadge />}
                   </div>
-
                   <Image
                     src="/SVG/arrow-down.svg"
                     alt="arrow"

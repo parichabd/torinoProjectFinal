@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { setCookie } from "@/utils/cookie";
+import { setCookie } from "../utils/cookie";
 
 export const registerUser = ({ name, mobile }) =>
   api.post("/auth/register", { name, mobile }).then((res) => res.data);

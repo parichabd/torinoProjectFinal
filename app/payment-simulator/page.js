@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { setCookie } from "@/utils/cookie"; // ✅ ایمپورت اضافه شد
 import styles from "./paymentSimulator.module.css";
 
 export default function PaymentSimulator() {
@@ -12,19 +13,19 @@ export default function PaymentSimulator() {
   const [showResult, setShowResult] = useState(false);
   const [cardNumber, setCardNumber] = useState("");
 
-  // دریافت اطلاعات از URL
   const amount = searchParams.get("amount") || "0";
   const tourTitle = searchParams.get("tourTitle") || "تور";
-  const orderId = searchParams.get("orderId") || `ORD-${Date.now()}`;
+  const [orderId] = useState(() => {
+    const urlOrderId = searchParams.get("orderId");
+    return urlOrderId || `ORD-${Date.now()}`;
+  });
 
-  // فرمت شماره کارت (هر ۴ رقم یک فاصله)
   const formatCardNumber = (value) => {
     const cleaned = value.replace(/\s/g, "").replace(/\D/g, "");
     const chunks = cleaned.match(/.{1,4}/g) || [];
     return chunks.join(" ").substring(0, 19);
   };
 
-  // شبیه‌سازی پرداخت
   const handlePayment = async () => {
     if (!cardNumber || cardNumber.replace(/\s/g, "").length < 16) {
       alert("لطفاً شماره کارت معتبر وارد کنید");
@@ -33,31 +34,24 @@ export default function PaymentSimulator() {
 
     setIsProcessing(true);
 
-    // ✅ ذخیره ۴ رقم آخر کارت
+    // ✅ ذخیره در کوکی به جای localStorage
     const cleanCard = cardNumber.replace(/\s/g, "");
     const lastFourDigits = cleanCard.slice(-4);
-    localStorage.setItem("lastUsedCard", lastFourDigits);
+    setCookie("lastUsedCard", lastFourDigits, 30);
+    setCookie("fullCardNumber", cardNumber, 30);
+    setCookie("hasNewOrder", "true", 30);
+    setCookie("newOrderCount", "1", 30);
 
-    // ✅ ذخیره کل شماره کارت برای نمایش در پروفایل
-    localStorage.setItem("fullCardNumber", cardNumber); 
-
-    // ✅ ذخیره وضعیت نوتیفیکیشن
-    localStorage.setItem("hasNewOrder", "true");
-    localStorage.setItem("newOrderCount", "1");
-
-    // شبیه‌سازی تاخیر پرداخت
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setIsProcessing(false);
     setShowResult(true);
 
-    // برگشت به صفحه اصلی بعد از ۲ ثانیه
     setTimeout(() => {
       router.push("/?payment=success");
     }, 2000);
   };
 
-  // انصراف و برگشت
   const handleCancel = () => {
     router.push("/");
   };
@@ -114,7 +108,7 @@ export default function PaymentSimulator() {
           {/* فرم کارت بانکی */}
           <div className={styles.cardForm}>
             <h3>اطلاعات کارت بانکی</h3>
-            
+
             <div className={styles.inputGroup}>
               <label>شماره کارت</label>
               <input
@@ -123,7 +117,9 @@ export default function PaymentSimulator() {
                 className={styles.cardInput}
                 dir="ltr"
                 value={cardNumber}
-                onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                onChange={(e) =>
+                  setCardNumber(formatCardNumber(e.target.value))
+                }
                 maxLength={19}
               />
             </div>
