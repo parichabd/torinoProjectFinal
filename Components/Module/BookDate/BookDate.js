@@ -139,7 +139,7 @@ function BookDate({ setFoundTours, setIsLoading }) {
       if (results.length === 0) {
         showToastMessage("هیچ توری با این مشخصات یافت نشد");
       }
-    }, 5000);
+    }, 2000);
   };
 
   return (
