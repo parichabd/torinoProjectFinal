@@ -51,7 +51,7 @@
 
 .editBtn {
   background: none;
-  border: 1px solid #007bff;
+  border: 1px solid #31a84e;
   color: #007bff;
   padding: 5px 15px;
   border-radius: 4px;
@@ -144,7 +144,6 @@
 }
 
 .saveBtn {
-  background-color: #28a745;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -168,6 +167,8 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
+   width: 186px;
+  height: 40px;
 }
 
 .addButt button {
@@ -199,13 +200,11 @@
   width: 93px;
   height: 40px;
   border-radius: 5px;
-  background-color: #28A745;
   font-family: "Iranian Sans";
   margin: 0px;
   width: 136px;
   gap: 13px;
   height: 42px;
-  background-color: #28a745;
   color: #fff;
   font-family: inherit;
   font-size: 16px;
@@ -232,6 +231,7 @@
 .saveBtn {
   display: flex;
   justify-content: space-between;
+  gap: 20px;
 }
 
 .twoCols input {
@@ -276,6 +276,8 @@
 }
 
 .saveBtnOne {
+    width: 186px;
+  height: 40px;
   padding: 10px 30px;
   height: 42px;
   background-color: #28a745;
@@ -293,6 +295,8 @@
 }
 
 .saveBtnTwo {
+    width: 186px;
+  height: 40px;
   padding: 10px 30px;
   height: 42px;
   background-color: #fff;

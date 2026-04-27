@@ -874,7 +874,7 @@ export default function Profile() {
                       accountValidation.valid === false
                     }
                   >
-                    {saving ? "در حال ذخیره..." : "تایید و ذخیره"}
+                    {saving ? "تایید" : "تایید  "}
                   </button>
                   <button
                     type="button"
