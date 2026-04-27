@@ -4,6 +4,8 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import styles from "./BookDate.module.css";
 
 function BookDate({ setFoundTours, setIsLoading }) {
@@ -17,6 +19,7 @@ function BookDate({ setFoundTours, setIsLoading }) {
   const [selectedDate, setSelectedDate] = useState([null, null]);
   const [toast, setToast] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(false);
   const startRef = useRef(null);
   const endRef = useRef(null);
   const dateRef = useRef(null);
@@ -77,7 +80,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ✅ تابع تبدیل تاریخ شمسی به میلادی
   const shamsiToGregorian = (shamsiDate) => {
     if (!shamsiDate) return null;
     const date = new Date(shamsiDate.toDate?.() || shamsiDate);
@@ -85,7 +87,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
     return date;
   };
 
-  // ✅ تابع تبدیل string تاریخ به Date
   const parseTourDate = (dateStr) => {
     if (!dateStr) return null;
     const date = new Date(dateStr);
@@ -111,19 +112,18 @@ function BookDate({ setFoundTours, setIsLoading }) {
     const destFa = endLoc;
 
     setIsLoading(true);
+    setShowSkeleton(true);
 
     setTimeout(() => {
       const results = tours.filter((t) => {
         const originMatch = t.origin.name === originFa;
         const destMatch = t.destination.name === destFa;
 
-        // ✅ تبدیل صحیح تاریخ‌ها
         const userStartDate = shamsiToGregorian(startSelected);
         const tourStartDate = parseTourDate(t.startDate);
 
         let dateMatch = true;
         if (userStartDate && tourStartDate) {
-          // فقط تورهایی که تاریخ شروعشان بعد یا همزمان با تاریخ انتخابی کاربر است
           const userStartNormalized = new Date(userStartDate.getFullYear(), userStartDate.getMonth(), userStartDate.getDate());
           const tourStartNormalized = new Date(tourStartDate.getFullYear(), tourStartDate.getMonth(), tourStartDate.getDate());
           dateMatch = userStartNormalized >= tourStartNormalized;
@@ -134,11 +134,12 @@ function BookDate({ setFoundTours, setIsLoading }) {
 
       setFoundTours(results);
       setIsLoading(false);
+      setShowSkeleton(false);
 
       if (results.length === 0) {
         showToastMessage("هیچ توری با این مشخصات یافت نشد");
       }
-    }, 200);
+    }, 5000);
   };
 
   return (
@@ -149,7 +150,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
       </h1>
       <div className={styles.searchBar_desktop}>
         <div className={styles.booktour}>
-          {/* مبدا */}
           <div className={styles.dropdown} ref={startRef}>
             <button
               className={`${styles.startLoc} ${styles.locations}`}
@@ -190,7 +190,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
             )}
           </div>
           <div className={styles.divider} />
-          {/* مقصد */}
           <div className={styles.dropdown} ref={endRef}>
             <button
               className={`${styles.endLoc} ${styles.locations}`}
@@ -231,7 +230,6 @@ function BookDate({ setFoundTours, setIsLoading }) {
           </div>
           <div className={styles.divider} />
         </div>
-        {/* تاریخ */}
         <div className={styles.dateBox} ref={dateRef}>
           <DatePicker
             calendar={persian}
@@ -257,6 +255,30 @@ function BookDate({ setFoundTours, setIsLoading }) {
           جست‌وجو
         </button>
       </div>
+
+      {showSkeleton && (
+        <div className={styles.skeletonGrid}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={styles.skeletonCard}>
+              <Skeleton 
+                height={180} 
+                borderRadius="12px 12px 0 0"
+                style={{ display: 'block' }}
+              />
+              <div className={styles.skeletonContent}>
+                <Skeleton width="60%" height={20} borderRadius="8px" />
+                <Skeleton width="40%" height={16} borderRadius="8px" />
+                <div className={styles.skeletonRow}>
+                  <Skeleton width="30%" height={14} borderRadius="8px" />
+                  <Skeleton width="25%" height={14} borderRadius="8px" />
+                </div>
+                <Skeleton width="50%" height={24} borderRadius="8px" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className={`${styles.toast} ${showToast ? styles.show : ""}`}>
         {toast}
       </div>
