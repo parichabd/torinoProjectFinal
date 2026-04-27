@@ -104,7 +104,7 @@ export const validateAccountNumber = (accountNumber) => {
 export const getCardType = (cardNumber) => {
   const cleaned = cardNumber.replace(/\s/g, "");
   
-  if (/^6037/.test(cleaned)) return { name: "بانک سپه", color: "#1E3A5F" };
+  if (/^6037/.test(cleaned)) return { name: "بانک ملی", color: "#1E3A5F" };
   if (/^6219/.test(cleaned)) return { name: "بانک سامان", color: "#0066B3" };
   if (/^5892/.test(cleaned)) return { name: "بانک سپه", color: "#1E3A5F" };
   if (/^6274/.test(cleaned)) return { name: "بانک مهر", color: "#8B0000" };
@@ -115,15 +115,10 @@ export const getCardType = (cardNumber) => {
   if (/^6276/.test(cleaned)) return { name: "بانک مسکن", color: "#1565C0" };
   if (/^6393/.test(cleaned)) return { name: "بانک پارسیان", color: "#2E7D32" };
   if (/^6395/.test(cleaned)) return { name: "بانک پاسارگاد", color: "#D84315" };
-  if (/^6221/.test(cleaned)) return { name: "بانک پارسیان", color: "#2E7D32" };
   if (/^5022/.test(cleaned)) return { name: "بانک پاسارگاد", color: "#D84315" };
-  if (/^6037/.test(cleaned)) return { name: "بانک سپه", color: "#1E3A5F" };
-  if (/^6104/.test(cleaned)) return { name: "بانک ملی", color: "#1A237E" };
-  if (/^9919/.test(cleaned)) return { name: "بانک دی", color: "#1565C0" };
-  if (/^5047/.test(cleaned)) return { name: "بانک سرمایه", color: "#283593" };
-  if (/^6281/.test(cleaned)) return { name: "بانک انصار", color: "#E65100" };
-  if (/^6273/.test(cleaned)) return { name: "بانک پست بانک", color: "#7B1FA2" };
-  if (/^6062/.test(cleaned)) return { name: "بانک قرض الحسنه رسالت", color: "#00838F" };
+  if (/^6104/.test(cleaned)) return { name: "بانک ملت", color: "#1A237E" };
+  if (/^6277/.test(cleaned)) return { name: "بانک پست", color: "#E65100" };
+  if (/^5041/.test(cleaned)) return { name: "بانک قرض الحسنه رسالت", color: "#00838F" };
   
   return null;
 };
