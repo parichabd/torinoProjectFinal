@@ -11,11 +11,10 @@ import styles from "./ShowTours.module.css";
 const BACKEND_BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
 
-export default function ShowTours({ tours, isLoading }) {
+export default function ShowTours({ tours, isLoading, hasError }) {
   const [showAll, setShowAll] = useState(false);
   const [visibleCount, setVisibleCount] = useState(4);
   const [showSkeleton, setShowSkeleton] = useState(true);
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     function updateVisibleCount() {
@@ -39,12 +38,50 @@ export default function ShowTours({ tours, isLoading }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // اگه isLoading تموم شد و خطا داریم
-  useEffect(() => {
-    if (!isLoading && hasError) {
-      setShowSkeleton(false);
-    }
-  }, [isLoading, hasError]);
+  // نمایش خطا یا تورها
+  const showContent = !showSkeleton;
+
+  if (!showContent) {
+    return (
+      <div className={styles.tourInfo_Mbobile}>
+        <div className={styles.headerTours}>
+          <h1>همه تور ها</h1>
+        </div>
+        <div className={styles.skeletonGrid}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={styles.skeletonCard}>
+              <Skeleton 
+                height={180} 
+                style={{ display: 'block' }}
+              />
+              <div className={styles.skeletonContent}>
+                <Skeleton width="60%" height={20} />
+                <Skeleton width="40%" height={16} />
+                <div className={styles.skeletonRow}>
+                  <Skeleton width="30%" height={14} />
+                  <Skeleton width="25%" height={14} />
+                </div>
+                <Skeleton width="50%" height={24} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!tours || tours.length === 0) {
+    return (
+      <div className={styles.tourInfo_Mbobile}>
+        <div className={styles.headerTours}>
+          <h1>همه تور ها</h1>
+        </div>
+        <p style={{ textAlign: "center", marginTop: 20 }}>
+          {hasError ? "مشکل در اتصال به سرور" : "هیچ توری موجود نیست"}
+        </p>
+      </div>
+    );
+  }
 
  if (showSkeleton) {
   return (
