@@ -742,7 +742,6 @@ export default function Profile() {
                 {/* شماره کارت */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
-                    <label>شماره کارت</label>
                     <CardTypeBadge cardType={cardValidation.cardType} />
                   </div>
                   <div className={styles.bankInputWrapper}>
@@ -755,7 +754,7 @@ export default function Profile() {
                           return result.valid || result.message;
                         },
                       })}
-                      placeholder="XXXX XXXX XXXX XXXX"
+                      placeholder="شماره کارت"
                       dir="ltr"
                       maxLength={19}
                       className={`${styles.bankInput} ${
@@ -778,7 +777,6 @@ export default function Profile() {
                 {/* شماره شبا */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
-                    <label>شماره شبا</label>
                     {shebaValidation.valid === true && (
                       <span className={styles.validBadge}>✓ معتبر</span>
                     )}
@@ -793,7 +791,7 @@ export default function Profile() {
                           return result.valid || result.message;
                         },
                       })}
-                      placeholder="IR XX XXXX XXXX XXXX XXXX XXXX XX"
+                      placeholder="IR ..."
                       dir="ltr"
                       maxLength={26}
                       className={`${styles.bankInput} ${
@@ -816,7 +814,6 @@ export default function Profile() {
                 {/* شماره حساب */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
-                    <label>شماره حساب</label>
                     {accountValidation.valid === true && (
                       <span className={styles.validBadge}>✓ معتبر</span>
                     )}
@@ -857,9 +854,9 @@ export default function Profile() {
                 <div className={styles.validationGuide}>
                   <p>💡 نکات مهم:</p>
                   <ul>
-                    <li>شماره کارت با الگوریتم Luhn بررسی می‌شود</li>
-                    <li>شماره شبا با الگوریتم MOD-97 اعتبارسنجی می‌شود</li>
                     <li>شماره حساب باید ۱۰ تا ۱۳ رقم باشد</li>
+                    <li>شماره کارت باید ۱۶ رقم باشد</li>
+                    <li>شماره شبا باید با IR شروع شود و شامل ۲۴ رقم است</li>
                   </ul>
                 </div>
 
