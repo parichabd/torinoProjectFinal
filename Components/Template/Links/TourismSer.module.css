@@ -4,7 +4,7 @@
   padding: 48px 16px;
 }
 
-/* Header */
+
 .header {
   text-align: center;
   margin-bottom: 48px;
@@ -20,14 +20,13 @@
   font-size: 16px;
 }
 
-/* Grid */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
 }
 
-/* Card */
+
 .card {
   background: #fff;
   border-radius: 20px;
@@ -63,7 +62,7 @@
   color: #777;
 }
 
-/* Info Section */
+
 .info {
   margin-top: 56px;
 }
@@ -90,14 +89,14 @@
   font-size: 14px;
 }
 
-/* Service wrapper */
+
 .service {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-/* Service image */
+
 .service img {
   width: 72px;
   height: 72px;
@@ -105,7 +104,7 @@
   flex-shrink: 0;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .service {
     flex-direction: column;

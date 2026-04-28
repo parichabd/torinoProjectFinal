@@ -8,9 +8,9 @@ function WhyTorino() {
         <Image
           src="/image/main/1319.jpg"
           alt="تورینو"
-          width={800} // اندازه تقریبی یا واقعی تصویر
-          height={500} // اندازه تقریبی یا واقعی تصویر
-          style={{ width: "100%", height: "auto" }} // ریسپانسیو
+          width={800} 
+          height={500} 
+          style={{ width: "100%", height: "auto" }} 
         />
       </div>
       <div className={styles.content}>

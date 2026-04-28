@@ -20,9 +20,9 @@ function BuyingGuide() {
               <Image
                 src={step.image}
                 alt={step.title}
-                width={300} // اندازه تقریبی، یا اندازه واقعی تصویرت
-                height={200} // اندازه تقریبی، یا اندازه واقعی تصویرت
-                style={{ width: "100%", height: "auto" }} // برای ریسپانسیو
+                width={300} 
+                height={200} 
+                style={{ width: "100%", height: "auto" }} 
               />
             </div>
           </div>

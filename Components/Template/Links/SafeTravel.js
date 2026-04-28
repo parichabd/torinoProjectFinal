@@ -54,8 +54,8 @@ function SafeTravel() {
             <Image
               src={item.src}
               alt={item.alt}
-              width={64} // اندازه تقریبی، طبق CSS
-              height={64} // اندازه تقریبی، طبق CSS
+              width={64}
+              height={64}
             />
             <p>{item.text}</p>
           </div>
@@ -71,9 +71,9 @@ function SafeTravel() {
           <Image
             src="/image/main/images.png"
             alt="خرید بیمه مسافرتی"
-            width={300} // اندازه تقریبی یا اندازه واقعی تصویر
-            height={100} // اندازه تقریبی یا اندازه واقعی تصویر
-            style={{ width: "100%", height: "auto" }} // ریسپانسیو
+            width={300} 
+            height={100} 
+            style={{ width: "100%", height: "auto" }} 
           />
         </a>
       </div>

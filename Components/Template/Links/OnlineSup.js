@@ -59,7 +59,6 @@ export default function OnlineSup() {
       </section>
 
       {/* Ticket Form */}
-      {/* Ticket Form */}
       <section className={styles.ticket}>
         <h2>ارسال درخواست پشتیبانی</h2>
         <p>اگر پاسخ سوال خود را پیدا نکردید، فرم زیر را پر کنید.</p>
@@ -83,15 +82,15 @@ export default function OnlineSup() {
             <button type="submit">ارسال درخواست</button>
           </form>
 
-          {/* تصویر */}
+
           <div className={styles.ticketImage}>
             <Image
               src="/image/main/woman-having-video-call-home-laptop-device.jpg"
               alt="پشتیبانی آنلاین"
-              width={800} // اندازه تقریبی یا اندازه واقعی تصویر
-              height={500} // اندازه تقریبی یا اندازه واقعی تصویر
-              style={{ width: "100%", height: "auto" }} // ریسپانسیو
-              priority // چون احتمالاً تصویر Hero یا بالای صفحه است
+              width={800} 
+              height={500} 
+              style={{ width: "100%", height: "auto" }} 
+              priority 
             />
           </div>
         </div>

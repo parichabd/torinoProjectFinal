@@ -15,9 +15,9 @@ function ContactUs() {
           <Image
             src="/image/main/2477332.jpg"
             alt="Contact Tourino"
-            width={600} // اندازه تقریبی یا اندازه واقعی تصویرت
-            height={400} // اندازه تقریبی یا اندازه واقعی تصویرت
-            style={{ width: "100%", height: "auto" }} // ریسپانسیو
+            width={600} 
+            height={400} 
+            style={{ width: "100%", height: "auto" }}
           />
         </div>
         {/* Info */}

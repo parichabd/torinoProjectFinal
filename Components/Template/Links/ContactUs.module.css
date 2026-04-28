@@ -8,7 +8,7 @@
   background: #f7f9fc;
 }
 
-/* Card */
+
 .card {
   max-width: 1100px;
   width: 100%;
@@ -20,14 +20,14 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
 }
 
-/* Image */
+
 .imageBox img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Info */
+
 .info {
   padding: 48px;
 }
@@ -53,7 +53,7 @@
   line-height: 1.8;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .card {
     grid-template-columns: 1fr;

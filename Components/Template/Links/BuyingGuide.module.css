@@ -11,14 +11,14 @@
   margin-bottom: 64px;
 }
 
-/* Steps */
+
 .steps {
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-/* Single Step */
+
 .step {
   display: grid;
   grid-template-columns: 60px 1fr 220px;
@@ -30,7 +30,7 @@
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
 }
 
-/* Number */
+
 .number {
   width: 48px;
   height: 48px;
@@ -44,7 +44,7 @@
   justify-content: center;
 }
 
-/* Content */
+
 .content h2 {
   font-size: 20px;
   margin-bottom: 8px;
@@ -56,14 +56,13 @@
   color: #555;
 }
 
-/* Image */
+
 .image img {
   width: 100%;
   border-radius: 12px;
   object-fit: cover;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .step {
     grid-template-columns: 1fr;
