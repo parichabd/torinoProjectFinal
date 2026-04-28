@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+
 import DatePicker from "react-multi-date-picker";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
-import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+
+import Image from "next/image";
 import styles from "./BookDate.module.css";
 
 const TOAST_DURATION = 3000;
@@ -51,7 +54,10 @@ function BookDate({ setFoundTours, setIsLoading, setHasError }) {
     }
     setToast(msg);
     setShowToast(true);
-    toastTimeoutRef.current = setTimeout(() => setShowToast(false), TOAST_DURATION);
+    toastTimeoutRef.current = setTimeout(
+      () => setShowToast(false),
+      TOAST_DURATION,
+    );
   };
 
   useEffect(() => {

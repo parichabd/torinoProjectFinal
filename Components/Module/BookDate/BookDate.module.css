@@ -31,7 +31,6 @@
   font-size: 16px;
   font-weight: 400;
 
-  /* hover related */
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -88,7 +87,7 @@
   border-bottom: none;
 }
 
-/* header */
+
 .dropdownMenu li.frequentHeader {
   background: #f8f8f8;
   cursor: not-allowed;
@@ -107,7 +106,6 @@
 }
 
 
-/* date */
 
 .dateBox {
   position: relative;
@@ -135,7 +133,7 @@
   padding: 0 28px; 
 }
 
-/* آیکن */
+
 .dateIcon {
   position: absolute;
   right: calc(50% - 40px);  
@@ -151,7 +149,7 @@
 
 
 
-/* سرچ */
+
 .searchButton{
   font-family: "BYekan";
   font-size: 19.5px;
@@ -173,7 +171,7 @@
 }
 
 
-/* Toast */
+
 .toast {
   width: 290px;
   position: fixed;
