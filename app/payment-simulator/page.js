@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
-import Image from "next/image";
 import { setCookie } from "@/utils/cookie";
 import { toPersianNumber } from "@/utils/number";
+
+import Image from "next/image";
 import styles from "./paymentSimulator.module.css";
 
 const PROCESSING_DELAY = 2000;
