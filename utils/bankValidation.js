@@ -1,139 +1,303 @@
-// src/utils/bankValidation.js
+// app/payment-simulator/page.jsx
+"use client";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm, useWatch } from "react-hook-form";
+import Image from "next/image";
+import { setCookie } from "@/utils/cookie";
+import { toPersianNumber } from "@/utils/number";
+import { validateCardNumber } from "@/utils/bankValidation";  // ✅ اضافه شد
+import styles from "./paymentSimulator.module.css";
 
-/**
- * تبدیل اعداد فارسی/عربی به انگلیسی
- */
-export const toEnglishDigits = (str) => {
+const PROCESSING_DELAY = 2000;
+const COOKIE_EXPIRY_DAYS = 30;
+
+const toEnglishDigits = (str) => {
   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
   const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
-  let result = str;
-  
-  for (let i = 0; i < 10; i++) {
-    result = result.replace(new RegExp(persianDigits[i], "g"), i);
-    result = result.replace(new RegExp(arabicDigits[i], "g"), i);
-  }
-  return result;
+  return str?.replace(/[۰-۹٠-٩]/g, (d) => {
+    let index = persianDigits.indexOf(d);
+    if (index === -1) index = arabicDigits.indexOf(d);
+    return index !== -1 ? index : d;
+  });
 };
 
-/**
- * فرمت کردن شماره کارت (هر ۴ رقم فاصله)
- */
-export const formatCardNumber = (value) => {
-  const cleaned = value.replace(/\D/g, "").slice(0, 16);
+const formatCardNumber = (value) => {
+  const englishValue = toEnglishDigits(value);
+  const cleaned = englishValue.replace(/\s/g, "").replace(/\D/g, "");
   const chunks = cleaned.match(/.{1,4}/g) || [];
-  return chunks.join(" ");
+  return chunks.join(" ").substring(0, 19);
 };
 
-/**
- * الگوریتم Luhn برای اعتبارسنجی شماره کارت
- */
-export const validateCardNumber = (cardNumber) => {
-  const cleaned = cardNumber.replace(/\s/g, "");
-  
-  if (!/^\d{16}$/.test(cleaned)) {
-    return { valid: false, message: "شماره کارت باید ۱۶ رقم باشد" };
+const formatExpiry = (value) => {
+  const englishValue = toEnglishDigits(value);
+  const cleaned = englishValue.replace(/\D/g, "");
+  if (cleaned.length >= 2) {
+    return cleaned.slice(0, 2) + "/" + cleaned.slice(2, 4);
   }
+  return cleaned;
+};
 
-  // الگوریتم Luhn
-  let sum = 0;
-  let isEven = false;
+export default function PaymentSimulator() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
-  for (let i = cleaned.length - 1; i >= 0; i--) {
-    let digit = parseInt(cleaned[i], 10);
+  const amount = searchParams.get("amount") || "0";
+  const tourTitle = searchParams.get("tourTitle") || "تور";
 
-    if (isEven) {
-      digit *= 2;
-      if (digit > 9) digit -= 9;
+  const [orderId] = useState(() => {
+    const urlOrderId = searchParams.get("orderId");
+    return urlOrderId || `ORD-${Date.now()}`;
+  });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      cardNumber: "",
+      expiry: "",
+      cvv: "",
+      otp: "",
+    },
+  });
+
+  const cardNumber = useWatch({ control, name: "cardNumber" });
+
+  const displayCardNumber = (value) => {
+    const formatted = formatCardNumber(value || "");
+    return toPersianNumber(formatted);
+  };
+
+  const onSubmit = async (data) => {
+    const englishCard = toEnglishDigits(data.cardNumber);
+
+    // ✅ اعتبارسنجی با الگوریتم Luhn
+    const validation = validateCardNumber(englishCard);
+    if (!validation.valid) {
+      // میتونی اینجا toast نشون بدی به جای alert
+      return;
     }
 
-    sum += digit;
-    isEven = !isEven;
-  }
+    setIsProcessing(true);
 
-  if (sum % 10 !== 0) {
-    return { valid: false, message: "شماره کارت معتبر نیست" };
-  }
+    const cleanCard = englishCard.replace(/\s/g, "");
+    const lastFourDigits = cleanCard.slice(-4);
 
-  return { valid: true, message: "" };
-};
+    setCookie("lastUsedCard", lastFourDigits, COOKIE_EXPIRY_DAYS);
+    setCookie("fullCardNumber", data.cardNumber, COOKIE_EXPIRY_DAYS);
+    setCookie("hasNewOrder", "true", COOKIE_EXPIRY_DAYS);
+    setCookie("newOrderCount", "1", COOKIE_EXPIRY_DAYS);
 
-/**
- * اعتبارسنجی شماره شبا (IBAN ایران)
- */
-export const validateSheba = (sheba) => {
-  const cleaned = toEnglishDigits(sheba).toUpperCase().replace(/\s/g, "");
+    await new Promise((resolve) => setTimeout(resolve, PROCESSING_DELAY));
 
-  // بررسی فرمت IR
-  if (!cleaned.startsWith("IR")) {
-    return { valid: false, message: "شماره شبا با IR شروع می‌شود" };
-  }
+    setIsProcessing(false);
+    setShowResult(true);
 
-  const iban = cleaned.slice(2);
-  
-  if (!/^\d{24}$/.test(iban)) {
-    return { valid: false, message: "شماره شبا باید ۲۴ رقم باشد" };
-  }
+    setTimeout(() => {
+      router.push("/?payment=success");
+    }, PROCESSING_DELAY);
+  };
 
-  // اعتبارسنجی IBAN با الگوریتم MOD-97
-  const rearranged = iban + "1827"; // IR = 18, 27
-  const numericIban = BigInt(rearranged);
-  
-  if (numericIban % 97n !== 1n) {
-    return { valid: false, message: "شماره شبا معتبر نیست" };
-  }
+  const handleCancel = () => {
+    router.push("/");
+  };
 
-  return { valid: true, message: "" };
-};
+  return (
+    <div className={styles.container}>
+      {/* هدر */}
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <div className={styles.logo}>
+            <Image
+              src="/SVG/static/download.png"
+              alt="شاپرک"
+              width={50}
+              height={50}
+            />
+          </div>
+          <div className={styles.headerText}>
+            <h1>درگاه پرداخت اینترنتی شاپرک</h1>
+            <p>پرداخت امن با کارت‌های شتاب</p>
+          </div>
+        </div>
+      </div>
 
-/**
- * اعتبارسنجی شماره حساب
- */
-export const validateAccountNumber = (accountNumber) => {
-  const cleaned = toEnglishDigits(accountNumber);
-  
-  if (!/^\d{10,13}$/.test(cleaned)) {
-    return { valid: false, message: "شماره حساب ۱۰ تا ۱۳ رقم است" };
-  }
+      {/* محتوای اصلی */}
+      <div className={styles.content}>
+        <div className={styles.paymentBox}>
+          {/* اطلاعات پرداخت */}
+          <div className={styles.merchantInfo}>
+            <h2>اطلاعات پرداخت</h2>
+            <div className={styles.infoRow}>
+              <span>فروشگاه:</span>
+              <span>آژانس مسافرتی آنلاین</span>
+            </div>
+            <div className={styles.infoRow}>
+              <span>کالا:</span>
+              <span>{decodeURIComponent(tourTitle)}</span>
+            </div>
+            <div className={styles.infoRow}>
+              <span>شماره سفارش:</span>
+              <span dir="ltr">{orderId}</span>
+            </div>
+            <div className={`${styles.infoRow} ${styles.amountRow}`}>
+              <span>مبلغ قابل پرداخت:</span>
+              <span className={styles.amount}>
+                {toPersianNumber(Number(amount).toLocaleString())}
+                <small>ریال</small>
+              </span>
+            </div>
+          </div>
 
-  return { valid: true, message: "" };
-};
+          <div className={styles.divider}></div>
 
-/**
- * تشخیص نوع کارت بانکی از روی پیشوند
- */
-export const getCardType = (cardNumber) => {
-  const cleaned = cardNumber.replace(/\s/g, "");
-  
-  if (/^6037/.test(cleaned)) return { name: "بانک ملی", color: "#1E3A5F" };
-  if (/^6219/.test(cleaned)) return { name: "بانک سامان", color: "#0066B3" };
-  if (/^5892/.test(cleaned)) return { name: "بانک سپه", color: "#1E3A5F" };
-  if (/^6274/.test(cleaned)) return { name: "بانک مهر", color: "#8B0000" };
-  if (/^6278/.test(cleaned)) return { name: "بانک اقتصاد نوین", color: "#2E7D32" };
-  if (/^6362/.test(cleaned)) return { name: "بانک آینده", color: "#FF6F00" };
-  if (/^5054/.test(cleaned)) return { name: "بانک ایران زمین", color: "#4A148C" };
-  if (/^6280/.test(cleaned)) return { name: "بانک قرض الحسنه مهر", color: "#C62828" };
-  if (/^6276/.test(cleaned)) return { name: "بانک مسکن", color: "#1565C0" };
-  if (/^6393/.test(cleaned)) return { name: "بانک پارسیان", color: "#2E7D32" };
-  if (/^6395/.test(cleaned)) return { name: "بانک پاسارگاد", color: "#D84315" };
-  if (/^5022/.test(cleaned)) return { name: "بانک پاسارگاد", color: "#D84315" };
-  if (/^6104/.test(cleaned)) return { name: "بانک ملت", color: "#1A237E" };
-  if (/^6277/.test(cleaned)) return { name: "بانک پست", color: "#E65100" };
-  if (/^5041/.test(cleaned)) return { name: "بانک قرض الحسنه رسالت", color: "#00838F" };
-  
-  return null;
-};
+          {/* فرم کارت بانکی */}
+          <form onSubmit={handleSubmit(onSubmit)} className={styles.cardForm}>
+            <h3>اطلاعات کارت بانکی</h3>
 
-/**
- * فرمت شماره شبا برای نمایش
- */
-export const formatSheba = (sheba) => {
-  const cleaned = toEnglishDigits(sheba).toUpperCase().replace(/\s/g, "");
-  
-  if (cleaned.length <= 4) return cleaned;
-  
-  // IR + بقیه با فاصله هر ۴ رقم
-  const iban = cleaned.slice(2);
-  const chunks = iban.match(/.{1,4}/g) || [];
-  
-  return "IR" + chunks.join(" ");
-};
+            {/* شماره کارت */}
+            <div className={styles.inputGroup}>
+              <label>شماره کارت</label>
+              <input
+                type="text"
+                placeholder="XXXX XXXX XXXX XXXX"
+                className={`${styles.cardInput} ${errors.cardNumber ? styles.inputError : ""}`}
+                dir="ltr"
+                value={displayCardNumber(cardNumber)}
+                {...register("cardNumber", {
+                  required: "شماره کارت الزامی است",
+                  minLength: { value: 19, message: "شماره کارت باید ۱۶ رقم باشد" },
+                  maxLength: { value: 19, message: "شماره کارت باید ۱۶ رقم باشد" },
+                  onChange: (e) => {
+                    const formatted = formatCardNumber(e.target.value);
+                    setValue("cardNumber", formatted);
+                  },
+                })}
+              />
+              {errors.cardNumber && (
+                <span className={styles.errorText}>{errors.cardNumber.message}</span>
+              )}
+            </div>
+
+            <div className={styles.inputRow}>
+              {/* تاریخ انقضا */}
+              <div className={styles.inputGroup}>
+                <label>تاریخ انقضا</label>
+                <input
+                  type="text"
+                  placeholder="MM/YY"
+                  className={`${styles.cardInput} ${errors.expiry ? styles.inputError : ""}`}
+                  dir="ltr"
+                  {...register("expiry", {
+                    required: "تاریخ انقضا الزامی است",
+                    pattern: {
+                      value: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
+                      message: "فرمت: MM/YY",
+                    },
+                    onChange: (e) => {
+                      const formatted = formatExpiry(e.target.value);
+                      setValue("expiry", formatted);
+                    },
+                  })}
+                />
+                {errors.expiry && (
+                  <span className={styles.errorText}>{errors.expiry.message}</span>
+                )}
+              </div>
+
+              {/* CVV2 */}
+              <div className={styles.inputGroup}>
+                <label>CVV2</label>
+                <input
+                  type="password"
+                  placeholder="***"
+                  maxLength={4}
+                  className={`${styles.cardInput} ${errors.cvv ? styles.inputError : ""}`}
+                  dir="ltr"
+                  {...register("cvv", {
+                    required: "CVV2 الزامی است",
+                    pattern: {
+                      value: /^[0-9]{3,4}$/,
+                      message: "۳ یا ۴ رقم",
+                    },
+                  })}
+                />
+                {errors.cvv && (
+                  <span className={styles.errorText}>{errors.cvv.message}</span>
+                )}
+              </div>
+            </div>
+
+            {/* رمز پویا */}
+            <div className={styles.inputGroup}>
+              <label>رمز پویا (OTP)</label>
+              <input
+                type="text"
+                placeholder="کد پیامک شده"
+                maxLength={6}
+                className={`${styles.cardInput} ${errors.otp ? styles.inputError : ""}`}
+                dir="ltr"
+                {...register("otp", {
+                  required: "رمز پویا الزامی است",
+                  pattern: {
+                    value: /^[0-9]{6}$/,
+                    message: "۶ رقم",
+                  },
+                })}
+              />
+              {errors.otp && (
+                <span className={styles.errorText}>{errors.otp.message}</span>
+              )}
+            </div>
+
+            <p className={styles.hint}>
+              ⚠️ برای تست، هر مقداری وارد کنید - شبیه‌سازی است
+            </p>
+
+            {/* دکمه‌ها */}
+            <div className={styles.actions}>
+              <button
+                type="submit"
+                disabled={isProcessing}
+                className={styles.payButton}
+              >
+                {isProcessing ? (
+                  <span className={styles.processing}>
+                    <span className={styles.btnSpinner}></span>
+                    در حال پرداخش...
+                  </span>
+                ) : (
+                  "پرداخت"
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className={styles.cancelButton}
+              >
+                انصراف
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* نتیجه پرداخت */}
+      {showResult && (
+        <div className={styles.resultOverlay}>
+          <div className={styles.resultBox}>
+            <div className={styles.successIcon}>✓</div>
+            <h2>پرداخت با موفقیت انجام شد</h2>
+            <p>در حال انتقال به صفحه اصلی...</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

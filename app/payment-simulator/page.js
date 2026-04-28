@@ -1,4 +1,3 @@
-// app/payment-simulator/page.jsx
 "use client";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -46,7 +45,6 @@ export default function PaymentSimulator() {
   const amount = searchParams.get("amount") || "0";
   const tourTitle = searchParams.get("tourTitle") || "تور";
 
-  // ✅ useState با lazy initializer - فقط یکبار اجرا میشه
   const [orderId] = useState(() => {
     const urlOrderId = searchParams.get("orderId");
     return urlOrderId || `ORD-${Date.now()}`;
@@ -114,8 +112,9 @@ export default function PaymentSimulator() {
             <Image
               src="/SVG/static/download.png"
               alt="شاپرک"
-              width={50}
-              height={50}
+              width={200}
+              height={200}
+               style={{ width: 'auto', height: 'auto' }}
             />
           </div>
           <div className={styles.headerText}>
