@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import styles from "./TourSlider.module.css";
 import Image from "next/image";
@@ -33,13 +32,15 @@ export default function TourSlider() {
               alt="phone"
               width={34}
               height={38}
+              style={{ width: "auto", height: "auto" }}
             />
             <Image
-              src="/SVG/static/؟.svg"
+              src="/SVG/static/questionsMark.svg"
               alt="phone"
               width={10}
               height={20}
               className={styles.question}
+              style={{ width: "auto", height: "auto" }}
             />
           </div>
           <div className={styles.head}>
@@ -59,21 +60,21 @@ export default function TourSlider() {
           </p>
         </div>
       </div>
+
       <div className={styles.wrapper}>
         <div className={styles.stack}>
           {images.map((img, index) => {
             const position = (index - active + images.length) % images.length;
-
             return (
               <div
                 key={index}
                 className={styles.card}
                 style={{
                   transform: `
-      translateX(${-position * 35}px)
-      translateY(${position * 0}px)
-      scaleY(${1 - position * 0.1})
-    `,
+                    translateX(${-position * 35}px)
+                    translateY(${position * 0}px)
+                    scaleY(${1 - position * 0.1})
+                  `,
                   zIndex: images.length - position,
                 }}
               >
@@ -85,7 +86,6 @@ export default function TourSlider() {
 
         <div className={styles.controls}>
           <button onClick={prev}>
-            {" "}
             <GoArrowRight />
           </button>
           <span>
@@ -97,6 +97,7 @@ export default function TourSlider() {
           </button>
         </div>
       </div>
+
       <div className={styles.divider}></div>
     </div>
   );
