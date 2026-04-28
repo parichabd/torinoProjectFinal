@@ -186,7 +186,7 @@ export default function PaymentSimulator() {
                 <label>تاریخ انقضا</label>
                 <input
                   type="text"
-                  placeholder=""
+                  placeholder="ماه / سال"
                   className={`${styles.cardInput} ${errors.expiry ? styles.inputError : ""}`}
                   dir="ltr"
                   {...register("expiry", {

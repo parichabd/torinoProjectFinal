@@ -299,3 +299,14 @@
   font-size: 14px;
   opacity: 0.9;
 }
+/* paymentSimulator.module.css */
+.inputError {
+  border-color: #dc3545 !important;
+}
+
+.errorText {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
