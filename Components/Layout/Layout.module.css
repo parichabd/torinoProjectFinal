@@ -495,7 +495,6 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* ✅ استایل Wrapper برای شماره تلفن */
 .phoneWrapper {
   position: relative;
   display: inline-flex;
@@ -503,7 +502,6 @@ body {
   justify-content: center;
 }
 
-/* ✅ استایل برای آیتم پروفایل */
 .item {
   position: relative;
   display: flex;
@@ -555,8 +553,8 @@ body {
   .item h1 {
   font-size: 16px;}
     .numberBadge {
-    top: 2px;   /* ✅ کمی بالاتر */
-    right: 4px; /* ✅ کمی سمت راست‌تر */
+    top: 2px;   
+    right: 4px; 
     font-size: 10px !important;
   }
   
@@ -568,7 +566,7 @@ body {
   }
   
   .user_mobile {
-    display: inline-flex; /* ✅ تغییر از flex به inline-flex */
+    display: inline-flex; 
     align-items: center;
     color: #28A745;
     font-weight: 500;
@@ -577,7 +575,7 @@ body {
   }
 }
 
-/* ✅ استایل Badge عدد (پیش‌فرض - موبایل/تبلت) */
+
 .numberBadge {
   position: absolute;
   top: 3px;
