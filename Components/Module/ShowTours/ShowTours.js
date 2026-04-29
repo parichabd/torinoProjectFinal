@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { TbMapSearch } from "react-icons/tb";
 import { IoIosArrowDown } from "react-icons/io";
@@ -8,40 +9,84 @@ import Link from "next/link";
 import "react-loading-skeleton/dist/skeleton.css";
 import styles from "./ShowTours.module.css";
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // ← این خط اصلاح شد
+// ثابت‌ها
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 const SKELETON_COUNT = 3;
 const INITIAL_VISIBLE_COUNT = 4;
 const LARGE_SCREEN_COUNT = 6;
 const LARGE_SCREEN_BREAKPOINT = 1024;
-const LOADING_DELAY = 2000;
+
+// توابع کمکی برای تمیز نگه داشتن کد اصلی
+const formatPrice = (price) => {
+  if (!price && price !== 0) return "—";
+  return new Intl.NumberFormat("fa-IR").format(price);
+};
+
+const getVehicleName = (vehicleType) => {
+  if (!vehicleType) return "ناشناس";
+  const map = {
+    bus: "اتوبوس",
+    train: "قطار",
+    flight: "پرواز",
+    airplane: "پرواز",
+    suv: "SUV",
+    private: "ویژه",
+  };
+  return map[vehicleType.toLowerCase()] || "پرواز"; // پیش‌فرض
+};
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "/default-tour.jpg";
+  if (imagePath.startsWith("http")) return imagePath;
+  const cleanBaseUrl = BACKEND_BASE_URL.replace(/\/$/, "");
+  const cleanImagePath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+  return `${cleanBaseUrl}${cleanImagePath}`;
+};
+
+// تابع فرمت تاریخ امن‌تر
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("fa-IR", { month: "long" }).format(date);
+  } catch (e) {
+    return "";
+  }
+};
+
+const calculateDays = (start, end) => {
+  if (!start || !end) return 0;
+  try {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return 0;
+    
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays > 0 ? diffDays : 1; // حداقل 1 روز
+  } catch (e) {
+    return 0;
+  }
+};
 
 export default function ShowTours({ tours, isLoading, hasError }) {
   const [showAll, setShowAll] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
-  const [showSkeleton, setShowSkeleton] = useState(true);
 
+  // مدیریت تغییر سایز پنجره
   useEffect(() => {
-    function updateVisibleCount() {
-      const width = window.innerWidth;
-      setVisibleCount(
-        width >= LARGE_SCREEN_BREAKPOINT 
-          ? LARGE_SCREEN_COUNT 
-          : INITIAL_VISIBLE_COUNT
-      );
-    }
-    updateVisibleCount();
-    window.addEventListener("resize", updateVisibleCount);
-    return () => window.removeEventListener("resize", updateVisibleCount);
+    const updateCount = () => {
+      setVisibleCount(window.innerWidth >= LARGE_SCREEN_BREAKPOINT ? LARGE_SCREEN_COUNT : INITIAL_VISIBLE_COUNT);
+    };
+    
+    updateCount(); // مقداردهی اولیه
+    window.addEventListener("resize", updateCount);
+    return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSkeleton(false);
-    }, LOADING_DELAY);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (showSkeleton) {
+  // اگر در حال لود هستیم، اسکلenton را نشان بده
+  if (isLoading) {
     return (
       <div className={styles.tourInfo_Mbobile}>
         <div className={styles.headerTours}>
@@ -67,56 +112,47 @@ export default function ShowTours({ tours, isLoading, hasError }) {
     );
   }
 
+  // هندل کردن خطا یا لیست خالی
+  if (hasError) {
+    return (
+      <div className={styles.tourInfo_Mbobile}>
+        <div className={styles.headerTours}>
+          <h1>همه تور ها</h1>
+        </div>
+        <p className={styles.emptyMessage}>مشکل در اتصال به سرور. لطفاً بعداً تلاش کنید.</p>
+      </div>
+    );
+  }
+
   if (!tours || tours.length === 0) {
     return (
       <div className={styles.tourInfo_Mbobile}>
         <div className={styles.headerTours}>
           <h1>همه تور ها</h1>
         </div>
-        <p className={styles.emptyMessage}>
-          {hasError ? "مشکل در اتصال به سرور" : "هیچ توری موجود نیست"}
-        </p>
+        <p className={styles.emptyMessage}>هیچ توری در حال حاضر موجود نیست.</p>
       </div>
     );
   }
 
-  const visibleTours = showAll ? tours : tours.slice(0, visibleCount);
+
+  const displayedTours = showAll ? tours : tours.slice(0, visibleCount);
+  const shouldShowMore = tours.length > visibleCount && !showAll;
 
   return (
     <div className={styles.tourInfo_Mbobile}>
       <div className={styles.headerTours}>
         <h1>همه تور ها</h1>
       </div>
+      
       <ul className={styles.results}>
-        {visibleTours.map((tour) => {
-          const startDate = new Date(tour.startDate);
-          const endDate = new Date(tour.endDate);
-          const monthName = startDate.toLocaleString("fa-IR", {
-            month: "long",
-          });
-          const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-
-          const vehicleMap = {
-            bus: "اتوبوس",
-            train: "قطار",
-            flight: "پرواز",
-            airplane: "پرواز",
-            suv: "SUV",
-          };
-          const vehicleFa = vehicleMap[tour.fleetVehicle?.toLowerCase()] || "پرواز";
-          const priceFa = tour.price ? tour.price.toLocaleString("fa-IR") : "—";
-
-          // ✅ ساخت URL عکس - اصلاح شده
-          let imageSrc = "/default-tour.jpg";
-          if (tour?.image) {
-            if (tour.image.startsWith("http")) {
-              imageSrc = tour.image;
-            } else {
-              const baseUrl = BACKEND_BASE_URL?.replace(/\/$/, "") || "";
-              const imagePath = tour.image.startsWith("/") ? tour.image : `/${tour.image}`;
-              imageSrc = `${baseUrl}${imagePath}`;
-            }
-          }
+        {displayedTours.map((tour) => {
+          // محاسبات هر آیتم
+          const monthName = formatDate(tour.startDate);
+          const days = calculateDays(tour.startDate, tour.endDate);
+          const vehicleFa = getVehicleName(tour.fleetVehicle);
+          const priceFa = formatPrice(tour.price);
+          const imageSrc = getImageUrl(tour.image);
 
           return (
             <li key={tour.id} className={styles.tourCard}>
@@ -126,6 +162,7 @@ export default function ShowTours({ tours, isLoading, hasError }) {
                   alt={tour.title || "تور"}
                   width={400}
                   height={220}
+                  className={styles.tourImage} // کلاس CSS برای object-fit بهتر
                   unoptimized={process.env.NODE_ENV === "development"}
                 />
                 <div className={styles.overlay}>
@@ -135,17 +172,29 @@ export default function ShowTours({ tours, isLoading, hasError }) {
                   <span className={styles.overlayText}>جزئیات تور</span>
                 </div>
               </Link>
+              
               <h2 className={styles.tourTitle}>{tour.title}</h2>
+              
               <p className={styles.tourMeta}>
-                <span className={styles.metaItem}>{monthName} ماه</span>
-                <span className={styles.metaSeparator}>·</span>
-                <span className={styles.metaItem}>{days} روزه</span>
-                <span className={styles.metaSeparator}>·</span>
-                <span className={styles.metaItem}>{vehicleFa}</span>
+                {monthName && <span className={styles.metaItem}>{monthName} ماه</span>}
+                {days > 0 && (
+                  <>
+                    <span className={styles.metaSeparator}>·</span>
+                    <span className={styles.metaItem}>{days} روزه</span>
+                  </>
+                )}
+                {vehicleFa !== "ناشناس" && (
+                  <>
+                    <span className={styles.metaSeparator}>·</span>
+                    <span className={styles.metaItem}>{vehicleFa}</span>
+                  </>
+                )}
               </p>
+
               <div className={styles.divider}></div>
+              
               <div className={styles.bottomRow}>
-                <Link href={`/bookTour/${tour.id}`}>
+                <Link href={`/bookTour/${tour.id}`} passHref>
                   <button className={styles.bookBtn}>رزرو</button>
                 </Link>
                 <p className={styles.price}>
@@ -156,7 +205,8 @@ export default function ShowTours({ tours, isLoading, hasError }) {
           );
         })}
       </ul>
-      {tours.length > visibleCount && !showAll && (
+
+      {shouldShowMore && (
         <div className={styles.showMoreWrapper}>
           <button
             className={styles.showMoreBtn}
