@@ -1,22 +1,24 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState, useEffect, useMemo } from "react";
-import Skeleton from "react-loading-skeleton";
 import { TbMapSearch } from "react-icons/tb";
 import { IoIosArrowDown } from "react-icons/io";
-import Image from "next/image";
-import Link from "next/link";
+
+import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+
+import Image from "next/image";
 import styles from "./ShowTours.module.css";
 
-// ثابت‌ها
+
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 const SKELETON_COUNT = 3;
 const INITIAL_VISIBLE_COUNT = 4;
 const LARGE_SCREEN_COUNT = 6;
 const LARGE_SCREEN_BREAKPOINT = 1024;
 
-// توابع کمکی برای تمیز نگه داشتن کد اصلی
 const formatPrice = (price) => {
   if (!price && price !== 0) return "—";
   return new Intl.NumberFormat("fa-IR").format(price);
@@ -32,7 +34,7 @@ const getVehicleName = (vehicleType) => {
     suv: "SUV",
     private: "ویژه",
   };
-  return map[vehicleType.toLowerCase()] || "پرواز"; // پیش‌فرض
+  return map[vehicleType.toLowerCase()] || "پرواز"; 
 };
 
 const getImageUrl = (imagePath) => {
@@ -43,7 +45,7 @@ const getImageUrl = (imagePath) => {
   return `${cleanBaseUrl}${cleanImagePath}`;
 };
 
-// تابع فرمت تاریخ امن‌تر
+ 
 const formatDate = (dateString) => {
   if (!dateString) return "";
   try {
@@ -64,7 +66,7 @@ const calculateDays = (start, end) => {
     
     const diffTime = Math.abs(endDate - startDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays > 0 ? diffDays : 1; // حداقل 1 روز
+    return diffDays > 0 ? diffDays : 1; 
   } catch (e) {
     return 0;
   }
@@ -74,18 +76,17 @@ export default function ShowTours({ tours, isLoading, hasError }) {
   const [showAll, setShowAll] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
 
-  // مدیریت تغییر سایز پنجره
+ 
   useEffect(() => {
     const updateCount = () => {
       setVisibleCount(window.innerWidth >= LARGE_SCREEN_BREAKPOINT ? LARGE_SCREEN_COUNT : INITIAL_VISIBLE_COUNT);
     };
     
-    updateCount(); // مقداردهی اولیه
+    updateCount();  
     window.addEventListener("resize", updateCount);
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  // اگر در حال لود هستیم، اسکلenton را نشان بده
   if (isLoading) {
     return (
       <div className={styles.tourInfo_Mbobile}>
@@ -112,7 +113,6 @@ export default function ShowTours({ tours, isLoading, hasError }) {
     );
   }
 
-  // هندل کردن خطا یا لیست خالی
   if (hasError) {
     return (
       <div className={styles.tourInfo_Mbobile}>
@@ -147,7 +147,7 @@ export default function ShowTours({ tours, isLoading, hasError }) {
       
       <ul className={styles.results}>
         {displayedTours.map((tour) => {
-          // محاسبات هر آیتم
+
           const monthName = formatDate(tour.startDate);
           const days = calculateDays(tour.startDate, tour.endDate);
           const vehicleFa = getVehicleName(tour.fleetVehicle);
@@ -162,7 +162,7 @@ export default function ShowTours({ tours, isLoading, hasError }) {
                   alt={tour.title || "تور"}
                   width={400}
                   height={220}
-                  className={styles.tourImage} // کلاس CSS برای object-fit بهتر
+                  className={styles.tourImage} 
                   unoptimized={process.env.NODE_ENV === "development"}
                 />
                 <div className={styles.overlay}>
