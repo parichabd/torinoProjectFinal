@@ -85,10 +85,6 @@ export default function PaymentSimulator() {
     const cleanCard = englishCard.replace(/\s/g, "");
     const lastFourDigits = cleanCard.slice(-4);
 
-    setCookie("lastUsedCard", lastFourDigits, COOKIE_EXPIRY_DAYS);
-    setCookie("fullCardNumber", data.cardNumber, COOKIE_EXPIRY_DAYS);
-    setCookie("hasNewOrder", "true", COOKIE_EXPIRY_DAYS);
-    setCookie("newOrderCount", "1", COOKIE_EXPIRY_DAYS);
 
     await new Promise((resolve) => setTimeout(resolve, PROCESSING_DELAY));
 

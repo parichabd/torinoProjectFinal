@@ -8,52 +8,20 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import toast, { Toaster } from "react-hot-toast";
-import { getCookie, setCookie } from "@/utils/cookie";
 import PaymentLoadingModal from "@/Components/Spinner/PaymentLoadingModal";
-import api from "@/lib/api"; // ← اضافه کنید
-import { profileApi } from "@/lib/api";  // ← این خط رو اضافه کن
-
-const BACKEND_BASE_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
+import api from "@/lib/api";
+import { profileApi } from "@/lib/api";
 
 const INVALID_PERSIAN_WORDS = [
-  "نام",
-  "نام خانوادگی",
-  "نام و نام خانوادگی",
-  "نام ونام خانوادگی",
-  "test",
-  "asdf",
-  "qwerty",
-  "abc",
-  "test123",
-  "name",
-  "username",
-  "کاربر",
-  "مسافر",
-  "مشتری",
-  "خریدار",
-  "ثبت نام",
-  "ثبت",
-  "آزمایشی",
-  "فیک",
-  "نامشخص",
-  "نامحدود",
+  "نام", "نام خانوادگی", "نام و نام خانوادگی", "نام ونام خانوادگی",
+  "test", "asdf", "qwerty", "abc", "test123", "name", "username",
+  "کاربر", "مسافر", "مشتری", "خریدار", "ثبت نام", "ثبت", "آزمایشی",
+  "فیک", "نامشخص", "نامحدود",
 ];
 
 const INVALID_ENGLISH_WORDS = [
-  "test",
-  "asdf",
-  "qwerty",
-  "abc",
-  "name",
-  "username",
-  "user",
-  "fake",
-  "dummy",
-  "sample",
-  "example",
-  "demo",
-  "temp",
+  "test", "asdf", "qwerty", "abc", "name", "username", "user",
+  "fake", "dummy", "sample", "example", "demo", "temp",
 ];
 
 const persianToEnglish = (str) => {
@@ -83,13 +51,10 @@ export default function BookingForm({ initialTourId }) {
     }
   }, [searchParams, router]);
 
-  // ✅ اصلاح استخراج tourId
   const getTourIdFromPath = () => {
     if (!pathname) return null;
     const cleanPathname = pathname.replace(/^\/|\/$/g, "");
     const parts = cleanPathname.split("/");
-
-    // مسیر: /bookTour/[id]
     if (parts[0] === "bookTour" && parts[1]) {
       return parts[1];
     }
@@ -97,12 +62,8 @@ export default function BookingForm({ initialTourId }) {
   };
 
   let tourId = initialTourId;
-  if (!tourId) {
-    tourId = getTourIdFromPath();
-  }
-  if (!tourId) {
-    tourId = searchParams.get("id");
-  }
+  if (!tourId) tourId = getTourIdFromPath();
+  if (!tourId) tourId = searchParams.get("id");
 
   const [tourData, setTourData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -204,81 +165,52 @@ export default function BookingForm({ initialTourId }) {
     return gregorianDate;
   };
 
-  const addToBasket = async (tourId, token) => {
-    const response = await fetch(`${BACKEND_BASE_URL}/basket/${tourId}`, {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "خطا در افزودن به سبد خرید");
-    }
-    return true;
-  };
-
   const onSubmit = async (data) => {
-  try {
-    setIsSubmitting(true);
-
-    // ✅ افزودن به سبد خرید
-    await api.put(`/basket/${tourId}`);
-
-    const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
-    const orderData = {
-      nationalCode: persianToEnglish(data.nationalId),
-      fullName: data.fullName,
-      gender: data.gender,
-      birthDate: gregorianBirthDate,
-    };
-
-    // ✅ ذخیره در Cookie
-    setCookie("passengerFullName", data.fullName, 30);
-    setCookie("passengerGender", data.gender, 30);
-    setCookie("passengerNationalId", data.nationalId, 30);
-    setCookie("passengerBirthDate", data.birthDate, 30);
-
-    // ✅ ثبت سفارش
-    const response = await api.post("/order", orderData);
-
-    // ==========================================
-    // ✅ این بخش رو اضافه کن - ذخیره در پروفایل
-    // ==========================================
     try {
-      const nameParts = data.fullName.trim().split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.slice(1).join(" ") || "";
-      
-      await profileApi.updateProfile({
-        firstName,
-        lastName,
-        gender: data.gender,
+      setIsSubmitting(true);
+      await api.put(`/basket/${tourId}`);
+      const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
+
+      const orderData = {
         nationalCode: persianToEnglish(data.nationalId),
+        fullName: data.fullName,
+        gender: data.gender,
         birthDate: gregorianBirthDate,
-      });
-    } catch (profileError) {
-      console.warn("خطا در ذخیره در پروفایل:", profileError);
-      // ادامه بده حتی اگه ذخیره پروفایل خطا داد
+      };
+
+      const response = await api.post("/order", orderData);
+
+      // ذخیره در پروفایل (از طریق API)
+      try {
+        const nameParts = data.fullName.trim().split(" ");
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
+        await profileApi.updateProfile({
+          firstName,
+          lastName,
+          gender: data.gender,
+          nationalCode: persianToEnglish(data.nationalId),
+          birthDate: gregorianBirthDate,
+        });
+      } catch (profileError) {
+        // ادامه بده حتی اگه ذخیره پروفایل خطا داد
+      }
+
+      setShowLoadingModal(true);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setShowLoadingModal(false);
+
+      const orderId = response.data?.orderId || `ORD-${Date.now()}`;
+      const amount = (tourData?.price || 0) * 10;
+      router.push(
+        `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`,
+      );
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message || "مشکلی در ثبت سفارش پیش آمد");
+    } finally {
+      setIsSubmitting(false);
     }
-    // ==========================================
-
-    setShowLoadingModal(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setShowLoadingModal(false);
-
-    const orderId = response.data?.orderId || `ORD-${Date.now()}`;
-    const amount = (tourData?.price || 0) * 10;
-
-    router.push(
-      `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`,
-    );
-
-  } catch (error) {
-    console.error("خطا در ثبت سفارش:", error);
-    toast.error(error.response?.data?.message || error.message || "مشکلی در ثبت سفارش پیش آمد");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   useEffect(() => {
     if (!tourId) {
@@ -288,17 +220,16 @@ export default function BookingForm({ initialTourId }) {
     }
 
     const fetchTourDetails = async () => {
-  try {
-    setIsLoading(true);
-    const response = await api.get(`/tour/${tourId}`);
-    setTourData(response.data);
-  } catch (err) {
-    console.error(err);
-    setError("مشکلی در بارگذاری اطلاعات تور پیش آمد.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/tour/${tourId}`);
+        setTourData(response.data);
+      } catch (err) {
+        setError("مشکلی در بارگذاری اطلاعات تور پیش آمد.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
     fetchTourDetails();
   }, [tourId]);
@@ -353,19 +284,10 @@ export default function BookingForm({ initialTourId }) {
     <div className={styles.mainContainer}>
       <Toaster />
       <PaymentLoadingModal isOpen={showLoadingModal} />
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        noValidate
-        className={styles.deskfORM}
-      >
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className={styles.deskfORM}>
         <div className={styles.formSection}>
           <div className={styles.formInfo}>
-            <Image
-              width={24}
-              height={24}
-              alt="user"
-              src="/SVG/profile/psrofile.svg"
-            />
+            <Image width={24} height={24} alt="user" src="/SVG/profile/psrofile.svg" />
             <h1>مشخصات مسافر</h1>
             {source && (
               <span style={{ fontSize: "12px", color: "#666" }}>
@@ -394,9 +316,7 @@ export default function BookingForm({ initialTourId }) {
                     value !== "default" || "لطفاً جنسیت را انتخاب کنید",
                 })}
               >
-                <option value="default" disabled>
-                  جنسیت
-                </option>
+                <option value="default" disabled>جنسیت</option>
                 <option value="male">مرد</option>
                 <option value="female">زن</option>
                 <option value="other">سایر</option>
@@ -435,9 +355,7 @@ export default function BookingForm({ initialTourId }) {
                 render={({ field }) => (
                   <DatePicker
                     value={field.value || null}
-                    onChange={(date) =>
-                      handleBirthDateChange(date, field.onChange)
-                    }
+                    onChange={(date) => handleBirthDateChange(date, field.onChange)}
                     calendar={persian}
                     locale={persian_fa}
                     calendarPosition="bottom-right"
@@ -446,16 +364,12 @@ export default function BookingForm({ initialTourId }) {
                     containerClassName={styles.datePickerContainer}
                     format="YYYY/MM/DD"
                     maxDate={new Date()}
-                    minDate={new Date().setFullYear(
-                      new Date().getFullYear() - 120,
-                    )}
+                    minDate={new Date().setFullYear(new Date().getFullYear() - 120)}
                     editable={false}
                   />
                 )}
               />
-              <ErrorMessage
-                message={birthDateError || errors.birthDate?.message}
-              />
+              <ErrorMessage message={birthDateError || errors.birthDate?.message} />
             </div>
           </div>
         </div>

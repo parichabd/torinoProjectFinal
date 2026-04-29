@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber } from "@/utils/number";
+import { formatToJalali } from "@/utils/date";
 import { profileApi } from "@/lib/api";
 import {
   toEnglishDigits,
@@ -13,10 +14,8 @@ import {
   getCardType,
   formatSheba,
 } from "@/utils/bankValidation";
-import { getCookie, setCookie } from "@/utils/cookie";
 import styles from "./Profile.module.css";
 import Image from "next/image";
-
 // ============================================
 // 🔐 توابع امنیتی
 // ============================================
@@ -28,7 +27,6 @@ const sanitizeInput = (input) => {
     .replace(/on\w+=/gi, "")
     .trim();
 };
-
 // ============================================
 // کمکی‌ها
 // ============================================
@@ -37,7 +35,6 @@ const truncateEmail = (email, maxLength = 25) => {
   if (email.length <= maxLength) return email;
   return email.substring(0, maxLength) + "...";
 };
-
 // ============================================
 // کامپوننت اصلی
 // ============================================
@@ -45,7 +42,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingSection, setEditingSection] = useState(null);
-
   // داده‌های فرم
   const [accountData, setAccountData] = useState({ mobile: "", email: "" });
   const [personalData, setPersonalData] = useState({
@@ -59,7 +55,6 @@ export default function Profile() {
     sheba: "",
     accountNumber: "",
   });
-
   // اعتبارسنجی real-time برای بانک
   const [cardValidation, setCardValidation] = useState({
     valid: null,
@@ -74,7 +69,6 @@ export default function Profile() {
     valid: null,
     message: "",
   });
-
   // ============================================
   // useForm با custom validation
   // ============================================
@@ -86,12 +80,10 @@ export default function Profile() {
     watch,
     formState: { errors },
   } = useForm({ mode: "onChange" });
-
   // Watch برای فیلدهای بانکی
   const watchedCard = watch("cardNumber", "");
   const watchedSheba = watch("sheba", "");
   const watchedAccount = watch("accountNumber", "");
-
   // ============================================
   // 📦 بارگذاری اولیه داده‌ها از API
   // ============================================
@@ -99,17 +91,13 @@ export default function Profile() {
     const loadProfile = async () => {
       try {
         const data = await profileApi.getProfile();
-
         console.log("🔍 Full Profile Data:", JSON.stringify(data, null, 2));
-        console.log("🔍 Payment Data:", data.payment);
-        console.log("🔍 debitCard_code:", data.payment?.debitCard_code);
-
+        
         // اطلاعات حساب
         setAccountData({
           mobile: data.mobile || "",
           email: data.email || "",
         });
-
         // اطلاعات شخصی
         setPersonalData({
           fullName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
@@ -117,7 +105,6 @@ export default function Profile() {
           nationalId: data.nationalCode ? String(data.nationalCode) : "",
           birthDate: data.birthDate || "",
         });
-
         // اطلاعات بانکی
         if (data.payment) {
           const cardCode = data.payment.debitCard_code;
@@ -126,55 +113,22 @@ export default function Profile() {
             sheba: data.payment.shaba_code || "",
             accountNumber: data.payment.accountIdentifier || "",
           });
-          if (cardCode) {
-            setCookie("lastUsedCard", cardCode.slice(-4), 30);
-          }
         } else {
-          const lastFour = getCookie("lastUsedCard") || "";
           setBankData({
-            cardNumber: lastFour ? `**** **** **** ${lastFour}` : "",
+            cardNumber: "",
             sheba: "",
             accountNumber: "",
           });
         }
-
-        // ذخیره در Cookie
-        if (data.firstName || data.lastName) {
-          const fullName = `${data.firstName || ""} ${data.lastName || ""}`.trim();
-          setCookie("passengerFullName", fullName, 30);
-        }
-        if (data.gender) setCookie("passengerGender", data.gender, 30);
-        if (data.nationalCode) setCookie("passengerNationalId", String(data.nationalCode), 30);
-        if (data.birthDate) setCookie("passengerBirthDate", data.birthDate, 30);
-
       } catch (error) {
         console.error("خطا در دریافت پروفایل:", error);
-
-        // Fallback به Cookie
-        setAccountData({
-          mobile: getCookie("mobile") || "",
-          email: "",
-        });
-        setPersonalData({
-          fullName: getCookie("passengerFullName") || "",
-          gender: getCookie("passengerGender") || "",
-          nationalId: getCookie("passengerNationalId") || "",
-          birthDate: getCookie("passengerBirthDate") || "",
-        });
-        const lastFour = getCookie("lastUsedCard") || "";
-        setBankData({
-          cardNumber: lastFour ? `**** **** **** ${lastFour}` : "",
-          sheba: "",
-          accountNumber: "",
-        });
+        toast.error("خطا در بارگذاری پروفایل");
       } finally {
         setLoading(false);
       }
     };
-
     loadProfile();
   }, []);
-
   // ============================================
   // اعتبارسنجی real-time شماره کارت
   // ============================================
@@ -199,9 +153,8 @@ export default function Profile() {
       setCardValidation({ valid: null, message: "", cardType: null });
     }
   }, [watchedCard, editingSection]);
-
   // ============================================
-  // اعتبارسنجی real-time شبا (فقط نمایش، الزامی نیست)
+  // اعتبارسنجی real-time شبا
   // ============================================
   useEffect(() => {
     if (editingSection !== "bank" || !watchedSheba) {
@@ -227,9 +180,8 @@ export default function Profile() {
       setShebaValidation({ valid: null, message: "" });
     }
   }, [watchedSheba, editingSection]);
-
   // ============================================
-  // اعتبارسنجی real-time شماره حساب (فقط نمایش، الزامی نیست)
+  // اعتبارسنجی real-time شماره حساب
   // ============================================
   useEffect(() => {
     if (editingSection !== "bank" || !watchedAccount) {
@@ -248,7 +200,6 @@ export default function Profile() {
       setAccountValidation({ valid: null, message: "" });
     }
   }, [watchedAccount, editingSection]);
-
   // ============================================
   // تبدیل اعداد فارسی به انگلیسی
   // ============================================
@@ -266,7 +217,6 @@ export default function Profile() {
     }
     setValue(fieldName, persianValue);
   };
-
   // ============================================
   // مدیریت ورودی شماره کارت
   // ============================================
@@ -277,7 +227,6 @@ export default function Profile() {
     },
     [setValue],
   );
-
   // ============================================
   // ورود به حالت ویرایش
   // ============================================
@@ -290,7 +239,7 @@ export default function Profile() {
         fullName: personalData.fullName,
         gender: personalData.gender,
         nationalId: toPersianNumber(personalData.nationalId),
-        birthDate: toPersianNumber(personalData.birthDate),
+        birthDate: formatToJalali(personalData.birthDate),
       });
     } else if (section === "bank") {
       reset({
@@ -303,7 +252,6 @@ export default function Profile() {
       setAccountValidation({ valid: null, message: "" });
     }
   };
-
   // ============================================
   // انصراف از ویرایش
   // ============================================
@@ -314,7 +262,6 @@ export default function Profile() {
     setAccountValidation({ valid: null, message: "" });
     reset();
   };
-
   // ============================================
   // ارسال فرم
   // ============================================
@@ -332,17 +279,14 @@ export default function Profile() {
         sheba: sanitizeInput(data.sheba || ""),
         accountNumber: sanitizeInput(data.accountNumber || ""),
       };
-
       if (editingSection === "account") {
         await profileApi.updateProfile({ email: sanitizedData.email });
         setAccountData((prev) => ({ ...prev, email: sanitizedData.email }));
         toast.success("ایمیل با موفقیت ذخیره شد");
-
       } else if (editingSection === "personal") {
         const nameParts = sanitizedData.fullName.trim().split(" ");
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
-
         await profileApi.updateProfile({
           firstName,
           lastName,
@@ -350,13 +294,6 @@ export default function Profile() {
           nationalCode: toEnglishDigits(sanitizedData.nationalId),
           birthDate: toEnglishDigits(sanitizedData.birthDate),
         });
-
-        // ذخیره در Cookie
-        setCookie("passengerFullName", sanitizedData.fullName, 30);
-        setCookie("passengerGender", sanitizedData.gender, 30);
-        setCookie("passengerNationalId", sanitizedData.nationalId, 30);
-        setCookie("passengerBirthDate", sanitizedData.birthDate, 30);
-
         setPersonalData({
           fullName: sanitizedData.fullName,
           gender: sanitizedData.gender,
@@ -364,9 +301,7 @@ export default function Profile() {
           birthDate: sanitizedData.birthDate,
         });
         toast.success("مشخصات مسافر با موفقیت ذخیره شد");
-
       } else if (editingSection === "bank") {
-        // ✅ فقط شماره کارت الزامی است
         const cleanedCard = sanitizedData.cardNumber.replace(/\s/g, "");
         
         if (!cleanedCard) {
@@ -374,14 +309,11 @@ export default function Profile() {
           setSaving(false);
           return;
         }
-
         if (cleanedCard.length !== 16) {
           toast.error("شماره کارت باید ۱۶ رقم باشد");
           setSaving(false);
           return;
         }
-
-        // ✅ دیباگ
         const updateData = {
           payment: {
             shaba_code: sanitizedData.sheba || null,
@@ -389,25 +321,14 @@ export default function Profile() {
             accountIdentifier: sanitizedData.accountNumber || null,
           },
         };
-
-        console.log("💾 Sending to API:", JSON.stringify(updateData, null, 2));
-
         await profileApi.updateProfile(updateData);
-
-        console.log("✅ Save completed!");
-
-        // فقط ۴ رقم آخر کارت
-        const lastFour = cleanedCard.slice(-4);
-        setCookie("lastUsedCard", lastFour, 30);
-
         setBankData({
-          cardNumber: `**** **** **** ${lastFour}`,
+          cardNumber: `**** **** **** ${cleanedCard.slice(-4)}`,
           sheba: sanitizedData.sheba || "",
           accountNumber: sanitizedData.accountNumber || "",
         });
         toast.success("اطلاعات بانکی با موفقیت ذخیره شد");
       }
-
       setEditingSection(null);
       reset();
     } catch (error) {
@@ -418,7 +339,6 @@ export default function Profile() {
       setSaving(false);
     }
   };
-
   // ============================================
   // عنوان بخش
   // ============================================
@@ -430,7 +350,6 @@ export default function Profile() {
     }
     return defaultTitle;
   };
-
   // ============================================
   // کامپوننت‌های کمکی
   // ============================================
@@ -444,7 +363,6 @@ export default function Profile() {
       </span>
     );
   };
-
   const CardTypeBadge = ({ cardType }) => {
     if (!cardType) return null;
     return (
@@ -456,9 +374,7 @@ export default function Profile() {
       </span>
     );
   };
-
   if (loading) return <div className={styles.loading}>در حال بارگذاری...</div>;
-
   return (
     <div className={styles.container}>
       <Toaster position="top-center" />
@@ -515,9 +431,7 @@ export default function Profile() {
             )}
           </div>
         </div>
-
         <div className={styles.divider}></div>
-
         {/* ۲. اطلاعات شخصی */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
@@ -585,15 +499,13 @@ export default function Profile() {
                 </div>
                 <div className={styles.infoRow}>
                   <span className={styles.label}>تاریخ تولد:</span>
-                  <span className={styles.value}>{toPersianNumber(personalData.birthDate) || "-"}</span>
+                  <span className={styles.value}>{formatToJalali(personalData.birthDate) || "-"}</span>
                 </div>
               </div>
             )}
           </div>
         </div>
-
         <div className={styles.divider}></div>
-
         {/* ۳. اطلاعات حساب بانکی */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
@@ -610,7 +522,7 @@ export default function Profile() {
           <div className={styles.content}>
             {editingSection === "bank" ? (
               <div className={styles.formGroup}>
-                {/* شماره کارت - ✅ فقط این الزامی است */}
+                {/* شماره کارت */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
                     <CardTypeBadge cardType={cardValidation.cardType} />
@@ -636,8 +548,7 @@ export default function Profile() {
                   </div>
                   {errors.cardNumber && <span className={styles.errorText}>{errors.cardNumber.message}</span>}
                 </div>
-
-                {/* شماره شبا - ❌ اختیاری */}
+                {/* شماره شبا */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
                     {shebaValidation.valid === true && <span className={styles.validBadge}>✓ معتبر</span>}
@@ -646,7 +557,7 @@ export default function Profile() {
                   <div className={styles.bankInputWrapper}>
                     <input 
                       type="text" 
-                      {...register("sheba")}  // ← بدون validate و required
+                      {...register("sheba")}
                       placeholder="شماره شبا (اختیاری)" 
                       dir="ltr" 
                       maxLength={26} 
@@ -656,8 +567,7 @@ export default function Profile() {
                     <ValidationBadge valid={shebaValidation.valid} message={shebaValidation.message} />
                   </div>
                 </div>
-
-                {/* شماره حساب - ❌ اختیاری */}
+                {/* شماره حساب */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
                     {accountValidation.valid === true && <span className={styles.validBadge}>✓ معتبر</span>}
@@ -667,7 +577,7 @@ export default function Profile() {
                     <input 
                       placeholder="شماره حساب (اختیاری)" 
                       type="text" 
-                      {...register("accountNumber")}  // ← بدون validate و required
+                      {...register("accountNumber")}
                       dir="ltr" 
                       maxLength={13} 
                       className={`${styles.bankInput} ${accountValidation.valid === false ? styles.inputError : ""} ${accountValidation.valid === true ? styles.inputValid : ""}`} 
@@ -676,7 +586,6 @@ export default function Profile() {
                     <ValidationBadge valid={accountValidation.valid} message={accountValidation.message} />
                   </div>
                 </div>
-
                 {/* راهنما */}
                 <div className={styles.validationGuide}>
                   <p>💡 نکات مهم:</p>
@@ -685,12 +594,11 @@ export default function Profile() {
                     <li>شماره شبا و شماره حساب <strong>اختیاری</strong> هستند</li>
                   </ul>
                 </div>
-
                 <div className={styles.saveBtn}>
                   <button 
                     type="submit" 
                     className={styles.saveBtnOne} 
-                    disabled={saving || cardValidation.valid === false}  // ← فقط کارت چک شود
+                    disabled={saving || cardValidation.valid === false}
                   >
                     {saving ? "در حال ذخیره..." : "تایید"}
                   </button>
