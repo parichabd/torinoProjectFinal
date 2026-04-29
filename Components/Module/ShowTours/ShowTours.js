@@ -163,7 +163,7 @@ export default function ShowTours({ tours, isLoading, hasError }) {
                   width={400}
                   height={220}
                   className={styles.tourImage} 
-                  unoptimized={process.env.NODE_ENV === "development"}
+                   unoptimized={true}  // ← همیشه true
                 />
                 <div className={styles.overlay}>
                   <span className={styles.zoomIcon}>
