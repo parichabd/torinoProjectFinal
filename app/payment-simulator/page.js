@@ -239,13 +239,13 @@ export default function PaymentSimulator() {
                 maxLength={6}
                 className={`${styles.cardInput} ${errors.otp ? styles.inputError : ""}`}
                 dir="ltr"
-                {...register("otp", {
-                  required: "رمز پویا الزامی است",
-                  pattern: {
-                    value: /^[0-9]{6}$/,
-                    message: "۶ رقم",
-                  },
-                })}
+                // {...register("otp", {
+                //   required: "رمز پویا الزامی است",
+                //   pattern: {
+                //     value: /^[0-9]{6}$/,
+                //     message: "۶ رقم",
+                //   },
+                // })}
               />
               {errors.otp && (
                 <span className={styles.errorText}>{errors.otp.message}</span>

@@ -10,20 +10,50 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import toast, { Toaster } from "react-hot-toast";
 import { getCookie, setCookie } from "@/utils/cookie";
 import PaymentLoadingModal from "@/Components/Spinner/PaymentLoadingModal";
+import api from "@/lib/api"; // ← اضافه کنید
+import { profileApi } from "@/lib/api";  // ← این خط رو اضافه کن
 
 const BACKEND_BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
 
 const INVALID_PERSIAN_WORDS = [
-  "نام", "نام خانوادگی", "نام و نام خانوادگی", "نام ونام خانوادگی",
-  "test", "asdf", "qwerty", "abc", "test123", "name", "username",
-  "کاربر", "مسافر", "مشتری", "خریدار", "ثبت نام", "ثبت", "آزمایشی",
-  "فیک", "نامشخص", "نامحدود",
+  "نام",
+  "نام خانوادگی",
+  "نام و نام خانوادگی",
+  "نام ونام خانوادگی",
+  "test",
+  "asdf",
+  "qwerty",
+  "abc",
+  "test123",
+  "name",
+  "username",
+  "کاربر",
+  "مسافر",
+  "مشتری",
+  "خریدار",
+  "ثبت نام",
+  "ثبت",
+  "آزمایشی",
+  "فیک",
+  "نامشخص",
+  "نامحدود",
 ];
 
 const INVALID_ENGLISH_WORDS = [
-  "test", "asdf", "qwerty", "abc", "name", "username", "user", "fake",
-  "dummy", "sample", "example", "demo", "temp",
+  "test",
+  "asdf",
+  "qwerty",
+  "abc",
+  "name",
+  "username",
+  "user",
+  "fake",
+  "dummy",
+  "sample",
+  "example",
+  "demo",
+  "temp",
 ];
 
 const persianToEnglish = (str) => {
@@ -58,7 +88,7 @@ export default function BookingForm({ initialTourId }) {
     if (!pathname) return null;
     const cleanPathname = pathname.replace(/^\/|\/$/g, "");
     const parts = cleanPathname.split("/");
-    
+
     // مسیر: /bookTour/[id]
     if (parts[0] === "bookTour" && parts[1]) {
       return parts[1];
@@ -187,71 +217,68 @@ export default function BookingForm({ initialTourId }) {
   };
 
   const onSubmit = async (data) => {
-    const refreshToken = getCookie("refreshToken");
-    if (!refreshToken) {
-      toast.error(
-        " 📋 ابتدا برای احراز هویت وارد سایت شوید و سپس میتوانید خرید کنید",
-        { position: "top-center", duration: 5000 },
-      );
-      return;
-    }
-    if (birthDateError) {
-      toast.error("لطفاً خطاهای فرم را برطرف کنید");
-      return;
-    }
-    if (Object.keys(errors).length > 0) {
-      toast.error("لطفاً تمام فیلدها را به درستی پر کنید");
-      return;
-    }
+  try {
+    setIsSubmitting(true);
 
+    // ✅ افزودن به سبد خرید
+    await api.put(`/basket/${tourId}`);
+
+    const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
+    const orderData = {
+      nationalCode: persianToEnglish(data.nationalId),
+      fullName: data.fullName,
+      gender: data.gender,
+      birthDate: gregorianBirthDate,
+    };
+
+    // ✅ ذخیره در Cookie
+    setCookie("passengerFullName", data.fullName, 30);
+    setCookie("passengerGender", data.gender, 30);
+    setCookie("passengerNationalId", data.nationalId, 30);
+    setCookie("passengerBirthDate", data.birthDate, 30);
+
+    // ✅ ثبت سفارش
+    const response = await api.post("/order", orderData);
+
+    // ==========================================
+    // ✅ این بخش رو اضافه کن - ذخیره در پروفایل
+    // ==========================================
     try {
-      setIsSubmitting(true);
-      await addToBasket(tourId, refreshToken);
-      const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
-      const orderData = {
-        nationalCode: persianToEnglish(data.nationalId),
-        fullName: data.fullName,
+      const nameParts = data.fullName.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+      
+      await profileApi.updateProfile({
+        firstName,
+        lastName,
         gender: data.gender,
+        nationalCode: persianToEnglish(data.nationalId),
         birthDate: gregorianBirthDate,
-      };
-
-      setCookie("passengerFullName", data.fullName, 30);
-      setCookie("passengerGender", data.gender, 30);
-      setCookie("passengerNationalId", data.nationalId, 30);
-      setCookie("passengerBirthDate", data.birthDate, 30);
-
-      const response = await fetch(`${BACKEND_BASE_URL}/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${refreshToken}`,
-        },
-        body: JSON.stringify(orderData),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "خطا در ثبت سفارش");
-      }
-
-      const result = await response.json();
-      console.log("نتیجه ثبت سفارش:", result);
-      setShowLoadingModal(true);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setShowLoadingModal(false);
-
-      const orderId = result.orderId || `ORD-${Date.now()}`;
-      const amount = (tourData?.price || 0) * 10;
-      router.push(
-        `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`,
-      );
-    } catch (error) {
-      console.error("خطا در ثبت سفارش:", error);
-      toast.error(error.message || "مشکلی در ثبت سفارش پیش آمد");
-    } finally {
-      setIsSubmitting(false);
+    } catch (profileError) {
+      console.warn("خطا در ذخیره در پروفایل:", profileError);
+      // ادامه بده حتی اگه ذخیره پروفایل خطا داد
     }
-  };
+    // ==========================================
+
+    setShowLoadingModal(true);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setShowLoadingModal(false);
+
+    const orderId = response.data?.orderId || `ORD-${Date.now()}`;
+    const amount = (tourData?.price || 0) * 10;
+
+    router.push(
+      `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`,
+    );
+
+  } catch (error) {
+    console.error("خطا در ثبت سفارش:", error);
+    toast.error(error.response?.data?.message || error.message || "مشکلی در ثبت سفارش پیش آمد");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   useEffect(() => {
     if (!tourId) {
@@ -261,23 +288,17 @@ export default function BookingForm({ initialTourId }) {
     }
 
     const fetchTourDetails = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch(`${BACKEND_BASE_URL}/tour/${tourId}`, {
-          cache: "no-store",
-        });
-        if (!res.ok) {
-          throw new Error(`خطا در دریافت اطلاعات تور: ${res.status}`);
-        }
-        const data = await res.json();
-        setTourData(data);
-      } catch (err) {
-        console.error(err);
-        setError("مشکلی در بارگذاری اطلاعات تور پیش آمد.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  try {
+    setIsLoading(true);
+    const response = await api.get(`/tour/${tourId}`);
+    setTourData(response.data);
+  } catch (err) {
+    console.error(err);
+    setError("مشکلی در بارگذاری اطلاعات تور پیش آمد.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
     fetchTourDetails();
   }, [tourId]);
