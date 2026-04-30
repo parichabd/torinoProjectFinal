@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber } from "@/utils/number";
-import { formatToJalali } from "@/utils/date";
 import { profileApi } from "@/lib/api";
 import {
   toEnglishDigits,
@@ -30,12 +29,52 @@ const sanitizeInput = (input) => {
 };
 
 // ============================================
+// 🍪 توابع Cookie
+// ============================================
+const setCookie = (name, value, days = 30) => {
+  if (typeof document === "undefined") return;
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+};
+
+const getCookie = (name) => {
+  if (typeof document === "undefined") return null;
+  const nameEQ = `${name}=`;
+  const ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+  }
+  return null;
+};
+
+// ============================================
 // کمکی‌ها
 // ============================================
 const truncateEmail = (email, maxLength = 25) => {
   if (!email) return "";
   if (email.length <= maxLength) return email;
   return email.substring(0, maxLength) + "...";
+};
+
+// ============================================
+// تبدیل تاریخ شمسی به میلادی
+// ============================================
+const convertShamsiToGregorian = (shamsiDate) => {
+  if (!shamsiDate) return null;
+  const parts = shamsiDate.split("/");
+  if (parts.length !== 3) return null;
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  const d = new Date();
+  d.setFullYear(year + 621);
+  d.setMonth(month - 1);
+  d.setDate(day);
+  const gregorianDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return gregorianDate;
 };
 
 // ============================================
@@ -93,15 +132,13 @@ export default function Profile() {
   const watchedAccount = watch("accountNumber", "");
 
   // ============================================
-  // 📦 بارگذاری اولیه داده‌ها از API
+  // 📦 بارگذاری اولیه داده‌ها از API + Cookie
   // ============================================
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const data = await profileApi.getProfile();
         console.log("🔍 Full Profile Data:", JSON.stringify(data, null, 2));
-        console.log("🔍 Payment Data:", data.payment);
-        console.log("🔍 debitCard_code:", data.payment?.debitCard_code);
 
         // اطلاعات حساب
         setAccountData({
@@ -110,12 +147,29 @@ export default function Profile() {
         });
 
         // اطلاعات شخصی
+        const fullName = `${data.firstName || ""} ${data.lastName || ""}`.trim();
+        const gender = data.gender || "";
+        const nationalId = data.nationalCode ? String(data.nationalCode) : "";
+
+        // ✅ تاریخ تولد: اول از Cookie بخوان، اگه نبود از API
+        const birthDateFromCookie = getCookie("passengerBirthDate");
+        const birthDateFromApi = data.birthDate || "";
+        const birthDate = birthDateFromCookie || birthDateFromApi;
+
         setPersonalData({
-          fullName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
-          gender: data.gender || "",
-          nationalId: data.nationalCode ? String(data.nationalCode) : "",
-          birthDate: data.birthDate || "",
+          fullName,
+          gender,
+          nationalId,
+          birthDate,
         });
+
+        // ذخیره در Cookie
+        if (fullName) setCookie("passengerFullName", fullName, 30);
+        if (gender) setCookie("passengerGender", gender, 30);
+        if (nationalId) setCookie("passengerNationalId", nationalId, 30);
+        if (birthDateFromApi && !birthDateFromCookie) {
+          setCookie("passengerBirthDate", birthDateFromApi, 30);
+        }
 
         // اطلاعات بانکی
         if (data.payment) {
@@ -125,16 +179,40 @@ export default function Profile() {
             sheba: data.payment.shaba_code || "",
             accountNumber: data.payment.accountIdentifier || "",
           });
+          if (cardCode) {
+            setCookie("lastUsedCard", cardCode.slice(-4), 30);
+          }
         } else {
+          const lastFour = getCookie("lastUsedCard") || "";
           setBankData({
-            cardNumber: "",
+            cardNumber: lastFour ? `**** **** **** ${lastFour}` : "",
             sheba: "",
             accountNumber: "",
           });
         }
+
       } catch (error) {
         console.error("خطا در دریافت پروفایل:", error);
-        toast.error("خطا در بارگذاری اطلاعات");
+        
+        // ✅ Fallback به Cookie
+        setAccountData({
+          mobile: getCookie("mobile") || "",
+          email: "",
+        });
+
+        setPersonalData({
+          fullName: getCookie("passengerFullName") || "",
+          gender: getCookie("passengerGender") || "",
+          nationalId: getCookie("passengerNationalId") || "",
+          birthDate: getCookie("passengerBirthDate") || "",
+        });
+
+        const lastFour = getCookie("lastUsedCard") || "";
+        setBankData({
+          cardNumber: lastFour ? `**** **** **** ${lastFour}` : "",
+          sheba: "",
+          accountNumber: "",
+        });
       } finally {
         setLoading(false);
       }
@@ -172,7 +250,7 @@ export default function Profile() {
   }, [watchedCard, editingSection]);
 
   // ============================================
-  // اعتبارسنجی real-time شبا (فقط نمایش، الزامی نیست)
+  // اعتبارسنجی real-time شبا
   // ============================================
   useEffect(() => {
     if (editingSection !== "bank" || !watchedSheba) {
@@ -204,7 +282,7 @@ export default function Profile() {
   }, [watchedSheba, editingSection]);
 
   // ============================================
-  // اعتبارسنجی real-time شماره حساب (فقط نمایش، الزامی نیست)
+  // اعتبارسنجی real-time شماره حساب
   // ============================================
   useEffect(() => {
     if (editingSection !== "bank" || !watchedAccount) {
@@ -271,7 +349,7 @@ export default function Profile() {
         fullName: personalData.fullName,
         gender: personalData.gender,
         nationalId: toPersianNumber(personalData.nationalId),
-        birthDate: formatToJalali(personalData.birthDate),
+        birthDate: personalData.birthDate,
       });
     } else if (section === "bank") {
       reset({
@@ -325,13 +403,22 @@ export default function Profile() {
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
 
+        // ✅ تبدیل تاریخ شمسی به میلادی برای API
+        const gregorianDate = convertShamsiToGregorian(sanitizedData.birthDate);
+
         await profileApi.updateProfile({
           firstName,
           lastName,
           gender: sanitizedData.gender,
           nationalCode: toEnglishDigits(sanitizedData.nationalId),
-          birthDate: toEnglishDigits(sanitizedData.birthDate),
+          birthDate: gregorianDate,
         });
+
+        // ✅ ذخیره تاریخ شمسی در Cookie
+        setCookie("passengerFullName", sanitizedData.fullName, 30);
+        setCookie("passengerGender", sanitizedData.gender, 30);
+        setCookie("passengerNationalId", sanitizedData.nationalId, 30);
+        setCookie("passengerBirthDate", sanitizedData.birthDate, 30);
 
         setPersonalData({
           fullName: sanitizedData.fullName,
@@ -342,7 +429,6 @@ export default function Profile() {
         toast.success("مشخصات مسافر با موفقیت ذخیره شد");
 
       } else if (editingSection === "bank") {
-        // ✅ فقط شماره کارت الزامی است
         const cleanedCard = sanitizedData.cardNumber.replace(/\s/g, "");
 
         if (!cleanedCard) {
@@ -357,7 +443,6 @@ export default function Profile() {
           return;
         }
 
-        // ✅ دیباگ
         const updateData = {
           payment: {
             shaba_code: sanitizedData.sheba || null,
@@ -366,12 +451,10 @@ export default function Profile() {
           },
         };
 
-        console.log("💾 Sending to API:", JSON.stringify(updateData, null, 2));
         await profileApi.updateProfile(updateData);
-        console.log("✅ Save completed!");
 
-        // فقط ۴ رقم آخر کارت
         const lastFour = cleanedCard.slice(-4);
+        setCookie("lastUsedCard", lastFour, 30);
 
         setBankData({
           cardNumber: `**** **** **** ${lastFour}`,
@@ -529,7 +612,7 @@ export default function Profile() {
                     </select>
                   </div>
                   <div>
-                    <input type="text" {...register("birthDate", { required: "الزامی است" })} placeholder="تاریخ تولد" className={errors.birthDate ? styles.errorInput : ""} onChange={(e) => handlePersianInput(e, "birthDate")} />
+                    <input type="text" {...register("birthDate", { required: "الزامی است" })} placeholder="تاریخ تولد (مثال: 1375/03/15)" className={errors.birthDate ? styles.errorInput : ""} onChange={(e) => handlePersianInput(e, "birthDate")} />
                     {errors.birthDate && <span className={styles.errorText}>{errors.birthDate.message}</span>}
                   </div>
                 </div>
@@ -560,7 +643,7 @@ export default function Profile() {
                 </div>
                 <div className={styles.infoRow}>
                   <span className={styles.label}>تاریخ تولد:</span>
-                  <span className={styles.value}>{formatToJalali(personalData.birthDate) || "-"}</span>
+                  <span className={styles.value}>{personalData.birthDate || "-"}</span>
                 </div>
               </div>
             )}
@@ -585,7 +668,7 @@ export default function Profile() {
           <div className={styles.content}>
             {editingSection === "bank" ? (
               <div className={styles.formGroup}>
-                {/* شماره کارت - ✅ فقط این الزامی است */}
+                {/* شماره کارت */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
                     <CardTypeBadge cardType={cardValidation.cardType} />
@@ -612,7 +695,7 @@ export default function Profile() {
                   {errors.cardNumber && <span className={styles.errorText}>{errors.cardNumber.message}</span>}
                 </div>
 
-                {/* شماره شبا - ❌ اختیاری */}
+                {/* شماره شبا */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
                     {shebaValidation.valid === true && <span className={styles.validBadge}>✓ معتبر</span>}
@@ -632,7 +715,7 @@ export default function Profile() {
                   </div>
                 </div>
 
-                {/* شماره حساب - ❌ اختیاری */}
+                {/* شماره حساب */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
                     {accountValidation.valid === true && <span className={styles.validBadge}>✓ معتبر</span>}

@@ -12,6 +12,16 @@ import PaymentLoadingModal from "@/Components/Spinner/PaymentLoadingModal";
 import api from "@/lib/api";
 import { profileApi } from "@/lib/api";
 
+// ============================================
+// 🍪 توابع Cookie
+// ============================================
+const setCookie = (name, value, days = 30) => {
+  if (typeof document === "undefined") return;
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+};
+
 const INVALID_PERSIAN_WORDS = [
   "نام", "نام خانوادگی", "نام و نام خانوادگی", "نام ونام خانوادگی",
   "test", "asdf", "qwerty", "abc", "test123", "name", "username",
@@ -142,6 +152,7 @@ export default function BookingForm({ initialTourId }) {
         return;
       }
       setBirthDateError("");
+      // ✅ تاریخ شمسی ذخیره می‌شود: 1375/03/15
       const shamsiDate = `${year}/${String(month).padStart(2, "0")}/${String(day).padStart(2, "0")}`;
       onChange(shamsiDate);
     } else {
@@ -149,29 +160,27 @@ export default function BookingForm({ initialTourId }) {
       onChange("");
     }
   };
-// این تابع را پیدا کنید و جایگزین کنید
-const convertShamsiToGregorian = (shamsiDate) => {
-  if (!shamsiDate) return null;
-  const parts = shamsiDate.split("/");
-  if (parts.length !== 3) return null;
-  const year = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10);
-  const day = parseInt(parts[2], 10);
-  
-  // ✅ ترتیب صحیح: اول سال، بعد ماه، بعد روز
-  const d = new Date();
-  d.setFullYear(year + 621);  // اول سال
-  d.setMonth(month - 1);      // بعد ماه
-  d.setDate(day);             // آخر روز
-  
-  const gregorianDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  return gregorianDate;
-};
+
+  const convertShamsiToGregorian = (shamsiDate) => {
+    if (!shamsiDate) return null;
+    const parts = shamsiDate.split("/");
+    if (parts.length !== 3) return null;
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+    const d = new Date();
+    d.setFullYear(year + 621);
+    d.setMonth(month - 1);
+    d.setDate(day);
+    const gregorianDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    return gregorianDate;
+  };
 
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
       await api.put(`/basket/${tourId}`);
+
       const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
 
       const orderData = {
@@ -182,6 +191,12 @@ const convertShamsiToGregorian = (shamsiDate) => {
       };
 
       const response = await api.post("/order", orderData);
+
+      // ✅ ذخیره در Cookie (تاریخ شمسی)
+      setCookie("passengerFullName", data.fullName, 30);
+      setCookie("passengerGender", data.gender, 30);
+      setCookie("passengerNationalId", persianToEnglish(data.nationalId), 30);
+      setCookie("passengerBirthDate", data.birthDate, 30); // ✅ تاریخ شمسی ذخیره می‌شود
 
       // ذخیره در پروفایل (از طریق API)
       try {
