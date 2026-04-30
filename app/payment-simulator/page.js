@@ -72,9 +72,6 @@ export default function PaymentSimulator() {
     return toPersianNumber(formatted);
   };
 
-  // ============================================
-  // ✅ ذخیره کارت در پروفایل
-  // ============================================
   const saveCardToProfile = async (cardNumber) => {
     try {
       const cleanCard = cardNumber.replace(/\s/g, "");
@@ -89,14 +86,12 @@ export default function PaymentSimulator() {
     }
   };
 
-  // ============================================
-  // ✅ ست کردن کوکی برای نمایش زنگوله
-  // ============================================
+
   const setOrderNotification = () => {
-    // ست کردن کوکی برای نمایش زنگوله در هدر
-    setCookie("hasNewOrder", "true", 1); // 1 روز اعتبار
-    setCookie("newOrderCount", "1", 1);   // 1 سفارش جدید
-    
+
+    setCookie("hasNewOrder", "true", 1); 
+    setCookie("newOrderCount", "1", 1); 
+
     console.log("✅ کوکی‌های نوتیفیکیشن ست شدند");
   };
 
@@ -109,10 +104,8 @@ export default function PaymentSimulator() {
     setIsProcessing(true);
     await new Promise((resolve) => setTimeout(resolve, PROCESSING_DELAY));
 
-    // ✅ ذخیره کارت در پروفایل
     await saveCardToProfile(data.cardNumber);
 
-    // ✅ ست کردن کوکی برای نمایش زنگوله
     setOrderNotification();
 
     setIsProcessing(false);
@@ -138,7 +131,7 @@ export default function PaymentSimulator() {
               alt="شاپرک"
               width={200}
               height={200}
-              style={{ width: 'auto', height: 'auto' }}
+              style={{ width: "auto", height: "auto" }}
             />
           </div>
           <div className={styles.headerText}>
@@ -200,7 +193,9 @@ export default function PaymentSimulator() {
                 })}
               />
               {errors.cardNumber && (
-                <span className={styles.errorText}>{errors.cardNumber.message}</span>
+                <span className={styles.errorText}>
+                  {errors.cardNumber.message}
+                </span>
               )}
             </div>
 
@@ -226,7 +221,9 @@ export default function PaymentSimulator() {
                   })}
                 />
                 {errors.expiry && (
-                  <span className={styles.errorText}>{errors.expiry.message}</span>
+                  <span className={styles.errorText}>
+                    {errors.expiry.message}
+                  </span>
                 )}
               </div>
 
@@ -242,7 +239,6 @@ export default function PaymentSimulator() {
                   {...register("cvv", {
                     required: "CVV2 الزامی است",
                     pattern: {
-                      value: /^[0-9]{3,4}$/,
                       message: "۳ یا ۴ رقم",
                     },
                   })}
@@ -259,9 +255,12 @@ export default function PaymentSimulator() {
               <input
                 type="text"
                 placeholder="کد پیامک شده"
-                maxLength={6}
+                maxLength={7}
                 className={`${styles.cardInput} ${errors.otp ? styles.inputError : ""}`}
                 dir="ltr"
+                {...register("otp", {
+                  required: "رمز پویا الزامی است",
+                })}
               />
               {errors.otp && (
                 <span className={styles.errorText}>{errors.otp.message}</span>
