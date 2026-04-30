@@ -664,6 +664,7 @@ export default function Profile() {
                 <div className={styles.validationGuide}>
                   <p>💡 نکات مهم:</p>
                   <ul>
+                    <li style={{color : "red", fontSize : "17px"}}>اعداد باید به لاتین وارد شوند . 0 - 9</li>
                     <li>شماره کارت <strong>الزامی</strong> است و باید ۱۶ رقم باشد</li>
                     <li>شماره شبا و شماره حساب <strong>اختیاری</strong> هستند</li>
                   </ul>
