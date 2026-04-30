@@ -16,6 +16,8 @@ import {
 import styles from "./Profile.module.css";
 import Image from "next/image";
 
+// ... (بقیه کدهای شما بدون تغییر است) ...
+
 const getCookie = (name) => {
   if (typeof document === "undefined") return null;
   const value = `; ${document.cookie}`;
@@ -26,6 +28,7 @@ const getCookie = (name) => {
   }
   return null;
 };
+
 const sanitizeInput = (input) => {
   if (typeof input !== "string") return "";
   return input
@@ -34,11 +37,13 @@ const sanitizeInput = (input) => {
     .replace(/on\w+=/gi, "")
     .trim();
 };
+
 const truncateEmail = (email, maxLength = 25) => {
   if (!email) return "";
   if (email.length <= maxLength) return email;
   return email.substring(0, maxLength) + "...";
 };
+
 const handleEnglishInput = (e, fieldName, setValue) => {
   const englishValue = toEnglishDigits(e.target.value);
   setValue(fieldName, englishValue);
@@ -73,7 +78,6 @@ export default function Profile() {
     valid: null,
     message: "",
   });
-
   const {
     register,
     handleSubmit,
@@ -82,7 +86,6 @@ export default function Profile() {
     watch,
     formState: { errors },
   } = useForm({ mode: "onChange" });
-
   const watchedCard = watch("cardNumber", "");
   const watchedSheba = watch("sheba", "");
   const watchedAccount = watch("accountNumber", "");
@@ -231,6 +234,7 @@ export default function Profile() {
       setAccountValidation({ valid: null, message: "" });
     }
   };
+
   const handleCancel = () => {
     setEditingSection(null);
     setCardValidation({ valid: null, message: "", cardType: null });
@@ -238,6 +242,7 @@ export default function Profile() {
     setAccountValidation({ valid: null, message: "" });
     reset();
   };
+
   const convertShamsiToGregorian = (shamsiDate) => {
     if (!shamsiDate) return null;
     const parts = shamsiDate.split("/");
@@ -252,6 +257,7 @@ export default function Profile() {
     const gregorianDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     return gregorianDate;
   };
+
   const onSubmit = async (data) => {
     setSaving(true);
     try {
@@ -366,6 +372,7 @@ export default function Profile() {
     <div className={styles.container}>
       <Toaster position="top-center" />
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* ۱. اطلاعات حساب کاربری */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("account", "اطلاعات حساب کاربری")}</h3>
@@ -434,14 +441,15 @@ export default function Profile() {
                 </div>
               </div>
             ) : (
-              <>
-                <div className={styles.infoRow}>
+              // *** تغییر اصلی اینجا اعمال شد ***
+              <div className={styles.accountGrid}>
+                <div className={styles.accountBox}>
                   <span className={styles.label}>شماره موبایل:</span>
                   <span className={styles.value} dir="ltr">
                     {toPersianNumber(accountData.mobile)}
                   </span>
                 </div>
-                <div className={styles.infoRow}>
+                <div className={styles.accountBox}>
                   <span className={styles.label}>ایمیل:</span>
                   <span
                     className={styles.value}
@@ -451,13 +459,14 @@ export default function Profile() {
                     {accountData.email ? truncateEmail(accountData.email) : "-"}
                   </span>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>
 
         <div className={styles.divider}></div>
 
+        {/* ۲. اطلاعات شخصی */}
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3>{getSectionTitle("personal", "اطلاعات شخصی")}</h3>
@@ -674,7 +683,6 @@ export default function Profile() {
                     </span>
                   )}
                 </div>
-
                 {/* شماره شبا */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
@@ -699,7 +707,6 @@ export default function Profile() {
                     />
                   </div>
                 </div>
-
                 {/* شماره حساب */}
                 <div className={styles.bankFieldWrapper}>
                   <div className={styles.bankFieldHeader}>
@@ -726,7 +733,6 @@ export default function Profile() {
                     />
                   </div>
                 </div>
-
                 <div className={styles.validationGuide}>
                   <p>💡 نکات مهم:</p>
                   <ul>
