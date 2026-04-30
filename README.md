@@ -1,6 +1,6 @@
 <div style="font-family: 'B Nazanin', Tahoma, sans-serif; direction: rtl;">
 <div align="center" id="readme-top">
-    <img src="./images-md/logo.png" alt="Logo" width="80" height="80">
+    <img src="/images-md/logo.png" alt="Logo" width="80" height="80">
 </div>
 
 <h3 align="center">پروژه تورینو</h3>
