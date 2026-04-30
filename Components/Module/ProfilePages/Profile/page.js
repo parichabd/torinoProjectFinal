@@ -121,7 +121,7 @@ export default function Profile() {
           });
         }
       } catch (error) {
-        toast.error("خطا در بارگذاری اطلاعات");
+        toast.error("مجوز دسترسی شما به پایان رسیده لطفا دوباره وارد شوید !");
       } finally {
         setLoading(false);
       }

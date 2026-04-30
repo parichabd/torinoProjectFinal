@@ -1,39 +1,30 @@
+/* ============================================
+   RESET & BASE
+   ============================================ */
 .container {
   max-width: 900px;
   margin: 10px 0;
 }
-.disabledInput{
+
+.disabledInput {
   font-family: inherit;
-}
-.accountField{
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-.accountField input { 
-  width: 186px;
-  height: 40px;
-  padding: 8px;
-  font-family: inherit;
-}
-.accountActions{
-  margin-top: 30px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-.accountActions button {
-  width: 138px;
-  height: 41px;
+  border: none !important;
+  background-color: transparent !important;
+  color: #282828;
+  font-weight: 900;
+  font-size: 17px;
 }
 
+/* ============================================
+   SECTION - استایل‌های مشترک
+   ============================================ */
 .section {
   margin-bottom: 20px;
   background: #fff;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  border: 1px solid #00000033;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .sectionHeader {
@@ -49,21 +40,20 @@
   color: #000;
 }
 
-.editBtn {
-  background: none;
-  border: 1px solid #31a84e;
-  color: #007bff;
-  padding: 5px 15px;
-  border-radius: 4px;
+.sectionHeader button {
+  all: unset;
+  color: #009ECA !important;
+  padding: 0 9px !important;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
 }
 
 .content {
   padding: 20px;
 }
 
+/* ============================================
+   INFO GRID - نمایش اطلاعات
+   ============================================ */
 .infoGrid {
   display: flex;
   flex-direction: column;
@@ -71,14 +61,16 @@
 }
 
 .infoRow {
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 25px 0 3px 0;
 }
 
 .label {
   display: block;
   font-weight: bold;
   color: #666;
-  margin-bottom: 4px;
   font-size: 0.9rem;
 }
 
@@ -88,7 +80,68 @@
   color: #282828;
 }
 
+/* ============================================
+   باکس ۱ - اطلاعات حساب کاربری
+   ============================================ */
+.accountGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
+.accountBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 25px 0 3px 0;
+}
+
+.accountEditForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.accountFields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.accountField {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.accountField label {
+  font-weight: 600;
+  color: #333;
+}
+
+.accountField input {
+  width: 186px;
+  height: 40px;
+  padding: 8px;
+  font-family: inherit;
+}
+
+.accountActions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.accountActions button {
+  width: 138px;
+  height: 41px;
+}
+
+/* ============================================
+   باکس ۲ - اطلاعات شخصی
+   ============================================ */
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -101,12 +154,6 @@
   gap: 15px;
 }
 
-.infoRow {
-  display: flex;
-  justify-content: space-between;
-  margin: 25px 0 3px 0;
-}
-
 .formGroup label {
   font-size: 0.9rem;
   color: #555;
@@ -114,221 +161,35 @@
   display: block;
 }
 
-.formGroup input {
-  width: 280px !important;
-  height: 40px;
-  border-radius: 5px;
-  border: 1px solid #a9a7a7;
-}
-
+.formGroup input,
 .formGroup select {
   width: 280px !important;
   height: 40px;
   border-radius: 5px;
-  padding: 10px;
   border: 1px solid #a9a7a7;
-  border-radius: 4px;
+  font-family: inherit;
+  padding: 3px 6px;
+}
+
+.formGroup select {
+  padding: 10px;
   font-size: 1rem;
   box-sizing: border-box;
 }
 
-.errorInput {
-  border-color: #dc3545 !important;
-}
-
-.errorText {
-  color: #dc3545;
-  font-size: 0.8rem;
-  margin-top: 4px;
-}
-
-.saveBtn {
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 10px;
-}
-
-.loading {
-  text-align: center;
-  margin-top: 50px;
-  color: #666;
-}
-
-.addBtn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-   width: 186px;
-  height: 40px;
-}
-
-.addButt button {
-  color: #009ECA !important;
-  padding: 0 9px !important;
-  all: unset;
-}
-
-.sectionHeader button {
-  all: unset;
-  color: #009ECA !important;
-  padding: 0 9px !important;
-}
-
-.inputEmail {
-  display: flex;
-  justify-content: space-between !important;
-  gap: 9px;
-}
-
-.inputEmail input {
-  width: 170px !important;
-  font-family: "Iranian Sans";
-  font-size: 12px;
-  padding: 0 5px;
-}
-
-.inputEmail button {
-  width: 93px;
-  height: 40px;
-  border-radius: 5px;
-  font-family: "Iranian Sans";
-  margin: 0px;
-  width: 136px;
-  gap: 13px;
-  height: 42px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 16px;
-  border: none !important;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.profInfo input {
-  border: none;
-  background-color: #fff;
-}
-
-.profInfo {
-  display: flex;
-}
-
-.profInfo label {
-  width: 110px;
-  font-size: 15px;
-  color: #000000b9;
-}
-
-.saveBtn {
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-}
-
-.twoCols input {
-  font-family: inherit;
-  padding: 3px 6px;
-}
-
-.twoCols select {
-  font-family: inherit;
-  padding: 3px 6px;
-}
-
-.cancelTop {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 5px;
-}
-
-.cancelBtn {
-  padding: 6px 20px;
-  height: 36px;
-  border-radius: 5px;
-  background-color: #fff;
-  color: #dc3545;
-  border: 2px solid #dc3545 !important;
-  font-family: "Iranian Sans";
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.cancelBtn:hover {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-.saveBtn button:nth-child(2) {
-  background-color: #fff;
-  color: #28A745;
-  border: 2px solid #28A745;
-}
-
-.saveBtnOne {
-    width: 186px;
-  height: 40px;
-  padding: 10px 30px;
-  height: 42px;
-  background-color: #28a745;
-  color: #fff;
-  font-family: inherit;
-  font-size: 16px;
-  border: none !important;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.saveBtnOne:hover {
-  background-color: #218838;
-}
-
-.saveBtnTwo {
-    width: 186px;
-  height: 40px;
-  padding: 10px 30px;
-  height: 42px;
-  background-color: #fff;
-  color: #28A745;
-  border: 2px solid #28A745 !important;
-  font-family: inherit;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-
-
-.disabledInput {
-  border: none !important;
-  background-color: transparent !important;
-  color: #282828;
-  font-weight: 900;
-  font-size: 17px;
-}
-
-
-
-
+/* ============================================
+   باکس ۳ - اطلاعات بانکی
+   ============================================ */
 .bankFieldWrapper {
   margin-bottom: 20px;
 }
 
 .bankFieldHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 8px;
+  min-height: 28px;
 }
 
 .bankFieldHeader label {
@@ -368,6 +229,22 @@
   background-color: #f1f8f2;
 }
 
+/* Badges */
+.bankNameLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  background-color: #dbeafe;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #bfdbfe;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: -0.01em;
+}
+
 .validationBadge {
   display: inline-flex;
   align-items: center;
@@ -393,18 +270,22 @@
   color: #c62828;
 }
 
-
 .cardTypeBadge {
   padding: 4px 12px;
   border-radius: 20px;
   color: #fff;
   font-size: 12px;
   font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.optionalBadge {
+  font-size: 0.75rem;
+  color: #888;
+}
 
+/* راهنمای اعتبارسنجی */
 .validationGuide {
   background: #f5f5f5;
   border-radius: 8px;
@@ -429,6 +310,43 @@
   margin-bottom: 4px;
 }
 
+/* ============================================
+   BUTTONS
+   ============================================ */
+.editBtn {
+  background: none;
+  border: 1px solid #31a84e;
+  color: #007bff;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.saveBtn {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.saveBtnOne {
+  width: 186px;
+  height: 42px;
+  background-color: #28a745;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  border: none !important;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveBtnOne:hover {
+  background-color: #218838;
+}
 
 .saveBtnOne:disabled {
   background-color: #ccc;
@@ -436,45 +354,52 @@
   opacity: 0.7;
 }
 
-.bankFieldHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  min-height: 28px;
+.saveBtnTwo {
+  width: 186px;
+  height: 42px;
+  background-color: #fff;
+  color: #28a745;
+  border: 2px solid #28a745 !important;
+  font-family: inherit;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-
-.bankNameLabel {
-  font-size: 0.75rem; 
-  font-weight: 700;
-  color: #1E3A8A;
-  
-
-  background-color: #DBEAFE;
-  padding: 4px 12px; 
-  border-radius: 9999px; 
-  
-
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #BFDBFE; 
-  display: inline-flex;
-  align-items: center;
-  gap: 4px; 
-  letter-spacing: -0.01em;
+.saveBtnTwo:hover {
+  background-color: #28a745;
+  color: #fff;
 }
 
 /* ============================================
-   دسکتاپ: 1024px تا 1450px - چیدمان دو ستونه
+   FORM STATES
    ============================================ */
-@media (min-width: 1024px) and (max-width: 1450px) {
-  /* --- بخش اطلاعات حساب --- */
-  .accountEditForm {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+.errorInput {
+  border-color: #dc3545 !important;
+}
 
+.errorText {
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.loading {
+  text-align: center;
+  margin-top: 50px;
+  color: #666;
+}
+
+/* ============================================
+   💻 دسکتاپ: از 1170px به بالا
+   ============================================ */
+@media (min-width: 1024px) {
+  
+  /* --- بخش اطلاعات حساب --- */
   .accountFields {
     display: flex;
     gap: 24px;
@@ -489,24 +414,12 @@
     margin-top: 0;
   }
 
-  .accountField label {
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #333;
-  }
-
   .accountField input {
     width: 100% !important;
     max-width: 350px;
   }
 
   /* --- بخش اطلاعات شخصی --- */
-  .formGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
   .twoCols {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -536,57 +449,51 @@
     margin-bottom: 20px;
   }
 
-  /* شماره کارت تمام عرض */
   .bankFieldWrapper:first-child {
     grid-column: 1 / -1;
   }
 
-  /* دکمه‌های ذخیره */
-  .saveBtn {
-    display: flex;
-    justify-content: flex-start;
-    gap: 16px;
-    margin-top: 10px;
-  }
-
-  .saveBtnOne,
-  .saveBtnTwo {
-    width: 160px;
-  }
-
-  /* ============================================
-     نمایش اطلاعات (حالت غیر ویرایش) - LABEL و VALUE در یک خط
-     ============================================ */
-  .infoGrid {
+  /* --- نمایش اطلاعات - دو ستونه --- */
+  .infoGrid,
+  .accountGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px 40px;
   }
 
-  .infoRow {
+  .infoRow,
+  .accountBox {
     margin: 0;
     display: flex;
-    flex-direction: row;        /* ← تغییر از column به row */
-    align-items: center;        /* ← وسط‌چین عمودی */
-    gap: 12px;                  /* ← فاصله بین label و value */
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
 
   .label {
-    display: inline;            /* ← نمایش inline */
-    font-weight: 600;           /* ← کمی بولدتر */
+    display: inline;
+    font-weight: 600;
     color: #555;
     font-size: 14px;
-    white-space: nowrap;        /* ← label در یک خط بماند */
-  }
-
-  .label::after {
-    margin-right: 2px;
+    white-space: nowrap;
   }
 
   .value {
     font-size: 16px;
     font-weight: 500;
     color: #282828;
+  }
+
+  /* --- دکمه‌ها --- */
+  .saveBtn {
+    display: flex;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .saveBtnOne,
+  .saveBtnTwo {
+    width: 160px;
   }
 
   /* --- هماهنگ‌سازی باکس اصلی --- */
@@ -606,9 +513,58 @@
     padding: 24px;
   }
 
-  /* دکمه ویرایش */
   .editBtn {
     padding: 8px 20px;
     font-size: 14px;
+  }
+}
+
+/* ============================================
+   📱 موبایل: کمتر از 1170px
+   ============================================ */
+@media (max-width: 1023px) {
+  
+  .accountGrid,
+  .infoGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .accountBox,
+  .infoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    margin: 0;
+  }
+
+  .accountBox:last-child,
+  .infoRow:last-child {
+    border-bottom: none;
+  }
+
+  .formGroup input,
+  .formGroup select {
+    width: 100% !important;
+  }
+
+  .twoCols {
+    grid-template-columns: 1fr;
+  }
+
+  .bankFieldWrapper {
+    margin-bottom: 15px;
+  }
+
+  .saveBtn {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .saveBtnOne,
+  .saveBtnTwo {
+    width: 100%;
   }
 }
