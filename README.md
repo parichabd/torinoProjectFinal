@@ -10,7 +10,7 @@
 
 ## درباره پروژه
 
-![Product Name Screen Shot](./images/hal-gatewood-weRQAu9TA-A-unsplash.jpg)
+![Product Name Screen Shot](https://github.com/parichabd/exam/blob/main/public/images-md/hal-gatewood-weRQAu9TA-A-unsplash.jpg?raw=true)
 
 همانطور که مشخص هست این پروژه برای رزرو و خرید و بررسی انواع بلیط های مسافرتی ساخته شده است که این امکان را به مراجعه کنند می دهد در کمترین زمان ممکن بهترین بلیط مورد نظر را از لحاظ قیمت و زمان بندی رزرو کند .
 این پروژه به صورت پایه با نکست ورژن **_13_** نوشته خواهد شد که اساس صفحه بندی بر مبنای اپ هست .
