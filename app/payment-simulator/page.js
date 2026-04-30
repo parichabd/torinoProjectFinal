@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { setCookie } from "@/utils/cookie";
 import { toPersianNumber } from "@/utils/number";
-
+import { profileApi } from "@/lib/api"; // ✅ اضافه شد
 import Image from "next/image";
 import styles from "./paymentSimulator.module.css";
 
@@ -73,20 +73,35 @@ export default function PaymentSimulator() {
     return toPersianNumber(formatted);
   };
 
+  // ============================================
+  // ✅ ذخیره کارت در پروفایل
+  // ============================================
+  const saveCardToProfile = async (cardNumber) => {
+    try {
+      const cleanCard = cardNumber.replace(/\s/g, "");
+      await profileApi.updateProfile({
+        payment: {
+          debitCard_code: cleanCard,
+        },
+      });
+      console.log("✅ کارت با موفقیت در پروفایل ذخیره شد");
+    } catch (error) {
+      console.error("❌ خطا در ذخیره کارت:", error);
+    }
+  };
+
   const onSubmit = async (data) => {
     const englishCard = toEnglishDigits(data.cardNumber);
-
     if (englishCard.replace(/\s/g, "").length < 16) {
       return;
     }
 
     setIsProcessing(true);
 
-    const cleanCard = englishCard.replace(/\s/g, "");
-    const lastFourDigits = cleanCard.slice(-4);
-
-
     await new Promise((resolve) => setTimeout(resolve, PROCESSING_DELAY));
+
+    // ✅ ذخیره کارت در پروفایل بعد از پرداخت موفق
+    await saveCardToProfile(data.cardNumber);
 
     setIsProcessing(false);
     setShowResult(true);
@@ -111,7 +126,7 @@ export default function PaymentSimulator() {
               alt="شاپرک"
               width={200}
               height={200}
-               style={{ width: 'auto', height: 'auto' }}
+              style={{ width: 'auto', height: 'auto' }}
             />
           </div>
           <div className={styles.headerText}>
@@ -235,13 +250,6 @@ export default function PaymentSimulator() {
                 maxLength={6}
                 className={`${styles.cardInput} ${errors.otp ? styles.inputError : ""}`}
                 dir="ltr"
-                // {...register("otp", {
-                //   required: "رمز پویا الزامی است",
-                //   pattern: {
-                //     value: /^[0-9]{6}$/,
-                //     message: "۶ رقم",
-                //   },
-                // })}
               />
               {errors.otp && (
                 <span className={styles.errorText}>{errors.otp.message}</span>
