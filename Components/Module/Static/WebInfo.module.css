@@ -30,7 +30,7 @@
     .mainDiv {
     display: grid;
     grid-template-columns: repeat(3, 365px);
-    justify-content: center; /* وسط صفحه */
+    justify-content: center;  
     gap: 40px;
     height: 120px;
   }

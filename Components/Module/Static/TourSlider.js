@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
+import { GoArrowRight, GoArrowLeft } from "react-icons/go";
+
 import styles from "./TourSlider.module.css";
 import Image from "next/image";
-import { GoArrowRight, GoArrowLeft } from "react-icons/go";
 
 const images = [
   "/SVG/static/R (1).svg",

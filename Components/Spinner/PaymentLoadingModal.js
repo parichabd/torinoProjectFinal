@@ -1,5 +1,5 @@
-// components/PaymentLoadingModal.jsx
 "use client";
+
 import styles from "./PaymentLoadingModal.module.css";
 
 export default function PaymentLoadingModal({ isOpen }) {

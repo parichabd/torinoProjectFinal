@@ -152,7 +152,7 @@
 
 .errorInput {
   border: 2px solid #ff4d4f; 
-  animation: none; /* انیمیشن shake جداگانه اعمال می شود */
+  animation: none; 
 }
 
 
@@ -172,7 +172,6 @@
 
 
 
-/* انیمیشن shake */
 @keyframes shake {
   0% { transform: translateX(0); }
   20% { transform: translateX(-5px); }

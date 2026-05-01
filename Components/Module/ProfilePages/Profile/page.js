@@ -17,7 +17,6 @@ import styles from "./Profile.module.css";
 import Image from "next/image";
 import AuthToast from "@/Components/Auth/AuthToast";
 
-// ... (بقیه کدهای شما بدون تغییر است) ...
 
 const getCookie = (name) => {
   if (typeof document === "undefined") return null;
@@ -379,7 +378,7 @@ export default function Profile() {
         style: {
           background: '#ffffff',
           color: '#419027',
-          fontFamily: 'Vazirmatn, sans-serif', // فونت فارسی
+          fontFamily: 'Vazirmatn, sans-serif',  
           direction: 'rtl',
         },
         success: {

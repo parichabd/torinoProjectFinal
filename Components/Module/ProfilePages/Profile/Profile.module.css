@@ -1,9 +1,8 @@
-/* ============================================
-   RESET & BASE
-   ============================================ */
+
 .container {
   max-width: 900px;
   margin: 10px 0;
+  
 }
 
 .disabledInput {
@@ -15,9 +14,6 @@
   font-size: 17px;
 }
 
-/* ============================================
-   SECTION - استایل‌های مشترک
-   ============================================ */
 .section {
   margin-bottom: 20px;
   background: #fff;
@@ -51,9 +47,6 @@
   padding: 20px;
 }
 
-/* ============================================
-   INFO GRID - نمایش اطلاعات
-   ============================================ */
 .infoGrid {
   display: flex;
   flex-direction: column;
@@ -80,9 +73,7 @@
   color: #282828;
 }
 
-/* ============================================
-   باکس ۱ - اطلاعات حساب کاربری
-   ============================================ */
+
 .accountGrid {
   display: flex;
   flex-direction: column;
@@ -138,9 +129,7 @@
   border-top: 1px solid #e0e0e0;
 }
 
-/* ============================================
-   باکس ۲ - اطلاعات شخصی
-   ============================================ */
+
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -176,9 +165,7 @@
   box-sizing: border-box;
 }
 
-/* ============================================
-   باکس ۳ - اطلاعات بانکی
-   ============================================ */
+
 .bankFieldWrapper {
   margin-bottom: 20px;
 }
@@ -228,7 +215,6 @@
   background-color: #f1f8f2;
 }
 
-/* Badges */
 .bankNameLabel {
   font-size: 0.75rem;
   font-weight: 700;
@@ -309,9 +295,6 @@
   margin-bottom: 4px;
 }
 
-/* ============================================
-   BUTTONS
-   ============================================ */
 .editBtn {
   background: none;
   border: 1px solid #31a84e;
@@ -373,9 +356,7 @@
   color: #fff;
 }
 
-/* ============================================
-   FORM STATES
-   ============================================ */
+
 .errorInput {
   border-color: #dc3545 !important;
 }
@@ -386,20 +367,16 @@
   margin-top: 4px;
 }
 
-/* ============================================
-   UTILITIES
-   ============================================ */
+
 .loading {
   text-align: center;
   margin-top: 50px;
   color: #666;
 }
 
-/* ============================================
-   💻 دسکتاپ: از 1024px به بالا
-   ============================================ */
+
 @media (min-width: 1024px) {
-  /* --- بخش اطلاعات حساب (حالت نمایش) --- */
+
   .infoGrid,
   .accountGrid {
     display: grid;
@@ -430,7 +407,7 @@
     color: #282828;
   }
 
-  /* --- بخش اطلاعات حساب (حالت ویرایش) --- */
+
   .accountFields {
     display: flex;
     flex-direction: row;
@@ -462,7 +439,6 @@
     max-width: 350px;
   }
 
-  /* --- بخش اطلاعات شخصی --- */
   .twoCols {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -480,7 +456,7 @@
     max-width: 100%;
   }
 
-  /* --- بخش اطلاعات بانکی --- */
+
   .bankFieldWrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -496,7 +472,7 @@
     grid-column: 1 / -1;
   }
 
-  /* --- دکمه‌ها --- */
+
   .saveBtn {
     gap: 16px;
   }
@@ -511,7 +487,7 @@
     gap: 16px;
   }
 
-  /* --- هماهنگ‌سازی باکس اصلی --- */
+
   .section {
     margin-bottom: 24px;
   }
@@ -538,9 +514,7 @@
     width: 100%;
   }
 }
-/* ============================================
-   📱 موبایل: کمتر از 1024px
-   ============================================ */
+
 @media (max-width: 1023px) {
   .accountGrid,
   .infoGrid {
@@ -587,7 +561,7 @@
     width: 100%;
   }
 
-  /* حالت ویرایش در موبایل */
+
   .accountFields {
     flex-direction: column;
     gap: 15px;

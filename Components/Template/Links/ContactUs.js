@@ -9,7 +9,6 @@ function ContactUs() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        {/* Image */}
 
         <div className={styles.imageBox}>
           <Image
@@ -20,7 +19,6 @@ function ContactUs() {
             style={{ width: "100%", height: "auto" }}
           />
         </div>
-        {/* Info */}
         <div className={styles.info}>
           <h1>تماس با تورینو</h1>
 

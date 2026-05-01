@@ -1,7 +1,8 @@
+import { FaPhoneVolume } from "react-icons/fa6";
+
 import styles from "./PhoneReseved.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { FaPhoneVolume } from "react-icons/fa6";
 
 function PhoneReseved() {
   return (

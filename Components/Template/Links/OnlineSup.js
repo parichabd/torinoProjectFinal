@@ -4,13 +4,11 @@ import Image from "next/image";
 export default function OnlineSup() {
   return (
     <section className={styles.support}>
-      {/* Header */}
       <header className={styles.header}>
         <h1>پشتیبانی آنلاین تورینو</h1>
         <p>۷ روز هفته، از ساعت ۹ تا ۲۱ پاسخگوی شما هستیم</p>
       </header>
 
-      {/* Contact Info */}
       <div className={styles.cards}>
         <div className={styles.card}>
           <span>📞</span>
@@ -31,7 +29,6 @@ export default function OnlineSup() {
         </div>
       </div>
 
-      {/* FAQ */}
       <section className={styles.faq}>
         <h2>سوالات متداول</h2>
 
@@ -58,13 +55,11 @@ export default function OnlineSup() {
         </details>
       </section>
 
-      {/* Ticket Form */}
       <section className={styles.ticket}>
         <h2>ارسال درخواست پشتیبانی</h2>
         <p>اگر پاسخ سوال خود را پیدا نکردید، فرم زیر را پر کنید.</p>
 
         <div className={styles.ticketWrapper}>
-          {/* فرم */}
           <form className={styles.form}>
             <input type="text" placeholder="نام و نام خانوادگی" required />
             <input type="email" placeholder="ایمیل" required />

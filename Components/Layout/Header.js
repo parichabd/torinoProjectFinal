@@ -138,7 +138,7 @@ export default function Header() {
     removeCookie("fullCardNumber");
     removeCookie("hasNewOrder");
     removeCookie("newOrderCount");
-    removeCookie("passengerBirthDate"); // ← این خط را اضافه کنید
+    removeCookie("passengerBirthDate");
     Cookies.remove("accessToken", { path: "/" });
     Cookies.remove("refreshToken", { path: "/" });
     setMobile(null);
@@ -209,7 +209,6 @@ export default function Header() {
   return (
     <>
       <header className={`${styles.header_layout} ${styles.container}`}>
-        {/* LEFT SIDE */}
         <div className={styles.left_side}>
           <div className={styles.desktop_menu}>
             <Logo />
@@ -230,9 +229,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className={styles.right_side}>
-          {/* DESKTOP */}
           <div className={styles.desktop_menu}>
             <div
               className={`${styles.login_desktop} ${mobile ? styles.noBorder : ""}`}
@@ -280,7 +277,6 @@ export default function Header() {
             </div>
           </div>
 
-          {/* MOBILE */}
           <div className={styles.mobile_menu}>
             {mobile ? (
               <div className={styles.userWrapper} ref={mobileRef}>
@@ -320,7 +316,6 @@ export default function Header() {
         </div>
       </header>
 
-      {/* MOBILE DRAWER */}
       {isOpen && (
         <div className={styles.mobile_overlay} onClick={menuHandler} />
       )}

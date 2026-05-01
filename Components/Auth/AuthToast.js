@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useSendOtp } from "@/Hooks/useSendOtp";
@@ -6,8 +7,9 @@ import { useVerifyOtp } from "@/Hooks/useVerifyOtp";
 import { registerUser } from "@/Services/Auth";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
+
 import OtpInput from "react-otp-input";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import styles from "./AuthToast.module.css";
 
@@ -163,14 +165,13 @@ export default function AuthToast({ onClose, mode = "login" }) {
     <>
       <div className={styles.toast_overlay}>
         <div className={styles.toast_box}>
-          {/* دکمه‌ها */}
           {step === "PHONE" ? (
             isRegister ? (
               <button
                 className={styles.back_btn}
                 onClick={() => {
                   setIsRegister(false);
-                  hasShownRegisterToast.current = false;  
+                  hasShownRegisterToast.current = false;
                   reset();
                 }}
               >
@@ -187,7 +188,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
               onClick={() => {
                 setStep("PHONE");
                 setIsRegister(false);
-                hasShownRegisterToast.current = false;  
+                hasShownRegisterToast.current = false;
                 setOtp("");
                 setOtpError("");
                 setTimeLeft(120);
@@ -197,7 +198,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
             </button>
           )}
 
-          {/* فرم شماره */}
           {step === "PHONE" && (
             <>
               <h2 className={styles.title}>
@@ -261,7 +261,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
             </>
           )}
 
-          {/* فرم OTP */}
           {step === "OTP" && (
             <>
               <h2 className={styles.title}>کد تایید را وارد کنید</h2>

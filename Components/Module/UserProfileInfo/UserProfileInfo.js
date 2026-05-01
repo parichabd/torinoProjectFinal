@@ -1,6 +1,7 @@
 "use client";
-import styles from "./UserProfileInfo.module.css";
 import React, { useState, useEffect, useRef } from "react";
+
+import styles from "./UserProfileInfo.module.css";
 import Image from "next/image";
 import Transaction from "../ProfilePages/Transaction/page";
 import MyTour from "../ProfilePages/MyTours/page";
@@ -50,10 +51,8 @@ function UserProfileInfo() {
 
   return (
     <div className={styles.container}>
-      {/* --- هدر و ناوبر --- */}
       <header className={styles.header}>
         <nav className={styles.nav} ref={navRef}>
-          {/* دکمه پروفایل */}
           <div
             className={`${styles.navItem} ${activePage === "profile" ? styles.active : ""}`}
             data-page="profile"
@@ -68,7 +67,6 @@ function UserProfileInfo() {
             <span className={styles.text}>پروفایل</span>
           </div>
 
-          {/* دکمه تورهای من */}
           <div
             className={`${styles.navItem} ${activePage === "mytour" ? styles.active : ""}`}
             data-page="mytour"
@@ -83,7 +81,6 @@ function UserProfileInfo() {
             <span className={styles.text}>تور های من</span>
           </div>
 
-          {/* دکمه تراکنش */}
           <div
             className={`${styles.navItem} ${activePage === "transaction" ? styles.active : ""}`}
             data-page="transaction"
@@ -98,7 +95,6 @@ function UserProfileInfo() {
             <span className={styles.text}>تراکنش</span>
           </div>
 
-          {/* خط سبز متحرک زیر منو */}
           <div
             className={styles.activeLine}
             style={{

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { HashLoader } from "react-spinners";
+
 import styles from "./InitialLoader.module.css";
 
 export default function InitialLoader({ children }) {

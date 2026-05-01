@@ -455,7 +455,7 @@ body {
   color: inherit; 
 }
 
-/* ✅ استایل Badge زنگوله (کنار پروفایل) */
+
 .bellBadge {
   position: absolute;
   top: -15px;
@@ -475,7 +475,7 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* ✅ استایل Badge عدد (بالای شماره تلفن) */
+ 
 .numberBadge {
   position: absolute;
   top: 2px !important;
@@ -602,12 +602,12 @@ body {
 
 
 
-/* ✅ فوتر همیشه پایین */
+ 
 .foot_layout {
   margin-top: auto;
 }
 
-/* ✅ container ارتفاع ثابت نداشته باشه */
+ 
 .container {
-  height: auto !important;  /* این خط مهمه! */
+  height: auto !important;  
 }

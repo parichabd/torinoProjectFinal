@@ -1,4 +1,3 @@
-// src/utils/cookie.js
 import Cookies from "js-cookie";
 
 export const getCookie = (key) => {
