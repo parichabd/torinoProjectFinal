@@ -4,6 +4,8 @@ import styles from "./MyTour.module.css";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber, formatNumber } from "@/utils/number";
+import { formatShamsiDate } from "@/utils/date"; // ⬅️ ایمپورت تابع تاریخ
+import { originTranslations, vehicleMap } from "@/utils/translations"; // ⬅️ ایمپورت ترجمه‌ها
 import { profileApi } from "@/lib/api";
 
 const MyTour = () => {
@@ -30,8 +32,7 @@ const MyTour = () => {
   const getTourStatus = (tour) => {
     const details = tour.tourDetails || {};
     const now = new Date();
-    
-    // تاریخ شروع و پایان تور
+
     const startDate = details.departureDate ? new Date(details.departureDate) : null;
     const endDate = details.returnDate ? new Date(details.returnDate) : null;
 
@@ -46,6 +47,19 @@ const MyTour = () => {
     } else {
       return { status: "در حال برگزاری", isCompleted: false };
     }
+  };
+
+  // تابع ترجمه مبدا و مقصد
+  const translateLocation = (location) => {
+    if (!location) return "-";
+    return originTranslations[location] || location;
+  };
+
+  // تابع ترجمه وسیله نقلیه
+  const translateVehicle = (vehicle) => {
+    if (!vehicle) return "وسیله نقلیه";
+    const translated = vehicleMap[vehicle.toLowerCase()] || vehicleMap[vehicle];
+    return translated || vehicle;
   };
 
   if (loading) {
@@ -117,7 +131,7 @@ const MyTour = () => {
                       height={14}
                       alt="vehicle"
                     />
-                    <span>{details.vehicleType || "وسیله نقلیه"}</span>
+                    <span>{translateVehicle(details.vehicleType)}</span>
                   </div>
                 </div>
                 <span className={styles.tourNumber}>
@@ -132,7 +146,7 @@ const MyTour = () => {
                   <div className={styles.pointInfo}>
                     <span className={styles.pointLabel}>مبدا</span>
                     <span className={styles.pointValue}>
-                      {details.origin || "-"}
+                      {translateLocation(details.origin)}
                     </span>
                   </div>
                 </div>
@@ -151,7 +165,7 @@ const MyTour = () => {
                   <div className={styles.pointInfo}>
                     <span className={styles.pointLabel}>مقصد</span>
                     <span className={styles.pointValue}>
-                      {details.destination || "-"}
+                      {translateLocation(details.destination)}
                     </span>
                   </div>
                 </div>
@@ -163,7 +177,7 @@ const MyTour = () => {
                   <div className={styles.timeRow}>
                     <span className={styles.timeLabel}>تاریخ رفت</span>
                     <span className={styles.timeValue}>
-                      {toPersianNumber(details.departureDate || "-")}
+                      {formatShamsiDate(details.departureDate)}
                     </span>
                   </div>
                   <div className={styles.timeRow}>
@@ -178,7 +192,7 @@ const MyTour = () => {
                   <div className={styles.timeRow}>
                     <span className={styles.timeLabel}>تاریخ برگشت</span>
                     <span className={styles.timeValue}>
-                      {toPersianNumber(details.returnDate || "-")}
+                      {formatShamsiDate(details.returnDate)}
                     </span>
                   </div>
                   <div className={styles.timeRow}>
