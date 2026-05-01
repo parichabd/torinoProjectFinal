@@ -121,14 +121,16 @@
     display: none;
   }
 
-  /* --- باکس سمت چپ (محتوا) --- */
-  .mainContent {
-    flex: 1;
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    padding: 32px;
-    min-height: calc(100vh - 48px);
-  }
+/* --- باکس سمت چپ (محتوا) --- */
+.mainContent {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  align-self: flex-start;  /* ← اضافه کن */
+  width: 100%;
 }
+}
+
 
