@@ -226,6 +226,7 @@
   .mainContainer {
     max-width: 100% !important;
     padding: 30px 40px !important;
+    height: calc(100vh - 228px);
   }
 
   .deskfORM {

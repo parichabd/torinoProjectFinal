@@ -1,84 +1,82 @@
-.mainPageInfo{
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.263);
-    border-radius: 16px;
-    margin-top: 10px;
+.mainPageInfo {
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.263);
+  border-radius: 16px;
+  margin-top: 10px;
 }
 
-.headers{
-    display: flex;
-    justify-content: space-between;
+.headers {
+  display: flex;
+  justify-content: space-between;
 }
 
-.headers h1{
-     font-family: "fonnts.com-YekanBakh-Bold";
-     font-size: 24px;
+.headers h1 {
+  font-family: "fonnts.com-YekanBakh-Bold";
+  font-size: 24px;
 }
 
 .headers p {
-    margin-top: 36px;
-    margin-left: 25px;
-    word-spacing: 3px;
-    font-size: 15px;
+  margin-top: 36px;
+  margin-left: 25px;
+  word-spacing: 3px;
+  font-size: 15px;
 }
 
-.details_icons{
-    display: flex;
-    gap: 8px;
+.details_icons {
+  display: flex;
+  gap: 8px;
 }
+
 .details_icons p {
-    margin-bottom: 10px;
-    color: #7D7D7D;
-}
-.details{
-    display: flex;
-    gap: 20px;
-    font-size: 15.5px;
+  margin-bottom: 10px;
+  color: #7D7D7D;
 }
 
-.headerThings{
-    display: flex;
-    gap: 2px;
+.details {
+  display: flex;
+  gap: 20px;
+  font-size: 15.5px;
 }
 
-.headerThings span{
-    color: #222;
-} 
+.headerThings {
+  display: flex;
+  gap: 2px;
+}
 
-.headerParagraph p{
-    margin-right: 16px;
-    font-family: "fonnts.com-YekanBakh-Bold";
-    font-size: 14px;
+.headerThings span {
+  color: #222;
+}
+
+.headerParagraph p {
+  margin-right: 16px;
+  font-family: "fonnts.com-YekanBakh-Bold";
+  font-size: 14px;
 }
 
 .tourMainDetailsWrapper {
   position: relative;
 }
 
-
 .tourMainDetails {
-    margin-top: 30px;
-    font-size: 16px;
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    gap: 25px;
-    padding-bottom: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: #28a746a6 #cccccc23; 
-  }
+  margin-top: 30px;
+  font-size: 16px;
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 25px;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #28a746a6 #cccccc23;
+}
 
+.priceAndbook {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+}
 
-  .priceAndbook{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 3rem;
-  }
-
-
-
-  .bookBtn button{
+.bookBtn button {
   background: #28a745;
   border: none;
   color: #fff;
@@ -97,7 +95,6 @@
   transform: scale(1.05);
 }
 
-
 .price {
   font-size: 10px;
   font-weight: 700;
@@ -110,193 +107,129 @@
   margin-left: 4px;
 }
 
-
-
-.windowsBuy{
+.windowsBuy {
   display: none;
 }
 
+.Accept {
+  height: 100vh;
+}
+
+.divider {
+  width: 1px;
+  height: 100px;
+  background-color: #ccc;
+  margin: 0 5px;
+  align-self: stretch;
+}
+
+.windowTourDetails {
+  display: flex;
+  gap: 50px;
+}
+
+.imageBox {
+  width: 100%;
+}
+
+.responsiveImage {
+  width: 450px !important;
+  max-width: 450px;
+  height: auto;
+}
+
+/* ==================== MEDIA QUERIES ==================== */
+
 @media (min-width: 768px) and (max-width: 1023px) {
-     .responsive-image {
-    max-width: 950px;  
+  .responsive-image {
+    max-width: 950px;
+  }
+
+  .mainPageInfo {
+    margin-top: 20px !important;
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1443px) {
+  .mainPageInfo {
+    margin-top: 20px !important;
+  }
 
-  
-  .windowTourDetails{
+  .Accept {
+    height: calc(100vh - 430px);
+  }
+
+  .windowTourDetails {
     display: flex;
     gap: 50px;
   }
-  .windowsBuy{
-    display: block;
+
+  .windowsBuy {
     display: flex;
     justify-content: space-between;
     gap: 400px;
   }
-  .priceAndbook{
+
+  .priceAndbook {
     display: none;
   }
-  .headers{
+
+  .headers {
     display: grid;
   }
-  .details{
+
+  .details {
     gap: 100px;
   }
+
   .headers p {
     margin-top: 9px;
   }
-
-  .divider {
-  width: 1px; 
-  height: 100px;  
-  background-color: #ccc; 
-  margin: 0 5px;  
-  align-self: stretch;  
-}
-.details{
-    display: flex;
-    gap: 110px;
-    margin: 3px 0 3px 0;
-}
-.tourMainDetails{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 50px;
-    padding:  0 45px;
-}
-.price p{
-  width: 150px;
-}
-
-}
-
-
-@media (min-width: 1444px) {
-
-.windowTourDetails{
-    display: flex;
-    gap: 30px;
-}
- .windowsBuy{
-    display: block;
-    display: flex;
-    justify-content: space-between;
-    gap: 500px;
-  }
-  .priceAndbook{
-    display: none;
-  }
-  .headers{
-    display: grid;
-  }
-  .details{
-    gap: 100px;
-  }
-  .headers p {
-    margin-top: 9px;
-  }
-
-  .divider {
-  width: 1px;  
-  height: 100px;  
-  background-color: #ccc;  
-  margin: 0 5px;  
-  align-self: stretch;  
-}
-.details{
-    display: flex;
-    gap: 110px;
-    margin: 3px 0 3px 0;
-}
-.tourMainDetails{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 50px;
-    padding:  0 45px;
-}
-
-.imageBox{
-  width: 500px;
-  padding: 90px;
-}
- 
-}
-
-
-
-@media (min-width: 768px) and (max-width: 1023px) {
-     .responsive-image {
-    max-width: 950px; 
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1443px) {
 
   .details_icons p {
     font-size: 14px;
   }
+
   .headers h1 {
     font-size: 22px;
   }
+
   .headers p {
     font-size: 17px;
   }
-  .windowTourDetails{
-    display: flex;
-    gap: 50px;
-  }
-  .windowsBuy{
-    display: block;
-    display: flex;
-    justify-content: space-between;
-    gap: 68px;
-    margin-top: 22px;
-  }
-  .priceAndbook{
-    display: none;
-  }
-  .headers{
-    display: grid;
-  }
-  .details{
-    gap: 100px;
-  }
-  .headers p {
-    margin-top: 9px;
-  }
 
-  .divider {
-  width: 1px;  
-  height: 100px;  
-  background-color: #ccc;  
-  margin: 0 5px;  
-  align-self: stretch;  
-}
-.details{
-    display: flex;
+  .details {
     gap: 110px;
     margin: 3px 0 3px 0;
-}
-.tourMainDetails{
+  }
+
+  .tourMainDetails {
     display: flex;
     justify-content: space-between;
     margin-top: 50px;
-    padding:  0 45px;
-}
-.price p{
-  width: 150px;
-}
+    padding: 0 45px;
+  }
 
-}
+  .price p {
+    width: 150px;
+  }
 
+  .responsiveImage {
+    width: 450px !important;
+    max-width: 450px;
+    height: auto;
+  }
+}
 
 @media (min-width: 1444px) {
+  .mainPageInfo {
+    margin-top: 20px !important;
+  }
 
   .headers h1 {
     font-size: 32px;
   }
+
   .headers p {
     font-size: 20px;
   }
@@ -305,71 +238,52 @@
     font-size: 20px;
   }
 
-.windowTourDetails{
+  .windowTourDetails {
     display: flex;
     gap: 30px;
-}
- .windowsBuy{
-    display: block;
+  }
+
+  .windowsBuy {
     display: flex;
     justify-content: space-between;
     gap: 220px;
     margin-top: 10px;
   }
-  .priceAndbook{
+
+  .priceAndbook {
     display: none;
   }
-  .headers{
+
+  .headers {
     display: grid;
   }
-  .details{
+
+  .details {
     gap: 100px;
   }
+
   .headers p {
     margin-top: 9px;
   }
 
-  .divider {
-  width: 1px; 
-  height: 100px;  
-  background-color: #ccc;  
-  margin: 0 5px;  
-  align-self: stretch;  
-}
-.details{
-    display: flex;
+  .details {
     gap: 110px;
     margin: 3px 0 3px 0;
-}
-.tourMainDetails{
+  }
+
+  .tourMainDetails {
     display: flex;
     justify-content: space-between;
     margin-top: 50px;
-    padding:  0 45px;
-}
+    padding: 0 45px;
+  }
 
-.imageBox{
-  width: 500px;
-  padding: 90px;
-}
+  .imageBox {
+    width: 500px;
+    padding: 90px;
+  }
 
-.price{
-  width: 190px;
-}
- 
-}
-
-
-
- 
-@media (min-width: 1024px) {
-    .responsiveImage {
-        width: 450px !important;
-        max-width: 450px;
-        height: auto;
-    }
-}
-
-.imageBox {
-    width: 100% ;
+  .price {
+    width: 190px;
+  }
 }

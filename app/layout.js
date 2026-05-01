@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
             <div className={styles.layout}>
               <Header />
               <div className={styles.dividerer_menu}></div>
-              <main className={`${styles.container} ${styles.main}`}>
+              <main className={`${styles.container} ${styles.main} `}>
                 {children}
               </main>
               <Footer />

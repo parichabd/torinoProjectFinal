@@ -1,8 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
 import { toPersianNumber } from "../../../utils/number";
 import { formatShamsiDate } from "../../../utils/dateUtils";
 import { originTranslations, vehicleMap } from "../../../utils/translations";
-
 
 import Image from "next/image";
 import Styles from "./tourDetails.module.css";
@@ -60,179 +59,182 @@ export default async function TourPage({ params }) {
   };
 
   return (
-    <div className={Styles.mainPageInfo}>
-      <div className={Styles.windowTourDetails}>
-        <div className={Styles.image}>
-          <div className="imageBox">
-            <Image
-              src={
-                tour.image?.startsWith("http")
-                  ? tour.image
-                  : `${BACKEND_BASE_URL}${tour.image}`
-              }
-              alt={tour.title || "تصویر تور"}
-              width={450}
-              height={260}
-              layout="responsive"
-              style={{ borderRadius: "12px", objectFit: "cover" }}
-              className={Styles.responsiveImage}
-              priority
-              unoptimized
-            />
-          </div>
-        </div>
-        <div className={Styles.windowDetailsHead}>
-          <div className={Styles.headers}>
-            <h1>{tour.title || "بدون عنوان"}</h1>
-            {durationInDays > 0 && (
-              <p>
-                {toPersianNumber(durationInDays)} روز و{" "}
-                {toPersianNumber(durationInNights)} شب
-              </p>
-            )}
-          </div>
-          <div className={Styles.details}>
-            <div className={Styles.details_icons}>
+    <div className={Styles.Accept}>
+      <div className={Styles.mainPageInfo}>
+        <div className={Styles.windowTourDetails}>
+          <div className={Styles.image}>
+            <div className="imageBox">
               <Image
-                src="/SVG/Tour/user-tick.svg"
-                alt="ایکون"
-                width={14}
-                height={14}
+                src={
+                  tour.image?.startsWith("http")
+                    ? tour.image
+                    : `${BACKEND_BASE_URL}${tour.image}`
+                }
+                alt={tour.title || "تصویر تور"}
+                width={450}
+                height={260}
+                layout="responsive"
+                style={{ borderRadius: "12px", objectFit: "cover" }}
+                className={Styles.responsiveImage}
+                priority
+                unoptimized
               />
-              <p>تورلیدر از مبدا</p>
-            </div>
-            <div className={Styles.details_icons}>
-              <Image
-                src="/SVG/Tour/map.svg"
-                alt="ایکون"
-                width={14}
-                height={14}
-              />
-              <p>برنامه سفر</p>
-            </div>
-            <div className={Styles.details_icons}>
-              <Image
-                src="/SVG/Tour/medal-star.svg"
-                alt="ایکون"
-                width={14}
-                height={14}
-              />
-              <p>تضمین کیفیت</p>
             </div>
           </div>
-          <div className={`${Styles.windowsBuy}`}>
-            <div className={Styles.price}>
-              <p>
-                <span>{Number(tour.price).toLocaleString("fa-IR")}</span> تومان
-              </p>
+          <div className={Styles.windowDetailsHead}>
+            <div className={Styles.headers}>
+              <h1>{tour.title || "بدون عنوان"}</h1>
+              {durationInDays > 0 && (
+                <p>
+                  {toPersianNumber(durationInDays)} روز و{" "}
+                  {toPersianNumber(durationInNights)} شب
+                </p>
+              )}
             </div>
-            <div className={Styles.bookBtn}>
-              <Link href={`/bookTour/${tour.id}`}>
-                <button className={Styles.bookBtn}>رزرو و خرید</button>
-              </Link>
+            <div className={Styles.details}>
+              <div className={Styles.details_icons}>
+                <Image
+                  src="/SVG/Tour/user-tick.svg"
+                  alt="ایکون"
+                  width={14}
+                  height={14}
+                />
+                <p>تورلیدر از مبدا</p>
+              </div>
+              <div className={Styles.details_icons}>
+                <Image
+                  src="/SVG/Tour/map.svg"
+                  alt="ایکون"
+                  width={14}
+                  height={14}
+                />
+                <p>برنامه سفر</p>
+              </div>
+              <div className={Styles.details_icons}>
+                <Image
+                  src="/SVG/Tour/medal-star.svg"
+                  alt="ایکون"
+                  width={14}
+                  height={14}
+                />
+                <p>تضمین کیفیت</p>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div className="tourMainDetailsWrapper">
-        <div className="scrollHint"></div>
-        <div className={Styles.tourMainDetails}>
-          <div className={Styles.tourInfoDetails}>
-            <div className={Styles.headerThings}>
-              <Image
-                src="/SVG/Tour/routing-2.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>مبدا</span>
-            </div>
-            <div className={Styles.headerParagraph}>
-              <p>{getOriginName(tour.origin?.name) || "—"}</p>
-            </div>
-          </div>
-          <div className={Styles.divider}></div>
-          <div className={Styles.tourInfoDetails}>
-            <div className={Styles.headerThings}>
-              <Image
-                src="/SVG/Tour/calendar.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>تاریخ رفت </span>
-            </div>
-            <div className={Styles.headerParagraph}>
-              <p>{formatShamsiDate(tour.startDate)}</p>
-            </div>
-          </div>
-          <div className={Styles.divider}></div>
-          <div className={Styles.tourInfoDetails}>
-            <div className={Styles.headerThings}>
-              <Image
-                src="/SVG/Tour/calendar-2.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>تاریخ برگشت</span>
-            </div>
-            <div className={Styles.headerParagraph}>
-              <p>{formatShamsiDate(tour.endDate)}</p>
-            </div>
-          </div>
-          <div className={Styles.divider}></div>
-          <div className={Styles.tourInfoDetails}>
-            <div className={Styles.headerThings}>
-              <Image src="/SVG/Tour/bus.svg" alt="" width={18} height={18} />
-              <span>حمل و نقل</span>
-            </div>
-            <div className={Styles.headerParagraph}>
-              <p>{getVehicleType(tour.fleetVehicle)}</p>
-            </div>
-          </div>
-          <div className={Styles.divider}></div>
-          <div className={Styles.tourInfoDetails}>
-            <div className={Styles.headerThings}>
-              <Image
-                src="/SVG/Tour/profile-2user.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>ظرفیت</span>
-            </div>
-            <div className={Styles.headerParagraph}>
-              <p>حداکثر {toPersianNumber(tour.availableSeats)} نفر</p>
-            </div>
-          </div>
-          <div className={Styles.divider}></div>
-          <div className={Styles.tourInfoDetails}>
-            <div className={Styles.headerThings}>
-              <Image
-                src="/SVG/Tour/security.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>بیمه</span>
-            </div>
-            <div className={Styles.headerParagraph}>
-              <p> {tour.insurance ? "دارد" : "ندارد"}</p>
+            <div className={`${Styles.windowsBuy}`}>
+              <div className={Styles.price}>
+                <p>
+                  <span>{Number(tour.price).toLocaleString("fa-IR")}</span>{" "}
+                  تومان
+                </p>
+              </div>
+              <div className={Styles.bookBtn}>
+                <Link href={`/bookTour/${tour.id}`}>
+                  <button className={Styles.bookBtn}>رزرو و خرید</button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className={Styles.priceAndbook}>
-        <div className={Styles.bookBtn}>
-          <Link href={`/bookTour/${tour.id}`}>
-            <button className={Styles.bookBtn}>رزرو و خرید</button>
-          </Link>
+        <div className="tourMainDetailsWrapper">
+          <div className="scrollHint"></div>
+          <div className={Styles.tourMainDetails}>
+            <div className={Styles.tourInfoDetails}>
+              <div className={Styles.headerThings}>
+                <Image
+                  src="/SVG/Tour/routing-2.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                />
+                <span>مبدا</span>
+              </div>
+              <div className={Styles.headerParagraph}>
+                <p>{getOriginName(tour.origin?.name) || "—"}</p>
+              </div>
+            </div>
+            <div className={Styles.divider}></div>
+            <div className={Styles.tourInfoDetails}>
+              <div className={Styles.headerThings}>
+                <Image
+                  src="/SVG/Tour/calendar.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                />
+                <span>تاریخ رفت </span>
+              </div>
+              <div className={Styles.headerParagraph}>
+                <p>{formatShamsiDate(tour.startDate)}</p>
+              </div>
+            </div>
+            <div className={Styles.divider}></div>
+            <div className={Styles.tourInfoDetails}>
+              <div className={Styles.headerThings}>
+                <Image
+                  src="/SVG/Tour/calendar-2.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                />
+                <span>تاریخ برگشت</span>
+              </div>
+              <div className={Styles.headerParagraph}>
+                <p>{formatShamsiDate(tour.endDate)}</p>
+              </div>
+            </div>
+            <div className={Styles.divider}></div>
+            <div className={Styles.tourInfoDetails}>
+              <div className={Styles.headerThings}>
+                <Image src="/SVG/Tour/bus.svg" alt="" width={18} height={18} />
+                <span>حمل و نقل</span>
+              </div>
+              <div className={Styles.headerParagraph}>
+                <p>{getVehicleType(tour.fleetVehicle)}</p>
+              </div>
+            </div>
+            <div className={Styles.divider}></div>
+            <div className={Styles.tourInfoDetails}>
+              <div className={Styles.headerThings}>
+                <Image
+                  src="/SVG/Tour/profile-2user.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                />
+                <span>ظرفیت</span>
+              </div>
+              <div className={Styles.headerParagraph}>
+                <p>حداکثر {toPersianNumber(tour.availableSeats)} نفر</p>
+              </div>
+            </div>
+            <div className={Styles.divider}></div>
+            <div className={Styles.tourInfoDetails}>
+              <div className={Styles.headerThings}>
+                <Image
+                  src="/SVG/Tour/security.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                />
+                <span>بیمه</span>
+              </div>
+              <div className={Styles.headerParagraph}>
+                <p> {tour.insurance ? "دارد" : "ندارد"}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className={Styles.price}>
-          <p>
-            <span>{Number(tour.price).toLocaleString("fa-IR")}</span> تومان
-          </p>
+        <div className={Styles.priceAndbook}>
+          <div className={Styles.bookBtn}>
+            <Link href={`/bookTour/${tour.id}`}>
+              <button className={Styles.bookBtn}>رزرو و خرید</button>
+            </Link>
+          </div>
+          <div className={Styles.price}>
+            <p>
+              <span>{Number(tour.price).toLocaleString("fa-IR")}</span> تومان
+            </p>
+          </div>
         </div>
       </div>
     </div>
