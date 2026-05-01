@@ -4,7 +4,7 @@ import styles from "./MyTour.module.css";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber, formatNumber } from "@/utils/number";
-import { formatShamsiDate } from "@/utils/date"; // ⬅️ ایمپورت تابع تاریخ
+import { formatShamsiDate } from "@/utils/dateUtils"; // ⬅️ ایمپورت تابع تاریخ
 import { originTranslations, vehicleMap } from "@/utils/translations"; // ⬅️ ایمپورت ترجمه‌ها
 import { profileApi } from "@/lib/api";
 
@@ -33,7 +33,9 @@ const MyTour = () => {
     const details = tour.tourDetails || {};
     const now = new Date();
 
-    const startDate = details.departureDate ? new Date(details.departureDate) : null;
+    const startDate = details.departureDate
+      ? new Date(details.departureDate)
+      : null;
     const endDate = details.returnDate ? new Date(details.returnDate) : null;
 
     if (!startDate || !endDate) {
@@ -74,12 +76,6 @@ const MyTour = () => {
   if (tours.length === 0) {
     return (
       <div className={styles.emptyContainer}>
-        <Image
-          src="/SVG/profile/empty-tour.svg"
-          width={80}
-          height={80}
-          alt="empty"
-        />
         <p>هنوز توری رزرو نکرده‌اید</p>
       </div>
     );
@@ -112,8 +108,12 @@ const MyTour = () => {
             >
               {/* نشانگر وضعیت */}
               <div className={styles.statusIndicator}>
-                <div className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}></div>
-                <span className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}>
+                <div
+                  className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
+                ></div>
+                <span
+                  className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}
+                >
                   {status}
                 </span>
               </div>
@@ -125,12 +125,6 @@ const MyTour = () => {
                     {details.name || "نام تور"}
                   </h3>
                   <div className={styles.vehicleBadge}>
-                    <Image
-                      src="/SVG/profile/vehicle.svg"
-                      width={14}
-                      height={14}
-                      alt="vehicle"
-                    />
                     <span>{translateVehicle(details.vehicleType)}</span>
                   </div>
                 </div>
@@ -150,14 +144,7 @@ const MyTour = () => {
                     </span>
                   </div>
                 </div>
-                <div className={styles.routeLine}>
-                  <Image
-                    src="/SVG/profile/route-arrow.svg"
-                    width={20}
-                    height={20}
-                    alt="arrow"
-                  />
-                </div>
+                <div className={styles.routeLine}></div>
                 <div className={styles.routePoint}>
                   <div
                     className={`${styles.pointDot} ${styles.destinationDot}`}
@@ -175,13 +162,11 @@ const MyTour = () => {
               <div className={styles.timeSection}>
                 <div className={styles.timeBox}>
                   <div className={styles.timeRow}>
-                    <span className={styles.timeLabel}>تاریخ رفت</span>
                     <span className={styles.timeValue}>
                       {formatShamsiDate(details.departureDate)}
                     </span>
                   </div>
                   <div className={styles.timeRow}>
-                    <span className={styles.timeLabel}>زمان رفت</span>
                     <span className={styles.timeValue}>
                       {toPersianNumber(details.departureTime || "-")}
                     </span>
