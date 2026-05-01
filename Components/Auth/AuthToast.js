@@ -103,7 +103,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
       },
     });
   };
-
   const resendHandler = () => {
     sendOtpMutation.mutate(mobile, {
       onSuccess: () => {
@@ -162,7 +161,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
 
   return (
     <>
-      <Toaster />
       <div className={styles.toast_overlay}>
         <div className={styles.toast_box}>
           {/* دکمه‌ها */}

@@ -15,6 +15,7 @@ import {
 } from "@/utils/bankValidation";
 import styles from "./Profile.module.css";
 import Image from "next/image";
+import AuthToast from "@/Components/Auth/AuthToast";
 
 // ... (بقیه کدهای شما بدون تغییر است) ...
 
@@ -370,6 +371,31 @@ export default function Profile() {
 
   return (
     <div className={styles.container}>
+      <Toaster 
+      position="top-center"
+      reverseOrder={false}
+      toastOptions={{
+        duration: 4000,
+        style: {
+          background: '#ffffff',
+          color: '#419027',
+          fontFamily: 'Vazirmatn, sans-serif', // فونت فارسی
+          direction: 'rtl',
+        },
+        success: {
+          iconTheme: {
+            primary: '#10B981',
+            secondary: '#fff',
+          },
+        },
+        error: {
+          iconTheme: {
+            primary: '#EF4444',
+            secondary: '#fff',
+          },
+        },
+      }}
+    />
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* ۱. اطلاعات حساب کاربری */}
         <div className={styles.section}>

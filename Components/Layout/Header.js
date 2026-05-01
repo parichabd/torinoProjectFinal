@@ -138,6 +138,7 @@ export default function Header() {
     removeCookie("fullCardNumber");
     removeCookie("hasNewOrder");
     removeCookie("newOrderCount");
+    removeCookie("passengerBirthDate"); // ← این خط را اضافه کنید
     Cookies.remove("accessToken", { path: "/" });
     Cookies.remove("refreshToken", { path: "/" });
     setMobile(null);
