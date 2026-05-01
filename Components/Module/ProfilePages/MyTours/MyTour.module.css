@@ -28,6 +28,7 @@
 .statusIndicator {
   display: flex;
   align-items: center;
+  justify-content: flex-end; /* ⬅️ اضافه شد */
   gap: 6px;
   margin-bottom: 12px;
 }
