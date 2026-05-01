@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber } from "@/utils/number";
@@ -89,6 +90,7 @@ export default function Profile() {
   const watchedCard = watch("cardNumber", "");
   const watchedSheba = watch("sheba", "");
   const watchedAccount = watch("accountNumber", "");
+  const router = useRouter();
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -122,6 +124,7 @@ export default function Profile() {
         }
       } catch (error) {
         toast.error("مجوز دسترسی شما به پایان رسیده لطفا دوباره وارد شوید !");
+        
       } finally {
         setLoading(false);
       }
