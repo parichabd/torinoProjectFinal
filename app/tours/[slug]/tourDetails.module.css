@@ -118,7 +118,7 @@
 
 @media (min-width: 768px) and (max-width: 1023px) {
      .responsive-image {
-    max-width: 950px; /* یا مقدار دلخواه دیگر */
+    max-width: 950px;  
   }
 }
 
@@ -149,11 +149,11 @@
   }
 
   .divider {
-  width: 1px; /* عرض دیوایدر */
-  height: 100px; /* ارتفاع دیوایدر، باید با tourInfoDetails هم‌خوانی داشته باشه */
-  background-color: #ccc; /* رنگ دیوایدر (یا هر رنگ دلخواه) */
-  margin: 0 5px; /* فاصله کوچک از دو طرف */
-  align-self: stretch; /* باعث میشه دیوایدر به اندازه کل ارتفاع آیتم‌های flex کشیده بشه */
+  width: 1px; 
+  height: 100px;  
+  background-color: #ccc; 
+  margin: 0 5px;  
+  align-self: stretch;  
 }
 .details{
     display: flex;
@@ -199,11 +199,11 @@
   }
 
   .divider {
-  width: 1px; /* عرض دیوایدر */
-  height: 100px; /* ارتفاع دیوایدر، باید با tourInfoDetails هم‌خوانی داشته باشه */
-  background-color: #ccc; /* رنگ دیوایدر (یا هر رنگ دلخواه) */
-  margin: 0 5px; /* فاصله کوچک از دو طرف */
-  align-self: stretch; /* باعث میشه دیوایدر به اندازه کل ارتفاع آیتم‌های flex کشیده بشه */
+  width: 1px;  
+  height: 100px;  
+  background-color: #ccc;  
+  margin: 0 5px;  
+  align-self: stretch;  
 }
 .details{
     display: flex;
@@ -228,7 +228,7 @@
 
 @media (min-width: 768px) and (max-width: 1023px) {
      .responsive-image {
-    max-width: 950px; /* یا مقدار دلخواه دیگر */
+    max-width: 950px; 
   }
 }
 
@@ -268,11 +268,11 @@
   }
 
   .divider {
-  width: 1px; /* عرض دیوایدر */
-  height: 100px; /* ارتفاع دیوایدر، باید با tourInfoDetails هم‌خوانی داشته باشه */
-  background-color: #ccc; /* رنگ دیوایدر (یا هر رنگ دلخواه) */
-  margin: 0 5px; /* فاصله کوچک از دو طرف */
-  align-self: stretch; /* باعث میشه دیوایدر به اندازه کل ارتفاع آیتم‌های flex کشیده بشه */
+  width: 1px;  
+  height: 100px;  
+  background-color: #ccc;  
+  margin: 0 5px;  
+  align-self: stretch;  
 }
 .details{
     display: flex;
@@ -330,11 +330,11 @@
   }
 
   .divider {
-  width: 1px; /* عرض دیوایدر */
-  height: 100px; /* ارتفاع دیوایدر، باید با tourInfoDetails هم‌خوانی داشته باشه */
-  background-color: #ccc; /* رنگ دیوایدر (یا هر رنگ دلخواه) */
-  margin: 0 5px; /* فاصله کوچک از دو طرف */
-  align-self: stretch; /* باعث میشه دیوایدر به اندازه کل ارتفاع آیتم‌های flex کشیده بشه */
+  width: 1px; 
+  height: 100px;  
+  background-color: #ccc;  
+  margin: 0 5px;  
+  align-self: stretch;  
 }
 .details{
     display: flex;
@@ -361,7 +361,7 @@
 
 
 
-/* در دسکتاپ: عرض 450 پیکسل */
+ 
 @media (min-width: 1024px) {
     .responsiveImage {
         width: 450px !important;
@@ -371,5 +371,5 @@
 }
 
 .imageBox {
-    width: 100%; /* موبایل */
+    width: 100% ;
 }

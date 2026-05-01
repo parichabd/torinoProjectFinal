@@ -1,13 +1,15 @@
-import Image from "next/image";
-import Styles from "./tourDetails.module.css";
-import Link from "next/link";
 import { notFound } from 'next/navigation';
 import { toPersianNumber } from "../../../utils/number";
 import { formatShamsiDate } from "../../../utils/dateUtils";
 import { originTranslations, vehicleMap } from "../../../utils/translations";
 
+
+import Image from "next/image";
+import Styles from "./tourDetails.module.css";
+import Link from "next/link";
+
 const BACKEND_BASE_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:6500";
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:6500";
 
 const calculateDuration = (startStr, endStr) => {
   if (!startStr || !endStr) return { days: 0, nights: 0 };
@@ -22,7 +24,6 @@ const calculateDuration = (startStr, endStr) => {
 };
 
 export default async function TourPage({ params }) {
-  // ✅ اصلاح: await params برای Next.js 15
   const resolvedParams = await params;
   const id = resolvedParams.slug || resolvedParams.id;
 
