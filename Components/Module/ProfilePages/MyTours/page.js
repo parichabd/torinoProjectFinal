@@ -4,8 +4,8 @@ import styles from "./MyTour.module.css";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber, formatNumber } from "@/utils/number";
-import { formatShamsiDate } from "@/utils/dateUtils"; // ⬅️ ایمپورت تابع تاریخ
-import { originTranslations, vehicleMap } from "@/utils/translations"; // ⬅️ ایمپورت ترجمه‌ها
+import { formatShamsiDate } from "@/utils/dateUtils";
+import { originTranslations, vehicleMap } from "@/utils/translations";
 import { profileApi } from "@/lib/api";
 
 const MyTour = () => {
@@ -64,6 +64,31 @@ const MyTour = () => {
     return translated || vehicle;
   };
 
+  // تابع انتخاب آیکون وسیله نقلیه
+  const getVehicleIcon = (vehicle) => {
+    if (!vehicle) return "car.svg";
+
+    const vehicleLower = vehicle.toLowerCase();
+
+    if (vehicleLower.includes("airplane") || vehicleLower.includes("flight") || vehicleLower.includes("پرواز")) {
+      return "airplane.svg";
+    }
+    if (vehicleLower.includes("bus") || vehicleLower.includes("اتوبوس")) {
+      return "bus.svg";
+    }
+    if (vehicleLower.includes("train") || vehicleLower.includes("قطار")) {
+      return "train.svg";
+    }
+    if (vehicleLower.includes("ship") || vehicleLower.includes("کشتی")) {
+      return "ship.svg";
+    }
+    if (vehicleLower.includes("suv") || vehicleLower.includes("offroad") || vehicleLower.includes("آفرود") || vehicleLower.includes("شاسی")) {
+      return "car.svg";
+    }
+
+    return "car.svg"; // پیش‌فرض
+  };
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -100,6 +125,7 @@ const MyTour = () => {
         {tours.map((tour, index) => {
           const details = tour.tourDetails || {};
           const { status, isCompleted } = getTourStatus(tour);
+          const vehicleIcon = getVehicleIcon(details.vehicleType);
 
           return (
             <div
@@ -121,10 +147,22 @@ const MyTour = () => {
               {/* هدر کارت */}
               <div className={styles.cardHeader}>
                 <div className={styles.tourInfo}>
+                  <Image
+                    src="SVG/profile/icons/mytour-black.svg"
+                    height={13}
+                    width={13}
+                    alt="icons"
+                  />
                   <h3 className={styles.tourName}>
                     {details.name || "نام تور"}
                   </h3>
                   <div className={styles.vehicleBadge}>
+                    <Image
+                      src={`SVG/profile/icons/${vehicleIcon}`}
+                      width={16}
+                      height={16}
+                      alt={translateVehicle(details.vehicleType)}
+                    />
                     <span>{translateVehicle(details.vehicleType)}</span>
                   </div>
                 </div>
