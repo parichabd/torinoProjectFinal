@@ -86,7 +86,7 @@ const MyTour = () => {
       return "car.svg";
     }
 
-    return "car.svg"; // پیش‌فرض
+    return "car.svg";
   };
 
   if (loading) {
@@ -132,108 +132,83 @@ const MyTour = () => {
               key={`${tour.id}-${index}`}
               className={`${styles.tourCard} ${isCompleted ? styles.completedCard : ""}`}
             >
-              {/* نشانگر وضعیت */}
+              {/* نشانگر وضعیت - سمت چپ بالا */}
               <div className={styles.statusIndicator}>
-                <div
-                  className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
-                ></div>
-                <span
-                  className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}
-                >
+                <div className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}></div>
+                <span className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}>
                   {status}
                 </span>
               </div>
 
-              {/* هدر کارت */}
-              <div className={styles.cardHeader}>
-                <div className={styles.tourInfo}>
+              {/* ردیف ۱: نام تور + وسیله نقلیه */}
+              <div className={styles.headerRow}>
+                <div className={styles.tourNameSection}>
                   <Image
                     src="SVG/profile/icons/mytour-black.svg"
-                    height={13}
-                    width={13}
-                    alt="icons"
+                    width={16}
+                    height={16}
+                    alt="tour icon"
                   />
                   <h3 className={styles.tourName}>
                     {details.name || "نام تور"}
                   </h3>
-                  <div className={styles.vehicleBadge}>
-                    <Image
-                      src={`SVG/profile/icons/${vehicleIcon}`}
-                      width={16}
-                      height={16}
-                      alt={translateVehicle(details.vehicleType)}
-                    />
-                    <span>{translateVehicle(details.vehicleType)}</span>
-                  </div>
                 </div>
-                <span className={styles.tourNumber}>
-                  شماره تور: {toPersianNumber(tour.id?.slice(-6) || "")}
+                <div className={styles.vehicleSection}>
+                  <span className={styles.vehicleLabel}>سفر با</span>
+                  <Image
+                    src={`SVG/profile/icons/${vehicleIcon}`}
+                    width={18}
+                    height={18}
+                    alt={translateVehicle(details.vehicleType)}
+                  />
+                  <span className={styles.vehicleName}>
+                    {translateVehicle(details.vehicleType)}
+                  </span>
+                </div>
+              </div>
+
+              {/* ردیف ۲: مسیر + تاریخ رفت */}
+              <div className={styles.routeRow}>
+                <div className={styles.routeInfo}>
+                  <span className={styles.routeText}>
+                    {translateLocation(details.origin)} به {translateLocation(details.destination)}
+                  </span>
+                </div>
+                <div className={styles.departureInfo}>
+                  <span className={styles.dotSeparator}>·</span>
+                  <span className={styles.dateText}>
+                    {formatShamsiDate(details.departureDate)}
+                  </span>
+                </div>
+              </div>
+
+              {/* ردیف ۳: تاریخ برگشت */}
+              <div className={styles.returnRow}>
+                <span className={styles.returnLabel}>تاریخ برگشت</span>
+                <span className={styles.dotSeparator}>·</span>
+                <span className={styles.dateText}>
+                  {formatShamsiDate(details.returnDate)}
                 </span>
               </div>
 
-              {/* مسیر */}
-              <div className={styles.routeSection}>
-                <div className={styles.routePoint}>
-                  <div className={styles.pointDot}></div>
-                  <div className={styles.pointInfo}>
-                    <span className={styles.pointLabel}>مبدا</span>
-                    <span className={styles.pointValue}>
-                      {translateLocation(details.origin)}
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.routeLine}></div>
-                <div className={styles.routePoint}>
-                  <div
-                    className={`${styles.pointDot} ${styles.destinationDot}`}
-                  ></div>
-                  <div className={styles.pointInfo}>
-                    <span className={styles.pointLabel}>مقصد</span>
-                    <span className={styles.pointValue}>
-                      {translateLocation(details.destination)}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              {/* خط جداکننده */}
+              <div className={styles.divider}></div>
 
-              {/* زمان‌ها */}
-              <div className={styles.timeSection}>
-                <div className={styles.timeBox}>
-                  <div className={styles.timeRow}>
-                    <span className={styles.timeValue}>
-                      {formatShamsiDate(details.departureDate)}
-                    </span>
-                  </div>
-                  <div className={styles.timeRow}>
-                    <span className={styles.timeValue}>
-                      {toPersianNumber(details.departureTime || "-")}
-                    </span>
-                  </div>
+              {/* ردیف ۴: شماره تور + مبلغ */}
+              <div className={styles.footerRow}>
+                <div className={styles.tourNumberSection}>
+                  <span className={styles.footerLabel}>شماره تور:</span>
+                  <span className={styles.footerValue}>
+                    {toPersianNumber(tour.id?.slice(-6) || "")}
+                  </span>
                 </div>
-                <div className={styles.timeDivider}></div>
-                <div className={styles.timeBox}>
-                  <div className={styles.timeRow}>
-                    <span className={styles.timeLabel}>تاریخ برگشت</span>
-                    <span className={styles.timeValue}>
-                      {formatShamsiDate(details.returnDate)}
-                    </span>
-                  </div>
-                  <div className={styles.timeRow}>
-                    <span className={styles.timeLabel}>زمان برگشت</span>
-                    <span className={styles.timeValue}>
-                      {toPersianNumber(details.returnTime || "-")}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* مبلغ */}
-              <div className={styles.priceSection}>
-                <span className={styles.priceLabel}>مبلغ قابل پرداخت:</span>
-                <span className={styles.priceValue}>
-                  {formatNumber(details.price || 0)}
+                <div className={styles.priceSection}>
+                  <span className={styles.footerLabel}>مبلغ پرداخت شده:</span>
+                  <span className={styles.priceValue}>
+                    {formatNumber(details.price || 0)}
+                  </span>
                   <span className={styles.currency}>تومان</span>
-                </span>
+                </div>
               </div>
             </div>
           );
