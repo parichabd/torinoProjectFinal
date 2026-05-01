@@ -370,7 +370,6 @@ export default function Profile() {
 
   return (
     <div className={styles.container}>
-      <Toaster position="top-center" />
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* ۱. اطلاعات حساب کاربری */}
         <div className={styles.section}>

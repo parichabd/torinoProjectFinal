@@ -10,6 +10,8 @@ body {
   margin-top: 19px;
 }
 
+.profileRow 
+
 .layout {
   width: 100%;
   min-height: 100vh;
@@ -426,7 +428,7 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.profileRow {
+.profileRow  {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -435,7 +437,7 @@ body {
 .numberPD {
   font-size: 16px;
   color: #10411B;
-  margin-right: 2px;
+  margin-right: 9px;
 }
 
 .divider_profile{
@@ -528,7 +530,7 @@ body {
 
 
 
-@media (min-width: 1024px) and (max-width : 1600px) {
+@media (min-width: 1024px) and (max-width : 1455px) {
 
 
 
@@ -597,3 +599,15 @@ body {
 
 
 
+
+
+
+/* ✅ فوتر همیشه پایین */
+.foot_layout {
+  margin-top: auto;
+}
+
+/* ✅ container ارتفاع ثابت نداشته باشه */
+.container {
+  height: auto !important;  /* این خط مهمه! */
+}

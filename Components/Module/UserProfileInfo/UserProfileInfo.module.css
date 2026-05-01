@@ -64,7 +64,8 @@
 /* ============================================
    دسکتاپ: 1024px تا 1450px
    ============================================ */
-@media (min-width: 1024px)  {
+@media (min-width: 1024px)   {
+  
   .container {
     flex-direction: row;
     padding: 24px;

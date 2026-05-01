@@ -517,6 +517,10 @@
     padding: 8px 20px;
     font-size: 14px;
   }
+  .container {
+    max-width: 100% !important;  /* ✅ اضافه کنید */
+    width: 100%;
+  }
 }
 
 /* ============================================
