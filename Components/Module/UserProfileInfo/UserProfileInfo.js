@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./UserProfileInfo.module.css";
 import Image from "next/image";
 import Transaction from "../ProfilePages/Transaction/page";
@@ -8,39 +8,44 @@ import MyTour from "../ProfilePages/MyTours/page";
 import Profile from "../ProfilePages/Profile/page";
 
 function UserProfileInfo() {
-  const [activePage, setActivePage] = useState("profile");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // ⬇️ گرفتن tab از URL بدون useEffect
+  const tab = searchParams.get("tab");
+  const activePage = useMemo(() => {
+    if (tab === "mytour") return "mytour";
+    if (tab === "transaction") return "transaction";
+    return "profile";
+  }, [tab]);
+
   const [activeButtonStyle, setActiveButtonStyle] = useState({
     left: 0,
     width: 0,
   });
-
   const navRef = useRef(null);
 
   const updateActiveLineStyle = (page) => {
     const activeButton = document.querySelector(`[data-page="${page}"]`);
-
     if (activeButton && navRef.current) {
       const containerRect = navRef.current.getBoundingClientRect();
       const buttonRect = activeButton.getBoundingClientRect();
-
       const left = buttonRect.left - containerRect.left;
       const width = buttonRect.width;
-
       setActiveButtonStyle({ left, width });
     }
   };
 
   useEffect(() => {
     updateActiveLineStyle(activePage);
-
     const handleResize = () => updateActiveLineStyle(activePage);
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, [activePage]);
 
   const navigateTo = (page) => {
-    setActivePage(page);
+    // ⬇️ همه tab‌ها توی URL نشون داده میشن
+    router.push(`/ProfileInfo?tab=${page}`);
   };
 
   const getIconSrc = (activeName, inactiveName) => {
@@ -66,7 +71,6 @@ function UserProfileInfo() {
             />
             <span className={styles.text}>پروفایل</span>
           </div>
-
           <div
             className={`${styles.navItem} ${activePage === "mytour" ? styles.active : ""}`}
             data-page="mytour"
@@ -80,7 +84,6 @@ function UserProfileInfo() {
             />
             <span className={styles.text}>تور های من</span>
           </div>
-
           <div
             className={`${styles.navItem} ${activePage === "transaction" ? styles.active : ""}`}
             data-page="transaction"
@@ -94,7 +97,6 @@ function UserProfileInfo() {
             />
             <span className={styles.text}>تراکنش</span>
           </div>
-
           <div
             className={styles.activeLine}
             style={{
@@ -104,9 +106,7 @@ function UserProfileInfo() {
           />
         </nav>
       </header>
-
       <div className={styles.divider}></div>
-
       <main className={styles.mainContent}>
         {activePage === "transaction" && <Transaction />}
         {activePage === "mytour" && <MyTour />}
