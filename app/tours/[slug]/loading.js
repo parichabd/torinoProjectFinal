@@ -1,33 +1,40 @@
-// app/tours/[slug]/loading.js
-"use client"
+"use client";
 export default function Loading() {
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      flexDirection: 'column',
-      gap: '20px'
-    }}>
-      {/* یک انیمیشن ساده CSS یا یک Spinner */}
-      <div style={{
-        width: '50px',
-        height: '50px',
-        border: '5px solid #f3f3f3',
-        borderTop: '5px solid #28A745',
-        borderRadius: '50%',
-        animation: 'spin 1s linear infinite'
-      }}></div>
-      <p style={{ color: '#666', fontFamily: "Iranian Sans", fontSize: '13px' }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "50px",
+          height: "50px",
+          border: "5px solid #f3f3f3",
+          borderTop: "5px solid #28A745",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+        }}
+      ></div>
+      <p
+        style={{ color: "#666", fontFamily: "Iranian Sans", fontSize: "13px" }}
+      >
         در حال بارگذاری اطلاعات تور...
       </p>
-      
-      {/* تعریف انیمیشن اسپینر */}
+
       <style jsx>{`
         @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
     </div>

@@ -1,13 +1,11 @@
-// app/tours/[slug]/error.js
-"use client"; // این خط الزامی است چون باید تعاملی باشد (دکمه بازگشت)
+"use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation"; // ایمپورت useRouter
+import { useRouter } from "next/navigation";
 
 export default function Error({ error, reset }) {
   const router = useRouter();
   useEffect(() => {
-    // چاپ خطا در کنسول برای دیباگ
     console.error("خطا در صفحه تور:", error);
   }, [error]);
 

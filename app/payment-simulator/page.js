@@ -1,10 +1,12 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { setCookie } from "@/utils/cookie";
 import { toPersianNumber } from "@/utils/number";
 import { profileApi } from "@/lib/api";
+
 import Image from "next/image";
 import styles from "./paymentSimulator.module.css";
 
@@ -137,7 +139,6 @@ export default function PaymentSimulator() {
       {/* محتوای اصلی */}
       <div className={styles.content}>
         <div className={styles.paymentBox}>
-          {/* اطلاعات پرداخت */}
           <div className={styles.merchantInfo}>
             <h2>اطلاعات پرداخت</h2>
             <div className={styles.infoRow}>
@@ -163,11 +164,9 @@ export default function PaymentSimulator() {
 
           <div className={styles.divider}></div>
 
-          {/* فرم کارت بانکی */}
           <form onSubmit={handleSubmit(onSubmit)} className={styles.cardForm}>
             <h3>اطلاعات کارت بانکی</h3>
 
-            {/* شماره کارت */}
             <div className={styles.inputGroup}>
               <label>شماره کارت</label>
               <input
@@ -193,7 +192,6 @@ export default function PaymentSimulator() {
             </div>
 
             <div className={styles.inputRow}>
-              {/* تاریخ انقضا */}
               <div className={styles.inputGroup}>
                 <label>تاریخ انقضا</label>
                 <input
@@ -220,7 +218,6 @@ export default function PaymentSimulator() {
                 )}
               </div>
 
-              {/* CVV2 */}
               <div className={styles.inputGroup}>
                 <label>CVV2</label>
                 <input
@@ -242,7 +239,6 @@ export default function PaymentSimulator() {
               </div>
             </div>
 
-            {/* رمز پویا */}
             <div className={styles.inputGroup}>
               <label>رمز پویا (OTP)</label>
               <input
@@ -264,7 +260,6 @@ export default function PaymentSimulator() {
               ⚠️ برای تست، هر مقداری وارد کنید - شبیه‌سازی است
             </p>
 
-            {/* دکمه‌ها */}
             <div className={styles.actions}>
               <button
                 type="submit"
@@ -292,7 +287,6 @@ export default function PaymentSimulator() {
         </div>
       </div>
 
-      {/* نتیجه پرداخت */}
       {showResult && (
         <div className={styles.resultOverlay}>
           <div className={styles.resultBox}>
