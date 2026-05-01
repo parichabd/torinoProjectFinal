@@ -118,10 +118,12 @@
 .accountField label {
   font-weight: 600;
   color: #333;
+  min-width: 100px;
 }
 
 .accountField input {
-  width: 186px;
+  flex: 1;
+  max-width: 350px;
   height: 40px;
   padding: 8px;
   font-family: inherit;
@@ -130,13 +132,10 @@
 .accountActions {
   margin-top: 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
-}
-
-.accountActions button {
-  width: 138px;
-  height: 41px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
 }
 
 /* ============================================
@@ -326,9 +325,11 @@
 
 .saveBtn {
   display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  margin-top: 10px;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
 }
 
 .saveBtnOne {
@@ -395,65 +396,10 @@
 }
 
 /* ============================================
-   💻 دسکتاپ: از 1170px به بالا
+   💻 دسکتاپ: از 1024px به بالا
    ============================================ */
 @media (min-width: 1024px) {
-  
-  /* --- بخش اطلاعات حساب --- */
-  .accountFields {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .accountField {
-    flex: 1;
-    min-width: 250px;
-    display: flex;
-    flex-direction: column;
-    margin-top: 0;
-  }
-
-  .accountField input {
-    width: 100% !important;
-    max-width: 350px;
-  }
-
-  /* --- بخش اطلاعات شخصی --- */
-  .twoCols {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .twoCols > div {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .twoCols input,
-  .twoCols select {
-    width: 100% !important;
-    max-width: 100%;
-  }
-
-  /* --- بخش اطلاعات بانکی --- */
-  .bankFieldWrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 0;
-  }
-
-  .bankFieldWrapper:last-of-type {
-    margin-bottom: 20px;
-  }
-
-  .bankFieldWrapper:first-child {
-    grid-column: 1 / -1;
-  }
-
-  /* --- نمایش اطلاعات - دو ستونه --- */
+  /* --- بخش اطلاعات حساب (حالت نمایش) --- */
   .infoGrid,
   .accountGrid {
     display: grid;
@@ -484,171 +430,6 @@
     color: #282828;
   }
 
-  /* --- دکمه‌ها --- */
-  .saveBtn {
-    display: flex;
-    justify-content: flex-start;
-    gap: 16px;
-  }
-
-  .saveBtnOne,
-  .saveBtnTwo {
-    width: 160px;
-  }
-
-  /* --- هماهنگ‌سازی باکس اصلی --- */
-  .section {
-    margin-bottom: 24px;
-  }
-
-  .sectionHeader {
-    padding: 20px 24px;
-  }
-
-  .sectionHeader h3 {
-    font-size: 18px;
-  }
-
-  .content {
-    padding: 24px;
-  }
-
-  .editBtn {
-    padding: 8px 20px;
-    font-size: 14px;
-  }
-  .container {
-    max-width: 100% !important;  /* ✅ اضافه کنید */
-    width: 100%;
-  }
-}
-
-/* ============================================
-   📱 موبایل: کمتر از 1170px
-   ============================================ */
-@media (max-width: 1023px) {
-  
-  .accountGrid,
-  .infoGrid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .accountBox,
-  .infoRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    margin: 0;
-  }
-
-  .accountBox:last-child,
-  .infoRow:last-child {
-    border-bottom: none;
-  }
-
-  .formGroup input,
-  .formGroup select {
-    width: 100% !important;
-  }
-
-  .twoCols {
-    grid-template-columns: 1fr;
-  }
-
-  .bankFieldWrapper {
-    margin-bottom: 15px;
-  }
-
-  .saveBtn {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .saveBtnOne,
-  .saveBtnTwo {
-    width: 100%;
-  }
-}
-
-
-/* ============================================
-   باکس ۱ - اطلاعات حساب کاربری
-   ============================================ */
-.accountGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.accountBox {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 25px 0 3px 0;
-}
-
-.accountEditForm {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.accountFields {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.accountField {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.accountField label {
-  font-weight: 600;
-  color: #333;
-  min-width: 100px;
-}
-
-.accountField input {
-  flex: 1;
-  max-width: 350px;
-  height: 40px;
-  padding: 8px;
-  font-family: inherit;
-}
-
-.accountActions {
-  margin-top: 30px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
-}
-
-/* ============================================
-   باکس ۲ و ۳ - دکمه‌ها
-   ============================================ */
-.saveBtn {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
-}
-
-/* ============================================
-   💻 دسکتاپ: از 1024px به بالا
-   ============================================ */
-@media (min-width: 1024px) {
-  
   /* --- بخش اطلاعات حساب (حالت ویرایش) --- */
   .accountFields {
     display: flex;
@@ -662,29 +443,23 @@
     flex: 1;
     min-width: 280px;
     display: flex;
-    flex-direction: row;        /* ← تغییر: لیبل و اینپوت کنار هم */
-    align-items: center;         /* ← تراز عمودی */
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
     margin-top: 0;
     gap: 16px;
   }
 
   .accountField label {
-    margin-bottom: 0;            /* ← حذف فاصله پایین لیبل */
+    margin-bottom: 0;
     min-width: auto;
-    white-space: nowrap;          /* ← جلوگیری از شکستن خط */
+    white-space: nowrap;
   }
 
   .accountField input {
     flex: 1;
     width: auto;
     max-width: 350px;
-  }
-
-  /* --- دکمه‌های باکس ۱ --- */
-  .accountActions {
-    justify-content: flex-start;
-    gap: 16px;
   }
 
   /* --- بخش اطلاعات شخصی --- */
@@ -721,37 +496,6 @@
     grid-column: 1 / -1;
   }
 
-  /* --- نمایش اطلاعات - دو ستونه --- */
-  .infoGrid,
-  .accountGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 40px;
-  }
-
-  .infoRow,
-  .accountBox {
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .label {
-    display: inline;
-    font-weight: 600;
-    color: #555;
-    font-size: 14px;
-    white-space: nowrap;
-  }
-
-  .value {
-    font-size: 16px;
-    font-weight: 500;
-    color: #282828;
-  }
-
   /* --- دکمه‌ها --- */
   .saveBtn {
     gap: 16px;
@@ -760,6 +504,11 @@
   .saveBtnOne,
   .saveBtnTwo {
     width: 160px;
+  }
+
+  .accountActions {
+    justify-content: flex-start;
+    gap: 16px;
   }
 
   /* --- هماهنگ‌سازی باکس اصلی --- */
@@ -789,12 +538,10 @@
     width: 100%;
   }
 }
-
 /* ============================================
    📱 موبایل: کمتر از 1024px
    ============================================ */
 @media (max-width: 1023px) {
-  
   .accountGrid,
   .infoGrid {
     display: flex;
@@ -849,11 +596,18 @@
   .accountField {
     width: 100%;
     margin-top: 0;
-    flex-direction: column;      /* ← در موبایل لیبل بالای اینپوت */
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .accountField label {
+    white-space: nowrap;
   }
 
   .accountField input {
+    flex: 1;
     max-width: 100%;
   }
 }
