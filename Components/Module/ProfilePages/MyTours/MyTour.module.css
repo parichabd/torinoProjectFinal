@@ -20,8 +20,8 @@
 
 /* کارت تمام شده */
 .completedCard {
-  background: #f9fafb;
-  border-color: #d1d5db;
+    border: 1px solid #00000033;
+
 }
 
 /* نشانگر وضعیت - سمت چپ بالا */
@@ -30,7 +30,7 @@
   align-items: center;
   justify-content: flex-end; /* ⬅️ اضافه شد */
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 19px;
 }
 
 .statusDot {
@@ -48,16 +48,22 @@
 }
 
 .statusText {
-  font-size: 11px;
   font-weight: 500;
+  width: 60px;
+  height: 26px;
+  font-size: 8px;
+  padding: 8px;
+  border-radius: 27px;
 }
 
 .activeText {
-  color: #22c55e;
+  color: #D1B900;
+  background-color: #D1B9004D;
 }
 
 .completedText {
-  color: #9ca3af;
+  color: #28A745;
+  background-color: #28A7454D;
 }
 
 /* ردیف ۱: نام تور + وسیله نقلیه */
