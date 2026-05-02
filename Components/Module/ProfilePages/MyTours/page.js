@@ -142,43 +142,113 @@ const MyTour = () => {
               key={`${tour.id}-${index}`}
               className={`${styles.tourCard} ${isCompleted ? styles.completedCard : ""}`}
             >
-              {/* نشانگر وضعیت - سمت چپ بالا */}
-              <div className={styles.statusIndicator}>
-                <div
-                  className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
-                ></div>
-                <span
-                  className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}
-                >
-                  {status}
-                </span>
+              {/* windows */}
+              <div>
+                <div className={styles.windowsMytour}>
+                  <div className={styles.tourNameSection}>
+                    <Image
+                      src="SVG/profile/icons/sun-fog.svg"
+                      width={18}
+                      height={18}
+                      alt="tour icon"
+                    />
+                    <h3 className={styles.tourName}>
+                      {details.name || "نام تور"}
+                    </h3>
+                  </div>
+
+                  <div className={styles.vehicleSection}>
+                    <Image
+                      src={`SVG/profile/icons/${vehicleIcon}`}
+                      width={18}
+                      height={18}
+                      alt={translateVehicle(details.vehicleType)}
+                    />
+                    <span className={styles.vehicleLabel}>سفر با</span>
+
+                    <span className={styles.vehicleName}>
+                      {translateVehicle(details.vehicleType)}
+                    </span>
+                  </div>
+
+                  <div className={styles.statusIndicator}>
+                    <div
+                      className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
+                    ></div>
+                    <span
+                      className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}
+                    >
+                      {status}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.dateWindowsMyTour}>
+                  {/* ردیف ۲: مسیر + تاریخ رفت */}
+                  <div className={styles.routeRowWindos}>
+                      <div className={styles.routeInfo}>
+                        <span className={styles.routeText}>
+                          <div>{translateLocation(details.origin)}</div>
+                          به <div>{translateLocation(details.destination)}</div>
+                        </span>
+                      </div>
+                      <div className={styles.departureInfo}>
+                        <span className={styles.dateText}>
+                        <span className={styles.dotSeparator}>·</span>
+                          {formatShamsiDate(details.departureDate)}
+                        </span>
+                      </div>
+                  </div>
+
+                  {/* ردیف ۳: تاریخ برگشت */}
+                  <div className={styles.returnRowWindows}>
+                    <span className={styles.returnLabel}>تاریخ برگشت</span>
+                    <span className={styles.dateText}>
+                      · {formatShamsiDate(details.returnDate)}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* ردیف ۱: نام تور + وسیله نقلیه */}
-              <div className={styles.headerRow}>
-                <div className={styles.tourNameSection}>
-                  <Image
-                    src="SVG/profile/icons/sun-fog.svg"
-                    width={18}
-                    height={18}
-                    alt="tour icon"
-                  />
-                  <h3 className={styles.tourName}>
-                    {details.name || "نام تور"}
-                  </h3>
-                </div>
-                <div className={styles.vehicleSection}>
-                  <Image
-                    src={`SVG/profile/icons/${vehicleIcon}`}
-                    width={18}
-                    height={18}
-                    alt={translateVehicle(details.vehicleType)}
-                  />
-                  <span className={styles.vehicleLabel}>سفر با</span>
-
-                  <span className={styles.vehicleName}>
-                    {translateVehicle(details.vehicleType)}
+              {/* mobile */}
+              <div className={styles.mobileMyTour}>
+                {/* نشانگر وضعیت - سمت چپ بالا */}
+                <div className={styles.statusIndicator}>
+                  <div
+                    className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
+                  ></div>
+                  <span
+                    className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}
+                  >
+                    {status}
                   </span>
+                </div>
+
+                {/* ردیف ۱: نام تور + وسیله نقلیه */}
+                <div className={styles.headerRow}>
+                  <div className={styles.tourNameSection}>
+                    <Image
+                      src="SVG/profile/icons/sun-fog.svg"
+                      width={18}
+                      height={18}
+                      alt="tour icon"
+                    />
+                    <h3 className={styles.tourName}>
+                      {details.name || "نام تور"}
+                    </h3>
+                  </div>
+                  <div className={styles.vehicleSection}>
+                    <Image
+                      src={`SVG/profile/icons/${vehicleIcon}`}
+                      width={18}
+                      height={18}
+                      alt={translateVehicle(details.vehicleType)}
+                    />
+                    <span className={styles.vehicleLabel}>سفر با</span>
+
+                    <span className={styles.vehicleName}>
+                      {translateVehicle(details.vehicleType)}
+                    </span>
+                  </div>
                 </div>
               </div>
 
