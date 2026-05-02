@@ -2,14 +2,14 @@ import Header from "@/Components/Layout/Header";
 import Footer from "@/Components/Layout/Footer";
 import ReactQueryProvider from "@/Provider/ReactQueryProvider";
 import InitialLoader from "@/Components/Spinner/InitialLoader";
-
+import FloatingButton from "@/Components/Support/FloatingButton"; // ← اضافه کنید
 import "./globals.css";
 import styles from "../Components/Layout/Layout.module.css";
 
 export const metadata = {
   title: "تورینو",
   description: "سفر به راحتی چند کلیک!",
-  metadataBase: new URL("https://torino.ir"), 
+  metadataBase: new URL("https://torino.ir"),
   icons: { icon: "/image/cover.svg" },
   openGraph: {
     title: "تورینو",
@@ -40,13 +40,16 @@ export default function RootLayout({ children }) {
             <div className={styles.layout}>
               <Header />
               <div className={styles.dividerer_menu}></div>
-              <main className={`${styles.container} ${styles.main} `}>
+              <main className={`${styles.container} ${styles.main}`}>
                 {children}
               </main>
               <Footer />
             </div>
           </InitialLoader>
         </ReactQueryProvider>
+
+        {/* دکمه پشتیبانی - بیرون از همه چیز */}
+        <FloatingButton />
       </body>
     </html>
   );
