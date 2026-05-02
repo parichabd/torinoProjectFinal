@@ -279,72 +279,104 @@
   flex-shrink: 0; /* ⬅️ مهم: خط فشرده نشه */
 }
 
-
 @media (min-width: 1024px) {
-.windowsMytour{
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
+  .windowsMytour {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
 
-.mobileMyTour , .returnRow , .routeRow {
-  display: none;
-}
+  .mobileMyTour,
+  .returnRow,
+  .routeRow {
+    display: none;
+  }
 
-.statusIndicator{
-  margin-bottom: 0;
-}
-.returnRowWindows , .routeRowWindos {
-  display: block;
-}
+  .statusIndicator {
+    margin-bottom: 0;
+  }
 
-.dateWindowsMyTour{
-  display: flex;
-  gap: 30px;
-  margin-bottom: 26px;
-}
-.routeRowWindos{
-  display: flex;
-}
-.footerRow {
-  justify-content: flex-start;
-}
-.tourNameSection img , .vehicleSection img{
-  width: 22px;
-  height: 22px;
-}
-.tourName , .vehicleLabel , .vehicleName , .statusIndicator , .routeText , .departureInfo , .footerLabel , .footerLabelTwo {
-  font-size: 16px;
-}
+  .returnRowWindows,
+  .routeRowWindos {
+    display: block;
+  }
 
-.footerLabel {
-  width: 80px;
-}
+  .dateWindowsMyTour {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 26px;
+  }
 
-.footerLabelTwo {
-  width: 130px;
-}
+  .routeRowWindos {
+    display: flex;
+  }
 
-.priceValue {
-  font-size: 14px;
-  width: 120px;
-}
-.currency {
-  font-size: 10px;
-}
+  .footerRow {
+    justify-content: flex-start;
+  }
 
-.dateText{
-  font-size: 15px;
-  margin-right: 10px;
-}
-.statusText{
-  font-size: 11px;
-}
-.completedText{
-  width: 80px;
-  height: 35px;
-}
+  .tourNameSection img,
+  .vehicleSection img {
+    width: 22px;
+    height: 22px;
+  }
 
+  .tourName,
+  .vehicleLabel,
+  .vehicleName,
+  .statusIndicator,
+  .routeText,
+  .departureInfo,
+  .footerLabel,
+  .footerLabelTwo {
+    font-size: 16px;
+  }
 
+  .footerLabel {
+    width: 80px;
+  }
 
+  .footerLabelTwo {
+    width: 130px;
+  }
+
+  .priceValue {
+    font-size: 14px;
+    width: 120px;
+  }
+
+  .currency {
+    font-size: 10px;
+  }
+
+  .dateText {
+    font-size: 15px;
+    margin-right: 10px;
+  }
+
+  .statusText {
+    font-size: 11px;
+  }
+
+  .completedText {
+    width: 80px;
+    height: 35px;
+  }
+
+  /* ═══════════════════════════════════════
+     فلش به جای نقطه در دسکتاپ
+     ═══════════════════════════════════════ */
+
+  /* نقطه در دسکتاپ مخفی */
+  .dotSeparator {
+    display: none;
+  }
+
+  /* فلش در دسکتاپ نمایش */
+  .arrowSeparator {
+    display: inline-block;
+    color: #2bcf43;
+    font-size: 18px;
+    margin: 0 8px;
+  }
 }

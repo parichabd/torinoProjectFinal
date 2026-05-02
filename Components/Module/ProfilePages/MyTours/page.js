@@ -143,6 +143,7 @@ const MyTour = () => {
               className={`${styles.tourCard} ${isCompleted ? styles.completedCard : ""}`}
             >
               {/* windows */}
+              {/* windows */}
               <div>
                 <div className={styles.windowsMytour}>
                   <div className={styles.tourNameSection}>
@@ -156,7 +157,6 @@ const MyTour = () => {
                       {details.name || "نام تور"}
                     </h3>
                   </div>
-
                   <div className={styles.vehicleSection}>
                     <Image
                       src={`SVG/profile/icons/${vehicleIcon}`}
@@ -165,12 +165,10 @@ const MyTour = () => {
                       alt={translateVehicle(details.vehicleType)}
                     />
                     <span className={styles.vehicleLabel}>سفر با</span>
-
                     <span className={styles.vehicleName}>
                       {translateVehicle(details.vehicleType)}
                     </span>
                   </div>
-
                   <div className={styles.statusIndicator}>
                     <div
                       className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
@@ -185,25 +183,27 @@ const MyTour = () => {
                 <div className={styles.dateWindowsMyTour}>
                   {/* ردیف ۲: مسیر + تاریخ رفت */}
                   <div className={styles.routeRowWindos}>
-                      <div className={styles.routeInfo}>
-                        <span className={styles.routeText}>
-                          <div>{translateLocation(details.origin)}</div>
-                          به <div>{translateLocation(details.destination)}</div>
-                        </span>
-                      </div>
-                      <div className={styles.departureInfo}>
-                        <span className={styles.dateText}>
+                    <div className={styles.routeInfo}>
+                      <span className={styles.routeText}>
+                        <div>{translateLocation(details.origin)}</div>
+                        به <div>{translateLocation(details.destination)}</div>
+                      </span>
+                    </div>
+                    <div className={styles.departureInfo}>
+                      <span className={styles.dateText}>
                         <span className={styles.dotSeparator}>·</span>
-                          {formatShamsiDate(details.departureDate)}
-                        </span>
-                      </div>
+                        <span className={styles.arrowSeparator}>←</span>
+                        {formatShamsiDate(details.departureDate)}
+                      </span>
+                    </div>
                   </div>
-
                   {/* ردیف ۳: تاریخ برگشت */}
                   <div className={styles.returnRowWindows}>
                     <span className={styles.returnLabel}>تاریخ برگشت</span>
                     <span className={styles.dateText}>
-                      · {formatShamsiDate(details.returnDate)}
+                      <span className={styles.dotSeparator}>·</span>
+                      <span className={styles.arrowSeparator}>←</span>
+                      {formatShamsiDate(details.returnDate)}
                     </span>
                   </div>
                 </div>
