@@ -71,7 +71,11 @@ const MyTour = () => {
 
     const vehicleLower = vehicle.toLowerCase();
 
-    if (vehicleLower.includes("airplane") || vehicleLower.includes("flight") || vehicleLower.includes("پرواز")) {
+    if (
+      vehicleLower.includes("airplane") ||
+      vehicleLower.includes("flight") ||
+      vehicleLower.includes("پرواز")
+    ) {
       return "airplane.svg";
     }
     if (vehicleLower.includes("bus") || vehicleLower.includes("اتوبوس")) {
@@ -83,7 +87,12 @@ const MyTour = () => {
     if (vehicleLower.includes("ship") || vehicleLower.includes("کشتی")) {
       return "ship.svg";
     }
-    if (vehicleLower.includes("suv") || vehicleLower.includes("offroad") || vehicleLower.includes("آفرود") || vehicleLower.includes("شاسی")) {
+    if (
+      vehicleLower.includes("suv") ||
+      vehicleLower.includes("offroad") ||
+      vehicleLower.includes("آفرود") ||
+      vehicleLower.includes("شاسی")
+    ) {
       return "car.svg";
     }
 
@@ -135,8 +144,12 @@ const MyTour = () => {
             >
               {/* نشانگر وضعیت - سمت چپ بالا */}
               <div className={styles.statusIndicator}>
-                <div className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}></div>
-                <span className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}>
+                <div
+                  className={`${styles.statusDot} ${isCompleted ? styles.completedDot : styles.activeDot}`}
+                ></div>
+                <span
+                  className={`${styles.statusText} ${isCompleted ? styles.completedText : styles.activeText}`}
+                >
                   {status}
                 </span>
               </div>
@@ -145,9 +158,9 @@ const MyTour = () => {
               <div className={styles.headerRow}>
                 <div className={styles.tourNameSection}>
                   <Image
-                    src="SVG/profile/icons/mytour-black.svg"
-                    width={16}
-                    height={16}
+                    src="SVG/profile/icons/sun-fog.svg"
+                    width={18}
+                    height={18}
                     alt="tour icon"
                   />
                   <h3 className={styles.tourName}>
@@ -155,13 +168,14 @@ const MyTour = () => {
                   </h3>
                 </div>
                 <div className={styles.vehicleSection}>
-                  <span className={styles.vehicleLabel}>سفر با</span>
                   <Image
                     src={`SVG/profile/icons/${vehicleIcon}`}
                     width={18}
                     height={18}
                     alt={translateVehicle(details.vehicleType)}
                   />
+                  <span className={styles.vehicleLabel}>سفر با</span>
+
                   <span className={styles.vehicleName}>
                     {translateVehicle(details.vehicleType)}
                   </span>
@@ -172,7 +186,8 @@ const MyTour = () => {
               <div className={styles.routeRow}>
                 <div className={styles.routeInfo}>
                   <span className={styles.routeText}>
-                    {translateLocation(details.origin)} به {translateLocation(details.destination)}
+                    <div>{translateLocation(details.origin)}</div>
+                    به <div>{translateLocation(details.destination)}</div>
                   </span>
                 </div>
                 <div className={styles.departureInfo}>
@@ -186,9 +201,8 @@ const MyTour = () => {
               {/* ردیف ۳: تاریخ برگشت */}
               <div className={styles.returnRow}>
                 <span className={styles.returnLabel}>تاریخ برگشت</span>
-                <span className={styles.dotSeparator}>·</span>
                 <span className={styles.dateText}>
-                  {formatShamsiDate(details.returnDate)}
+                  · {formatShamsiDate(details.returnDate)}
                 </span>
               </div>
 
@@ -198,17 +212,19 @@ const MyTour = () => {
               {/* ردیف ۴: شماره تور + مبلغ */}
               <div className={styles.footerRow}>
                 <div className={styles.tourNumberSection}>
-                  <span className={styles.footerLabel}>شماره تور:</span>
+                  <span className={styles.footerLabel}>شماره تور</span>
                   <span className={styles.footerValue}>
-                    {toPersianNumber(tour.id?.slice(-6) || "")}
+                    {toPersianNumber(tour.id?.slice(-9) || "")}
                   </span>
                 </div>
+                {/* ⬇️ خط عمودی جدید */}
+                <div className={styles.verticalDivider}></div>
                 <div className={styles.priceSection}>
-                  <span className={styles.footerLabel}>مبلغ پرداخت شده:</span>
-                  <span className={styles.priceValue}>
+                  <span className={styles.footerLabelTwo}>مبلغ پرداخت شده</span>
+                  <p className={styles.priceValue}>
                     {formatNumber(details.price || 0)}
-                  </span>
-                  <span className={styles.currency}>تومان</span>
+                    <span className={styles.currency}>تومان</span>
+                  </p>
                 </div>
               </div>
             </div>
