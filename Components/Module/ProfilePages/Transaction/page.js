@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import styles from "./Transaction.module.css";
-import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber, formatNumber } from "@/utils/number";
-import { formatShamsiDate } from "@/utils/dateUtils";
 import { transactionApi } from "@/lib/api";
 
 const Transaction = () => {
@@ -59,7 +57,7 @@ const Transaction = () => {
   const formatAmount = (amount) => {
     if (!amount) return 0;
     // اگه مبلغ به ریال هست، تقسیم بر ۱۰ کن
-    return formatNumber(amount / 10);
+    return formatNumber(amount );
   };
 
   if (loading) {
