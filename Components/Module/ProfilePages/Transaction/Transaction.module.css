@@ -1,15 +1,19 @@
-/* کانتینر اصلی */
+/* ============================================
+   کانتینر اصلی
+   ============================================ */
 .container {
   padding: 16px;
 }
 
-/* هدر جدول */
+/* ============================================
+   هدر جدول - موبایل (پیش‌فرض)
+   ============================================ */
 .tableHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #f3f4f6;
+  background: #dbdbdb;
   border-radius: 10px 10px 0 0;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -25,7 +29,43 @@
   color: #6b7280;
 }
 
-/* لیست تراکنش‌ها */
+/* ============================================
+   هدر جدول - دسکتاپ (1024px به بالا)
+   ============================================ */
+.tableHeaderDesktop {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .tableHeader {
+    display: none;
+  }
+
+  .tableHeaderDesktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #dbdbdb;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 2px solid #c0c0c0;
+  }
+
+  .headerCellDesktop {
+    flex: 1;
+    text-align: center;
+  }
+
+  .headerCellDesktop span {
+    font-size: 15px;
+    font-weight: 700;
+    color: #4b5563;
+  }
+}
+
+/* ============================================
+   لیست تراکنش‌ها
+   ============================================ */
 .transactionsList {
   border: 1px solid #e5e7eb;
   border-top: none;
@@ -33,7 +73,16 @@
   overflow: hidden;
 }
 
-/* هر تراکنش */
+@media (min-width: 1024px) {
+  .transactionsList {
+    border-radius: 0 0 12px 12px;
+    border: 2px solid #e5e7eb;
+  }
+}
+
+/* ============================================
+   هر تراکنش
+   ============================================ */
 .transactionWrapper {
   border-bottom: 1px solid #e5e7eb;
 }
@@ -42,7 +91,9 @@
   border-bottom: none;
 }
 
-/* ردیف اصلی */
+/* ============================================
+   ردیف اصلی - موبایل
+   ============================================ */
 .transactionRow {
   display: flex;
   justify-content: space-between;
@@ -64,7 +115,43 @@
   align-items: center;
 }
 
-/* تاریخ و ساعت */
+/* ============================================
+   ردیف اصلی - دسکتاپ
+   ============================================ */
+.transactionRowDesktop {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .transactionRow {
+    display: none;
+  }
+
+  .transactionRowDesktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .transactionRowDesktop:hover {
+    background: #f3f4f6;
+  }
+
+  .cellDesktop {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* ============================================
+   تاریخ و ساعت - موبایل
+   ============================================ */
 .dateTimeContainer {
   display: flex;
   flex-direction: column;
@@ -83,34 +170,128 @@
   color: #9ca3af;
 }
 
-/* مبلغ */
+/* ============================================
+   تاریخ و ساعت - دسکتاپ
+   ============================================ */
+@media (min-width: 1024px) {
+  .dateTimeContainerDesktop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dateTextDesktop {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .timeTextDesktop {
+    font-size: 14px;
+    color: #6b7280;
+  }
+}
+
+/* ============================================
+   مبلغ - موبایل
+   ============================================ */
 .amountValue {
   font-size: 15px;
   font-weight: 700;
-  color: #059669;
+  color: #282828;
 }
 
-/* شماره سفارش */
+/* ============================================
+   مبلغ - دسکتاپ
+   ============================================ */
+@media (min-width: 1024px) {
+  .amountValueDesktop {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1f2937;
+  }
+}
+
+/* ============================================
+   نوع تراکنش - دسکتاپ
+   ============================================ */
+@media (min-width: 1024px) {
+  .typeValueDesktop {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    padding: 6px 14px;
+    padding-left: 36px;
+    background: #d5f4d8;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  /* فلش با فونت آیکون */
+  .typeValueDesktop::after {
+    content: "⌄";
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #6b7280;
+    transition: all 0.3s ease;
+  }
+
+  /* هاور */
+  .typeValueDesktop:hover {
+    background: #c4f4c6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(65, 144, 39, 0.3);
+  }
+
+  .typeValueDesktop:hover::after {
+    transform: translateY(-50%) rotate(180deg);
+    color: #419027;
+  }
+}
+
+/* ============================================
+   شماره سفارش - موبایل
+   ============================================ */
 .orderNumber {
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: #282828;
+  font-family: "fonnts.com-YekanBakh-Bold";
 }
 
-.chevronIcon {
-  margin-right: 8px;
-  transition: transform 0.2s;
+/* ============================================
+   شماره سفارش - دسکتاپ
+   ============================================ */
+@media (min-width: 1024px) {
+  .orderNumberDesktop {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+    font-family: "fonnts.com-YekanBakh-Bold";
+  }
 }
 
-.rotated {
-  transform: rotate(180deg);
-}
-
-/* جزئیات اضافی */
+/* ============================================
+   جزئیات اضافی (باز شده)
+   ============================================ */
 .expandedDetails {
   padding: 16px;
   background: #f9fafb;
   border-top: 1px solid #e5e7eb;
+}
+
+@media (min-width: 1024px) {
+  .expandedDetails {
+    padding: 20px 24px;
+    background: #f8f9fa;
+    border-top: 2px solid #e5e7eb;
+  }
 }
 
 .detailRow {
@@ -130,13 +311,27 @@
   color: #6b7280;
 }
 
+@media (min-width: 1024px) {
+  .detailLabel {
+    font-size: 14px;
+  }
+}
+
 .detailValue {
   font-size: 13px;
   font-weight: 500;
   color: #374151;
 }
 
-/* لودینگ */
+@media (min-width: 1024px) {
+  .detailValue {
+    font-size: 15px;
+  }
+}
+
+/* ============================================
+   لودینگ
+   ============================================ */
 .loadingContainer {
   display: flex;
   flex-direction: column;
@@ -166,7 +361,9 @@
   font-size: 14px;
 }
 
-/* خالی */
+/* ============================================
+   خالی
+   ============================================ */
 .emptyContainer {
   display: flex;
   flex-direction: column;

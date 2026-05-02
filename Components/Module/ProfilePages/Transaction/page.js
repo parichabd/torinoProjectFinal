@@ -35,29 +35,35 @@ const Transaction = () => {
   // تابع فرمت تاریخ و ساعت
   const formatDateTime = (dateString) => {
     if (!dateString) return { date: "-", time: "-" };
-
     const date = new Date(dateString);
-    const dateOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const formattedDate = `${year}/${month}/${day}`;
     const timeOptions = {
       hour: "2-digit",
       minute: "2-digit",
     };
-
     return {
-      date: date.toLocaleDateString("fa-IR", dateOptions),
+      date: toPersianNumber(formattedDate),
       time: date.toLocaleTimeString("fa-IR", timeOptions),
     };
   };
 
-  // تابع فرمت مبلغ (تبدیل ریال به تومان)
+  // تابع فرمت مبلغ
   const formatAmount = (amount) => {
     if (!amount) return 0;
-    // اگه مبلغ به ریال هست، تقسیم بر ۱۰ کن
-    return formatNumber(amount );
+    return formatNumber(amount);
+  };
+
+  // تابع نمایش نوع تراکنش
+  const getTransactionType = (type) => {
+    const types = {
+      Purchase: "ثبت نام در تور گردشگری",
+      Withdrawal: "لغو تور گردشگری",
+      Transfer:  "انتقال تور گردشگری",
+    };
+    return types[type] || type || "-";
   };
 
   if (loading) {
@@ -93,7 +99,7 @@ const Transaction = () => {
         }}
       />
 
-      {/* هدر جدول */}
+      {/* هدر جدول - موبایل */}
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>
           <span>تاریخ و ساعت</span>
@@ -106,6 +112,22 @@ const Transaction = () => {
         </div>
       </div>
 
+      {/* هدر جدول - دسکتاپ */}
+      <div className={styles.tableHeaderDesktop}>
+        <div className={styles.headerCellDesktop}>
+          <span>تاریخ و ساعت</span>
+        </div>
+        <div className={styles.headerCellDesktop}>
+          <span>مبلغ (تومان)</span>
+        </div>
+        <div className={styles.headerCellDesktop}>
+          <span>نوع تراکنش</span>
+        </div>
+        <div className={styles.headerCellDesktop}>
+          <span>شماره سفارش</span>
+        </div>
+      </div>
+
       {/* لیست تراکنش‌ها */}
       <div className={styles.transactionsList}>
         {transactions.map((transaction) => {
@@ -114,7 +136,7 @@ const Transaction = () => {
 
           return (
             <div key={transaction.id} className={styles.transactionWrapper}>
-              {/* ردیف اصلی */}
+              {/* ردیف اصلی - موبایل */}
               <div
                 className={styles.transactionRow}
                 onClick={() => toggleExpand(transaction.id)}
@@ -137,33 +159,48 @@ const Transaction = () => {
                 </div>
               </div>
 
+              {/* ردیف اصلی - دسکتاپ */}
+              <div
+                className={styles.transactionRowDesktop}
+                onClick={() => toggleExpand(transaction.id)}
+              >
+                <div className={styles.cellDesktop}>
+                  <div className={styles.dateTimeContainerDesktop}>
+                    <span className={styles.dateTextDesktop}>{date}</span>
+                    <span className={styles.timeTextDesktop}>{time}</span>
+                  </div>
+                </div>
+                <div className={styles.cellDesktop}>
+                  <span className={styles.amountValueDesktop}>
+                    {formatAmount(transaction.amount)}
+                  </span>
+                </div>
+                <div className={styles.cellDesktop}>
+                  <span className={styles.typeValueDesktop}>
+                    {getTransactionType(transaction.type)}
+                  </span>
+                </div>
+                <div className={styles.cellDesktop}>
+                  <span className={styles.orderNumberDesktop}>
+                    {toPersianNumber(transaction.id?.slice(-6) || "")}
+                  </span>
+                </div>
+              </div>
+
               {/* جزئیات اضافی */}
               {isExpanded && (
                 <div className={styles.expandedDetails}>
                   <div className={styles.detailRow}>
                     <span className={styles.detailLabel}>شناسه تراکنش:</span>
-                    <span className={styles.detailValue}>
-                      {transaction.id}
-                    </span>
+                    <span className={styles.detailValue}>{transaction.id}</span>
                   </div>
                   <div className={styles.detailRow}>
                     <span className={styles.detailLabel}>نوع تراکنش:</span>
                     <span className={styles.detailValue}>
-                      {transaction.type === "Purchase" ? "خرید" : transaction.type}
+                      {getTransactionType(transaction.type)}
                     </span>
                   </div>
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>مبلغ کل:</span>
-                    <span className={styles.detailValue}>
-                      {formatAmount(transaction.amount)} تومان
-                    </span>
-                  </div>
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>تاریخ کامل:</span>
-                    <span className={styles.detailValue}>
-                      {date} - ساعت {time}
-                    </span>
-                  </div>
+                  
                 </div>
               )}
             </div>
@@ -175,3 +212,4 @@ const Transaction = () => {
 };
 
 export default Transaction;
+
