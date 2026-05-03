@@ -201,7 +201,7 @@
 
 .bankInput:focus {
   outline: none;
-  border-color: #1976d2;
+  border-color: #388e3c;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
@@ -587,4 +587,73 @@
 }
 
 
- 
+ /* ============================================
+   فوکوس همه اینپوت‌ها - رنگ سبز
+   ============================================ */
+
+/* همه اینپوت‌ها */
+input:focus,
+input:active {
+  outline: none !important;
+  border-color: #388e3c !important;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.15) !important;
+}
+
+/* همه سلکت‌ها */
+select:focus,
+select:active {
+  outline: none !important;
+  border-color: #388e3c !important;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.15) !important;
+}
+
+/* اینپوت‌های خاص */
+.formGroup input:focus,
+.formGroup select:focus {
+  border-color: #388e3c !important;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.15) !important;
+}
+
+.accountField input:focus {
+  border-color: #388e3c !important;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.15) !important;
+}
+
+/* ============================================
+   هاور دکمه انصراف - قرمز (ساده)
+   ============================================ */
+
+.saveBtnTwo {
+  width: 160px;
+  height: 42px;
+  background-color: #fff;
+  color: #28a745;
+  border: 2px solid #28a745 !important;
+  font-family: inherit;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.saveBtnTwo:hover {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+.saveBtnTwo:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.saveBtnTwo:disabled {
+  background: #f8f9fa !important;
+  color: #adb5bd !important;
+  border-color: #dee2e6 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
