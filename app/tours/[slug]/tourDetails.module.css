@@ -112,8 +112,6 @@
   display: none;
 }
 
-
-
 .divider {
   width: 1px;
   height: 100px;
@@ -127,10 +125,6 @@
   gap: 50px;
 }
 
-.imageBox {
-  width: 100%;
-}
-
 .responsiveImage {
   width: 450px !important;
   max-width: 450px;
@@ -139,24 +133,33 @@
 
 /* ==================== MEDIA QUERIES ==================== */
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  .responsive-image {
-    max-width: 950px;
+/* موبایل و تبلت - زیر 1024px */
+@media (max-width: 1023px) {
+  .responsiveImage {
+    width: 100% !important;
+    max-width: 100%;
+    height: auto;
   }
 
+  .windowTourDetails {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
   .mainPageInfo {
     flex: 1;
     margin-top: 20px !important;
   }
 }
 
+/* لپتاپ - 1024px تا 1443px */
 @media (min-width: 1024px) and (max-width: 1443px) {
   .mainPageInfo {
     flex: 1;
     margin-top: 20px !important;
   }
-
- 
 
   .windowTourDetails {
     display: flex;
@@ -166,7 +169,7 @@
   .windowsBuy {
     display: flex;
     justify-content: space-between;
-    gap: 400px;
+    margin-top: 20px;
   }
 
   .priceAndbook {
@@ -210,7 +213,7 @@
   }
 
   .price p {
-    width: 150px;
+    width: auto;
   }
 
   .responsiveImage {
@@ -220,6 +223,7 @@
   }
 }
 
+/* دسکتاپ بزرگ - بالای 1444px */
 @media (min-width: 1444px) {
   .mainPageInfo {
     flex: 1;
