@@ -24,9 +24,9 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const [otpShake, setOtpShake] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [typedDigits, setTypedDigits] = useState(0);
-  
+
   const hasShownRegisterToast = useRef(false);
-  
+
   const {
     register,
     handleSubmit,
@@ -34,14 +34,9 @@ export default function AuthToast({ onClose, mode = "login" }) {
     formState: { errors },
     reset,
   } = useForm();
+
   const sendOtpMutation = useSendOtp();
   const verifyOtpMutation = useVerifyOtp();
-
-  useEffect(() => {
-    const syncMobile = () => setMobile(localStorage.getItem("mobile"));
-    window.addEventListener("storage", syncMobile);
-    return () => window.removeEventListener("storage", syncMobile);
-  }, []);
 
   useEffect(() => {
     if (mode === "register" && !hasShownRegisterToast.current) {
@@ -72,21 +67,18 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const formatTime = (t) =>
     `${Math.floor(t / 60)}:${(t % 60).toString().padStart(2, "0")}`;
 
-  // ✅ استفاده از setValue برای سینک با react-hook-form
   const handleMobileChange = (e) => {
     const value = e.target.value;
     const filtered = value.replace(/[^۰-۹0-9]/g, "");
     const persianValue = englishToPersian(filtered);
     const limited = persianValue.slice(0, 11);
-    
-    // ✅ استفاده از setValue به جای تغییر مستقیم DOM
+
     setValue("mobile", limited, { shouldValidate: false });
-    
+
     setTypedDigits(persianToEnglish(limited).length);
     if (mobileError) setMobileError("");
   };
 
-  // ✅ هندلر Enter مستقیم روی input
   const handleMobileKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -96,14 +88,14 @@ export default function AuthToast({ onClose, mode = "login" }) {
 
   const submitPhone = async (data) => {
     const cleanedMobile = persianToEnglish(data.mobile);
-    
+
     if (!validateMobile(cleanedMobile)) {
       setMobileError("شماره موبایل معتبر نیست. باید با ۰۹ شروع و ۱۱ رقم باشد.");
       setMobileShake(true);
       setTimeout(() => setMobileShake(false), 400);
       return;
     }
-    
+
     setMobileError("");
     setMobile(cleanedMobile);
 
@@ -152,20 +144,23 @@ export default function AuthToast({ onClose, mode = "login" }) {
       setTimeout(() => setOtpShake(false), 400);
       return;
     }
+
     setIsLoggingIn(true);
+
     verifyOtpMutation.mutate(
       { mobile, otp },
       {
         onSuccess: (res) => {
           Cookies.set("accessToken", res.accessToken, { expires: 1 / 24 });
           Cookies.set("refreshToken", res.refreshToken, { expires: 7 });
-          localStorage.setItem("mobile", mobile);
-          localStorage.setItem("userName", res.user?.firstName || "");
+
           window.dispatchEvent(new Event("auth:login-success"));
+
           toast.success("ورود موفق بود! خوش آمدید 🎉", {
             position: "top-center",
             duration: 4000,
           });
+
           setTimeout(() => {
             setIsLoggingIn(false);
             onClose();
@@ -240,7 +235,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                     <span className={styles.error}>{errors.name?.message}</span>
                   </>
                 )}
-                
+
                 <div className={styles.inputWrapper}>
                   <input
                     type="tel"
@@ -257,7 +252,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                     {typedDigits}/۱۱
                   </span>
                 </div>
-                
+
                 <span className={styles.error}>
                   {errors.mobile?.message || mobileError}
                 </span>
@@ -339,6 +334,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                 />
               </div>
               {otpError && <div className={styles.errorBox}>{otpError}</div>}
+
               {timeLeft > 0 ? (
                 <p className={styles.timer}>
                   {formatTime(timeLeft)} تا ارسال مجدد کد
@@ -348,6 +344,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                   ارسال مجدد کد
                 </button>
               )}
+
               <button
                 className={styles.submit}
                 onClick={submitOtp}

@@ -13,7 +13,6 @@ export const verifyOtp = ({ mobile, otp }) =>
 
     setCookie("accessToken", accessToken, 30);
     setCookie("refreshToken", refreshToken, 360);
-    localStorage.setItem("mobile", mobile);
 
     return { user, accessToken, refreshToken };
   });

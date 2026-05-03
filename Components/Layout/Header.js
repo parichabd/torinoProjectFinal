@@ -7,11 +7,10 @@ import { IoMdNotifications } from "react-icons/io";
 import { toPersianNumber } from "@/utils/number";
 import { useRouter } from "next/navigation";
 import { getCookie, removeCookie } from "@/utils/cookie";
-
+import { profileApi } from "@/lib/api";  // ✅ اضافه شد
 import Link from "next/link";
 import AuthToast from "@/Components/Auth/AuthToast";
 import Cookies from "js-cookie";
-
 import styles from "./Layout.module.css";
 import Image from "next/image";
 
@@ -50,30 +49,49 @@ export default function Header() {
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [mobile, setMobile] = useState(null);
-
+  const [mobile, setMobile] = useState(null);  // ✅ از API میاد
   const [hasNotification, setHasNotification] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(true);  // ✅ برای لودینگ
   const desktopRef = useRef(null);
   const mobileRef = useRef(null);
 
-  const menuHandler = () => setIsOpen((prev) => !prev);
+  const router = useRouter();
 
-  const openLogin = () => {
-    setAuthMode("login");
-    setIsToastOpen(true);
+  // ✅ تابع جدید برای گرفتن پروفایل از سرور
+  const fetchUserProfile = async () => {
+    try {
+      const accessToken = getCookie("accessToken");
+      if (!accessToken) {
+        setMobile(null);
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await profileApi.getProfile();
+      setMobile(data.mobile || null);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      setMobile(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const openRegister = () => {
-    setAuthMode("register");
-    setIsToastOpen(true);
-  };
+  // ✅ گرفتن پروفایل هنگام لود اولیه
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
-  const toggleUserMenu = (e) => {
-    e.stopPropagation();
-    setIsUserMenuOpen((prev) => !prev);
-  };
+  // ✅ گوش دادن به رویداد لاگین
+  useEffect(() => {
+    const handleLoginSuccess = () => {
+      fetchUserProfile();  // ✅ از API میگیره نه localStorage
+    };
+
+    window.addEventListener("auth:login-success", handleLoginSuccess);
+    return () => window.removeEventListener("auth:login-success", handleLoginSuccess);
+  }, []);
 
   useEffect(() => {
     const checkNotifications = () => {
@@ -97,26 +115,6 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedMobile = localStorage.getItem("mobile");
-      if (savedMobile !== null) {
-        setTimeout(() => setMobile(savedMobile), 0);
-      }
-
-      const handleLoginSuccess = () => {
-        const newMobile = localStorage.getItem("mobile");
-        if (newMobile !== null) {
-          setTimeout(() => setMobile(newMobile), 0);
-        }
-      };
-
-      window.addEventListener("auth:login-success", handleLoginSuccess);
-      return () =>
-        window.removeEventListener("auth:login-success", handleLoginSuccess);
-    }
-  }, []);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       const isDesktop = window.innerWidth >= 1024;
       const ref = isDesktop ? desktopRef.current : mobileRef.current;
@@ -129,11 +127,25 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isUserMenuOpen]);
 
-  const router = useRouter();
+  const menuHandler = () => setIsOpen((prev) => !prev);
 
+  const openLogin = () => {
+    setAuthMode("login");
+    setIsToastOpen(true);
+  };
+
+  const openRegister = () => {
+    setAuthMode("register");
+    setIsToastOpen(true);
+  };
+
+  const toggleUserMenu = (e) => {
+    e.stopPropagation();
+    setIsUserMenuOpen((prev) => !prev);
+  };
+
+  // ✅ حذف localStorage.removeItem("mobile") و localStorage.removeItem("userName")
   const handleLogout = () => {
-    localStorage.removeItem("mobile");
-    localStorage.removeItem("userName");
     removeCookie("lastUsedCard");
     removeCookie("fullCardNumber");
     removeCookie("hasNewOrder");
@@ -141,7 +153,7 @@ export default function Header() {
     removeCookie("passengerBirthDate");
     Cookies.remove("accessToken", { path: "/" });
     Cookies.remove("refreshToken", { path: "/" });
-    setMobile(null);
+    setMobile(null);  // ✅ فقط state رو پاک کن
     setIsUserMenuOpen(false);
     setHasNotification(false);
     setNotificationCount(0);
@@ -153,6 +165,7 @@ export default function Header() {
     setIsUserMenuOpen(false);
   };
 
+  // ✅ رندر مشروط - تا زمانی که لود نشده چیزی نشون نده
   const userMenuContent = (
     <div className={styles.userMenu}>
       {mobile && (
@@ -178,7 +191,6 @@ export default function Header() {
           <div className={styles.numberPD}>{toPersianNumber(mobile)}</div>
         </div>
       )}
-
       <Link
         href="/ProfileInfo"
         className={`${styles.item} ${styles.noUnderline}`}
@@ -192,9 +204,7 @@ export default function Header() {
         <h1>اطلاعات حساب کاربری</h1>
         {hasNotification && <NumberBadge />}
       </Link>
-
       <div className={styles.divider_profile}></div>
-
       <div className={`${styles.item} ${styles.exit}`} onClick={handleLogout}>
         <Img
           src="/SVG/profile/logout.svg"
@@ -205,6 +215,55 @@ export default function Header() {
       </div>
     </div>
   );
+
+  // ✅ رندر مشروط - فقط وقتی لود تموم شد
+  const renderAuthSection = () => {
+    if (isLoading) return null;  // ✅ هنگام لود چیزی نشون نمیده
+
+    if (mobile) {
+      return (
+        <div className={styles.userWrapper} ref={desktopRef}>
+          <div className={styles.userSection} onClick={toggleUserMenu}>
+            <Img
+              src="/icon/profile.png"
+              alt="profile"
+              style={{ width: 24, height: 24 }}
+            />
+            <div className={styles.phoneWrapper}>
+              <span className={styles.user_mobile}>
+                {toPersianNumber(mobile)}
+              </span>
+              {hasNotification && <BellBadge />}
+            </div>
+            <Img
+              src="/SVG/arrow-down.svg"
+              alt="arrow"
+              style={{ width: 18, height: 18 }}
+              className={isUserMenuOpen ? styles.rotateArrow : ""}
+            />
+          </div>
+          {isUserMenuOpen && userMenuContent}
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <div className={styles.login_icon}>
+          <Img
+            src="/icon/profile.png"
+            alt="profile"
+            style={{ width: 24, height: 24 }}
+          />
+          <button onClick={openLogin}>ورود</button>
+          <span>|</span>
+        </div>
+        <div className={styles.login_icon}>
+          <button onClick={openRegister}>ثبت نام</button>
+        </div>
+      </>
+    );
+  };
 
   return (
     <>
@@ -217,7 +276,6 @@ export default function Header() {
             <Link href="/Info/about-us">درباره ما</Link>
             <Link href="/Info/contact">تماس با ما</Link>
           </div>
-
           <div className={styles.mobile_menu}>
             <button className={styles.button} onClick={menuHandler}>
               <Img
@@ -228,55 +286,14 @@ export default function Header() {
             </button>
           </div>
         </div>
-
         <div className={styles.right_side}>
           <div className={styles.desktop_menu}>
             <div
               className={`${styles.login_desktop} ${mobile ? styles.noBorder : ""}`}
             >
-              {mobile ? (
-                <div className={styles.userWrapper} ref={desktopRef}>
-                  <div className={styles.userSection} onClick={toggleUserMenu}>
-                    <Img
-                      src="/icon/profile.png"
-                      alt="profile"
-                      style={{ width: 24, height: 24 }}
-                    />
-                    <div className={styles.phoneWrapper}>
-                      <span className={styles.user_mobile}>
-                        {toPersianNumber(mobile)}
-                      </span>
-                      {hasNotification && <BellBadge />}
-                    </div>
-
-                    <Img
-                      src="/SVG/arrow-down.svg"
-                      alt="arrow"
-                      style={{ width: 18, height: 18 }}
-                      className={isUserMenuOpen ? styles.rotateArrow : ""}
-                    />
-                  </div>
-                  {isUserMenuOpen && userMenuContent}
-                </div>
-              ) : (
-                <>
-                  <div className={styles.login_icon}>
-                    <Img
-                      src="/icon/profile.png"
-                      alt="profile"
-                      style={{ width: 24, height: 24 }}
-                    />
-                    <button onClick={openLogin}>ورود</button>
-                    <span>|</span>
-                  </div>
-                  <div className={styles.login_icon}>
-                    <button onClick={openRegister}>ثبت نام</button>
-                  </div>
-                </>
-              )}
+              {renderAuthSection()}
             </div>
           </div>
-
           <div className={styles.mobile_menu}>
             {mobile ? (
               <div className={styles.userWrapper} ref={mobileRef}>
@@ -286,14 +303,12 @@ export default function Header() {
                     alt="profile"
                     style={{ width: 22, height: 22 }}
                   />
-
                   <div className={styles.phoneWrapper}>
                     <span className={styles.user_mobile}>
                       {toPersianNumber(mobile)}
                     </span>
                     {hasNotification && <BellBadge />}
                   </div>
-
                   <Img
                     src="/SVG/arrow-down.svg"
                     alt="arrow"
@@ -315,11 +330,9 @@ export default function Header() {
           </div>
         </div>
       </header>
-
       {isOpen && (
         <div className={styles.mobile_overlay} onClick={menuHandler} />
       )}
-
       <nav className={`${styles.mobile_drawer} ${isOpen ? styles.open : ""}`}>
         <Link href="/" onClick={menuHandler}>
           <IoHomeOutline /> صفحه اصلی
@@ -334,7 +347,6 @@ export default function Header() {
           <MdOutlinePermPhoneMsg /> تماس با ما
         </Link>
       </nav>
-
       {isToastOpen && (
         <AuthToast mode={authMode} onClose={() => setIsToastOpen(false)} />
       )}

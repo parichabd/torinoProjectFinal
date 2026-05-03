@@ -1,12 +1,10 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { setCookie } from "@/utils/cookie";
 import { toPersianNumber } from "@/utils/number";
 import { profileApi } from "@/lib/api";
-
 import Image from "next/image";
 import styles from "./paymentSimulator.module.css";
 
@@ -19,6 +17,15 @@ const toEnglishDigits = (str) => {
     let index = persianDigits.indexOf(d);
     if (index === -1) index = arabicDigits.indexOf(d);
     return index !== -1 ? index : d;
+  });
+};
+
+const toPersianDigits = (str) => {
+  const englishDigits = "0123456789";
+  const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+  return str?.replace(/[0-9]/g, (d) => {
+    const index = englishDigits.indexOf(d);
+    return index !== -1 ? persianDigits[index] : d;
   });
 };
 
@@ -38,6 +45,12 @@ const formatExpiry = (value) => {
   return cleaned;
 };
 
+const formatOtp = (value) => {
+  const englishValue = toEnglishDigits(value);
+  const cleaned = englishValue.replace(/\D/g, "");
+  return cleaned.substring(0, 6);
+};
+
 export default function PaymentSimulator() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -46,7 +59,6 @@ export default function PaymentSimulator() {
 
   const amount = searchParams.get("amount") || "0";
   const tourTitle = searchParams.get("tourTitle") || "تور";
-
   const [orderId] = useState(() => {
     const urlOrderId = searchParams.get("orderId");
     return urlOrderId || `ORD-${Date.now()}`;
@@ -68,10 +80,16 @@ export default function PaymentSimulator() {
   });
 
   const cardNumber = useWatch({ control, name: "cardNumber" });
+  const otp = useWatch({ control, name: "otp" });
 
   const displayCardNumber = (value) => {
     const formatted = formatCardNumber(value || "");
     return toPersianNumber(formatted);
+  };
+
+  const displayOtp = (value) => {
+    const formatted = formatOtp(value || "");
+    return toPersianDigits(formatted);
   };
 
   const saveCardToProfile = async (cardNumber) => {
@@ -92,20 +110,20 @@ export default function PaymentSimulator() {
 
   const onSubmit = async (data) => {
     const englishCard = toEnglishDigits(data.cardNumber);
+    const englishOtp = toEnglishDigits(data.otp);
+    const englishExpiry = toEnglishDigits(data.expiry);
+    const englishCvv = toEnglishDigits(data.cvv);
+
     if (englishCard.replace(/\s/g, "").length < 16) {
       return;
     }
 
     setIsProcessing(true);
     await new Promise((resolve) => setTimeout(resolve, PROCESSING_DELAY));
-
-    await saveCardToProfile(data.cardNumber);
-
+    await saveCardToProfile(englishCard);
     setOrderNotification();
-
     setIsProcessing(false);
     setShowResult(true);
-
     setTimeout(() => {
       router.push("/?payment=success");
     }, PROCESSING_DELAY);
@@ -244,11 +262,16 @@ export default function PaymentSimulator() {
               <input
                 type="text"
                 placeholder="کد پیامک شده"
-                maxLength={7}
+                maxLength={6}
                 className={`${styles.cardInput} ${errors.otp ? styles.inputError : ""}`}
                 dir="ltr"
+                value={displayOtp(otp)}
                 {...register("otp", {
                   required: "رمز پویا الزامی است",
+                  onChange: (e) => {
+                    const formatted = formatOtp(e.target.value);
+                    setValue("otp", formatted);
+                  },
                 })}
               />
               {errors.otp && (

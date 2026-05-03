@@ -376,27 +376,6 @@ export default function Profile() {
       <Toaster 
       position="top-center"
       reverseOrder={false}
-      toastOptions={{
-        duration: 4000,
-        style: {
-          background: '#ffffff',
-          color: '#419027',
-          fontFamily: 'Vazirmatn, sans-serif',  
-          direction: 'rtl',
-        },
-        success: {
-          iconTheme: {
-            primary: '#10B981',
-            secondary: '#fff',
-          },
-        },
-        error: {
-          iconTheme: {
-            primary: '#EF4444',
-            secondary: '#fff',
-          },
-        },
-      }}
     />
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* ۱. اطلاعات حساب کاربری */}
