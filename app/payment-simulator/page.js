@@ -292,7 +292,7 @@ export default function PaymentSimulator() {
                 {isProcessing ? (
                   <span className={styles.processing}>
                     <span className={styles.btnSpinner}></span>
-                    در حال پرداخش...
+                    در حال پردازش...
                   </span>
                 ) : (
                   "پرداخت"

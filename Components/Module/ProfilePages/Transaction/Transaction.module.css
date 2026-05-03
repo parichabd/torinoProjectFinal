@@ -126,6 +126,7 @@
   .transactionRow {
     display: none;
   }
+  
 
   .transactionRowDesktop {
     display: flex;
@@ -265,6 +266,7 @@
   font-family: "fonnts.com-YekanBakh-Bold";
 }
 
+
 /* ============================================
    شماره سفارش - دسکتاپ
    ============================================ */
@@ -344,8 +346,8 @@
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  border: 3px solid #419027;
+  border-top-color: #419027;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -377,3 +379,4 @@
   color: #9ca3af;
   font-size: 14px;
 }
+
