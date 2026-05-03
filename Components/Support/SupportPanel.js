@@ -8,7 +8,7 @@ const SupportPanel = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "سلام! چطور می‌تونم کمکتون کنم؟ 👋",
+      text: "سلام! به تورینو خوش آمدید ! چطور می‌تونم کمکتون کنم؟ 👋",
       isAdmin: true,
       time: new Date(),
     },
