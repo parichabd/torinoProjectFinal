@@ -235,3 +235,23 @@
   color: #888;
   pointer-events: none;
 }
+
+
+
+/* ✅ استایل فوکوس - این رو اضافه کنید */
+.form input:focus {
+  outline: none;
+  border-color: #388e3c;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.15);
+}
+
+/* ✅ استایل فوکوس برای اینپوت خطا */
+.form input.errorInput:focus {
+  border-color: #388e3c;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.15);
+}
+
+/* اگه میخواید placeholder هم تغییر رنگ بده */
+.form input::placeholder {
+  color: #aaa;
+}

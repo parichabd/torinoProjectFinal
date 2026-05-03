@@ -1,4 +1,5 @@
 .mainPageInfo {
+  flex: 1;
   background-color: #fff;
   padding: 20px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.263);
@@ -111,9 +112,7 @@
   display: none;
 }
 
-.Accept {
-  height: 100vh;
-}
+
 
 .divider {
   width: 1px;
@@ -146,18 +145,18 @@
   }
 
   .mainPageInfo {
+    flex: 1;
     margin-top: 20px !important;
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1443px) {
   .mainPageInfo {
+    flex: 1;
     margin-top: 20px !important;
   }
 
-  .Accept {
-    height: calc(100vh - 430px);
-  }
+ 
 
   .windowTourDetails {
     display: flex;
@@ -223,6 +222,7 @@
 
 @media (min-width: 1444px) {
   .mainPageInfo {
+    flex: 1;
     margin-top: 20px !important;
   }
 
