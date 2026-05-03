@@ -350,3 +350,13 @@
     margin-top: 9px;
   }
 }
+
+/* اضافه کنید به انتهای فایل bookTour.module.css */
+
+@media (max-width: 767px) {
+  .rmdp-wrapper {
+    direction: rtl;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}

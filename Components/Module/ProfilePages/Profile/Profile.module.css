@@ -513,7 +513,6 @@
     width: 100%;
   }
 }
-
 @media (max-width: 1023px) {
   .accountGrid,
   .infoGrid {
@@ -551,15 +550,16 @@
 
   .saveBtn,
   .accountActions {
-    flex-direction: column;
+    flex-direction: row;  /* ✅ تغییر از column به row */
     gap: 10px;
   }
 
   .saveBtnOne,
   .saveBtnTwo {
-    width: 100%;
+    flex: 1;               /* ✅ هر دو عرض یکسان */
+    width: auto;           /* ✅ auto به جای 100% */
+    box-sizing: border-box; /* ✅ مهم! */
   }
-
 
   .accountFields {
     flex-direction: column;

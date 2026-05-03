@@ -1,20 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
-
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { profileApi } from "@/lib/api";
-
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import PaymentLoadingModal from "@/Components/Spinner/PaymentLoadingModal";
-
 import api from "@/lib/api";
 import Image from "next/image";
 import styles from "./bookTour.module.css";
-
 
 const setCookie = (name, value, days = 30) => {
   if (typeof document === "undefined") return;
@@ -52,6 +48,9 @@ export default function BookingForm({ initialTourId }) {
   const pathname = usePathname();
   const source = searchParams.get("source");
 
+  // ✅ اضافه شد - state برای موقعیت تقویم
+  const [calendarPosition, setCalendarPosition] = useState("bottom-right");
+
   useEffect(() => {
     const paymentStatus = searchParams.get("payment");
     if (paymentStatus === "success") {
@@ -61,6 +60,17 @@ export default function BookingForm({ initialTourId }) {
       router.replace("/bookTour");
     }
   }, [searchParams, router]);
+
+  // ✅ اضافه شد - useEffect برای تشخیص عرض صفحه
+  useEffect(() => {
+    const updatePosition = () => {
+      setCalendarPosition(window.innerWidth < 768 ? "bottom-center" : "bottom-right");
+    };
+    
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    return () => window.removeEventListener("resize", updatePosition);
+  }, []);
 
   const getTourIdFromPath = () => {
     if (!pathname) return null;
@@ -180,21 +190,16 @@ export default function BookingForm({ initialTourId }) {
     try {
       setIsSubmitting(true);
       await api.put(`/basket/${tourId}`);
-
       const gregorianBirthDate = convertShamsiToGregorian(data.birthDate);
-
       const orderData = {
         nationalCode: persianToEnglish(data.nationalId),
         fullName: data.fullName,
         gender: data.gender,
         birthDate: gregorianBirthDate,
       };
-
       const response = await api.post("/order", orderData);
 
-
-      setCookie("passengerBirthDate", data.birthDate, 30);  
-
+      setCookie("passengerBirthDate", data.birthDate, 30);
       try {
         const nameParts = data.fullName.trim().split(" ");
         const firstName = nameParts[0] || "";
@@ -207,12 +212,11 @@ export default function BookingForm({ initialTourId }) {
           birthDate: gregorianBirthDate,
         });
       } catch (profileError) {
+        // ignore profile update error
       }
-
       setShowLoadingModal(true);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setShowLoadingModal(false);
-
       const orderId = response.data?.orderId || `ORD-${Date.now()}`;
       const amount = (tourData?.price || 0) * 10;
       router.push(
@@ -231,7 +235,6 @@ export default function BookingForm({ initialTourId }) {
       setIsLoading(false);
       return;
     }
-
     const fetchTourDetails = async () => {
       try {
         setIsLoading(true);
@@ -243,7 +246,6 @@ export default function BookingForm({ initialTourId }) {
         setIsLoading(false);
       }
     };
-
     fetchTourDetails();
   }, [tourId]);
 
@@ -371,7 +373,7 @@ export default function BookingForm({ initialTourId }) {
                     onChange={(date) => handleBirthDateChange(date, field.onChange)}
                     calendar={persian}
                     locale={persian_fa}
-                    calendarPosition="bottom-right"
+                    calendarPosition={calendarPosition}
                     placeholder="تاریخ تولد"
                     inputClass={styles.datePickerInput}
                     containerClassName={styles.datePickerContainer}

@@ -6,11 +6,9 @@ import { useVerifyOtp } from "@/Hooks/useVerifyOtp";
 import { registerUser } from "@/Services/Auth";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
-
 import OtpInput from "react-otp-input";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
-
 import styles from "./AuthToast.module.css";
 
 export default function AuthToast({ onClose, mode = "login" }) {
@@ -26,7 +24,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const [otpShake, setOtpShake] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [typedDigits, setTypedDigits] = useState(0);
-
+  
   const hasShownRegisterToast = useRef(false);
 
   const {
@@ -41,14 +39,14 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const verifyOtpMutation = useVerifyOtp();
 
   useEffect(() => {
-    if (mode === "register" && !hasShownRegisterToast.current) {
+    if (isRegister && !hasShownRegisterToast.current) {
       hasShownRegisterToast.current = true;
       toast.error(
-        " 🚫 ثبت نام با نام فعلاً در دسترس نیست. لطفاً با شماره تلفن در بخش ورود وارد شوید.",
+        " 🚫 ثبت نام فعلاً در دسترس نیست. لطفاً با شماره تلفن در بخش ورود وارد شوید.",
         { position: "top-center", duration: 4000 },
       );
     }
-  }, [mode]);
+  }, [isRegister]);
 
   useEffect(() => {
     if (step !== "OTP" || timeLeft <= 0) return;
@@ -250,9 +248,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                     className={`${mobileShake ? styles.shake : ""} ${mobileError ? styles.errorInput : ""}`}
                     autoComplete="tel"
                   />
-                  <span className={styles.digitCount}>
-                    {typedDigits}/۱۱
-                  </span>
+                  <span className={styles.digitCount}>{typedDigits}/۱۱</span>
                 </div>
 
                 <span className={styles.error}>
