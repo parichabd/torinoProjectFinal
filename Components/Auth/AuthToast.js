@@ -23,13 +23,14 @@ export default function AuthToast({ onClose, mode = "login" }) {
   const [mobileShake, setMobileShake] = useState(false);
   const [otpShake, setOtpShake] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [typedDigits, setTypedDigits] = useState(0);
   
-  // ✅ استفاده از ref برای اطمینان از نمایش یکباره toast
   const hasShownRegisterToast = useRef(false);
   
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
   } = useForm();
@@ -42,7 +43,6 @@ export default function AuthToast({ onClose, mode = "login" }) {
     return () => window.removeEventListener("storage", syncMobile);
   }, []);
 
-  // ✅ روش مطمئن‌تر: useEffect با dependency خالی + ref
   useEffect(() => {
     if (mode === "register" && !hasShownRegisterToast.current) {
       hasShownRegisterToast.current = true;
@@ -68,24 +68,42 @@ export default function AuthToast({ onClose, mode = "login" }) {
   };
 
   const validateMobile = (number) => /^09\d{9}$/.test(persianToEnglish(number));
+
   const formatTime = (t) =>
     `${Math.floor(t / 60)}:${(t % 60).toString().padStart(2, "0")}`;
 
+  // ✅ استفاده از setValue برای سینک با react-hook-form
   const handleMobileChange = (e) => {
     const value = e.target.value;
     const filtered = value.replace(/[^۰-۹0-9]/g, "");
     const persianValue = englishToPersian(filtered);
-    e.target.value = persianValue;
+    const limited = persianValue.slice(0, 11);
+    
+    // ✅ استفاده از setValue به جای تغییر مستقیم DOM
+    setValue("mobile", limited, { shouldValidate: false });
+    
+    setTypedDigits(persianToEnglish(limited).length);
+    if (mobileError) setMobileError("");
+  };
+
+  // ✅ هندلر Enter مستقیم روی input
+  const handleMobileKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(submitPhone)();
+    }
   };
 
   const submitPhone = async (data) => {
     const cleanedMobile = persianToEnglish(data.mobile);
+    
     if (!validateMobile(cleanedMobile)) {
       setMobileError("شماره موبایل معتبر نیست. باید با ۰۹ شروع و ۱۱ رقم باشد.");
       setMobileShake(true);
       setTimeout(() => setMobileShake(false), 400);
       return;
     }
+    
     setMobileError("");
     setMobile(cleanedMobile);
 
@@ -178,6 +196,7 @@ export default function AuthToast({ onClose, mode = "login" }) {
                 className={styles.back_btn}
                 onClick={() => {
                   setIsRegister(false);
+                  setTypedDigits(0);
                   reset();
                 }}
               >
@@ -221,15 +240,24 @@ export default function AuthToast({ onClose, mode = "login" }) {
                     <span className={styles.error}>{errors.name?.message}</span>
                   </>
                 )}
-                <input
-                  type="tel"
-                  placeholder="۰۹۱۲***۶۶۰۶"
-                  {...register("mobile", {
-                    required: "شماره موبایل الزامی است",
-                  })}
-                  onChange={handleMobileChange}
-                  className={`${mobileShake ? styles.shake : ""} ${mobileError ? styles.errorInput : ""}`}
-                />
+                
+                <div className={styles.inputWrapper}>
+                  <input
+                    type="tel"
+                    placeholder="۰۹۱۲***۶۶۰۶"
+                    {...register("mobile", {
+                      required: "شماره موبایل الزامی است",
+                    })}
+                    onChange={handleMobileChange}
+                    onKeyDown={handleMobileKeyDown}
+                    className={`${mobileShake ? styles.shake : ""} ${mobileError ? styles.errorInput : ""}`}
+                    autoComplete="tel"
+                  />
+                  <span className={styles.digitCount}>
+                    {typedDigits}/۱۱
+                  </span>
+                </div>
+                
                 <span className={styles.error}>
                   {errors.mobile?.message || mobileError}
                 </span>
