@@ -1,17 +1,18 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import styles from "./UserProfileInfo.module.css";
-import Image from "next/image";
+
 import Transaction from "../ProfilePages/Transaction/page";
 import MyTour from "../ProfilePages/MyTours/page";
 import Profile from "../ProfilePages/Profile/page";
 
+import styles from "./UserProfileInfo.module.css";
+import Image from "next/image";
+
 function UserProfileInfo() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // ⬇️ گرفتن tab از URL بدون useEffect
+
   const tab = searchParams.get("tab");
   const activePage = useMemo(() => {
     if (tab === "mytour") return "mytour";
@@ -44,7 +45,6 @@ function UserProfileInfo() {
   }, [activePage]);
 
   const navigateTo = (page) => {
-    // ⬇️ همه tab‌ها توی URL نشون داده میشن
     router.push(`/ProfileInfo?tab=${page}`);
   };
 

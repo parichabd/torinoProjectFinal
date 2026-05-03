@@ -1,5 +1,7 @@
 "use client";
+
 import { useState } from "react";
+
 import Header from "@/Components/Module/HeaderDate/Header";
 import BookDate from "@/Components/Module/BookDate/BookDate";
 import ShowTours from "@/Components/Module/ShowTours/ShowTours";
@@ -13,7 +15,6 @@ export default function MainPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-
   const handleSetFoundTours = useCallback((tours) => {
     setDisplayedTours(tours);
   }, []);
@@ -26,26 +27,20 @@ export default function MainPage() {
     setHasError(true);
   }, []);
 
- 
-
   return (
     <div>
-
       {!hasError && <Header />}
-      
+
       {hasError ? (
         <ServerConectionError />
       ) : (
         <>
-          <BookDate 
-            setFoundTours={setDisplayedTours} 
+          <BookDate
+            setFoundTours={setDisplayedTours}
             setIsLoading={setIsLoading}
             setHasError={handleError}
           />
-          <ShowTours 
-            tours={displayedTours} 
-            isLoading={isLoading}
-          />
+          <ShowTours tours={displayedTours} isLoading={isLoading} />
           <PhoneReseved />
           <TourSlider />
           <WebInfo />

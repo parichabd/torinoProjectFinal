@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
-import styles from "./Support.module.css";
-import SupportPanel from "./SupportPanel";
-import Image from "next/image";
 
+import { useState } from "react";
+import SupportPanel from "./SupportPanel";
+
+import styles from "./Support.module.css";
+import Image from "next/image";
 
 const FloatingButton = () => {
   const [isOpen, setIsOpen] = useState(false);

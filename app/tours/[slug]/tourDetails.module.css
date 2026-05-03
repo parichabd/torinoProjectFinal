@@ -131,9 +131,7 @@
   height: auto;
 }
 
-/* ==================== MEDIA QUERIES ==================== */
 
-/* موبایل و تبلت - زیر 1024px */
 @media (max-width: 1023px) {
   .responsiveImage {
     width: 100% !important;
@@ -154,7 +152,6 @@
   }
 }
 
-/* لپتاپ - 1024px تا 1443px */
 @media (min-width: 1024px) and (max-width: 1443px) {
   .mainPageInfo {
     flex: 1;
@@ -223,7 +220,6 @@
   }
 }
 
-/* دسکتاپ بزرگ - بالای 1444px */
 @media (min-width: 1444px) {
   .mainPageInfo {
     flex: 1;

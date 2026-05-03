@@ -3,7 +3,9 @@ import Footer from "@/Components/Layout/Footer";
 import ReactQueryProvider from "@/Provider/ReactQueryProvider";
 import InitialLoader from "@/Components/Spinner/InitialLoader";
 import FloatingButton from "@/Components/Support/FloatingButton";
-import { Toaster } from "react-hot-toast"; // ← این رو اضافه کنید
+
+import { Toaster } from "react-hot-toast";
+
 import "./globals.css";
 import styles from "../Components/Layout/Layout.module.css";
 
@@ -36,7 +38,6 @@ export default function RootLayout({ children }) {
     <html lang="fa" dir="rtl">
       <body>
         <ReactQueryProvider>
-          {/* Loader wrapper */}
           <InitialLoader>
             <div className={styles.layout}>
               <Header />
@@ -48,10 +49,8 @@ export default function RootLayout({ children }) {
             </div>
           </InitialLoader>
         </ReactQueryProvider>
-        {/* دکمه پشتیبانی - بیرون از همه چیز */}
         <FloatingButton />
-        {/* ← این رو هم اضافه کنید */}
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );

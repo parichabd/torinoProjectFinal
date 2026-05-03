@@ -1,6 +1,4 @@
-/* ============================================
-   دکمه شناور
-   ============================================ */
+ 
 .floatingContainer {
   position: fixed;
   bottom: 54px;
@@ -41,7 +39,6 @@
   transform: scale(0.95);
 }
 
-/* آیکون‌ها */
 .iconChat,
 .iconClose {
   color: white;
@@ -59,7 +56,6 @@
   transform: scale(0) rotate(-90deg);
 }
 
-/* حالت فعال */
 .floatingButton.active .iconChat {
   opacity: 0;
   transform: scale(0) rotate(90deg);
@@ -70,7 +66,6 @@
   transform: scale(1) rotate(0deg);
 }
 
-/* شمارنده اعلان */
 .notificationBadge {
   position: absolute;
   top: -4px;
@@ -99,9 +94,7 @@
   }
 }
 
-/* ============================================
-   پنل چت
-   ============================================ */
+ 
 .panel {
   position: fixed;
   bottom: 100px;
@@ -118,7 +111,6 @@
   overflow: hidden;
   z-index: 9998;
   
-  /* انیمیشن */
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px) scale(0.95);
@@ -130,10 +122,7 @@
   visibility: visible;
   transform: translateY(0) scale(1);
 }
-
-/* ============================================
-   هدر پنل
-   ============================================ */
+ 
 .panelHeader {
   display: flex;
   align-items: center;
@@ -203,10 +192,7 @@
 .closeBtn:hover {
   background: rgba(255, 255, 255, 0.3);
 }
-
-/* ============================================
-   پیام‌ها
-   ============================================ */
+ 
 .messagesContainer {
   flex: 1;
   padding: 16px;
@@ -263,7 +249,6 @@
   text-align: left;
 }
 
-/* تایپینگ انیمیشن */
 .typingIndicator {
   display: flex;
   gap: 4px;
@@ -297,9 +282,7 @@
   }
 }
 
-/* ============================================
-   فرم ورودی
-   ============================================ */
+
 .inputForm {
   display: flex;
   gap: 8px;
@@ -351,9 +334,7 @@
   cursor: not-allowed;
 }
 
-/* ============================================
-   ریسپانسیو - موبایل
-   ============================================ */
+ 
 @media (max-width: 480px) {
   .floatingContainer {
     bottom: 16px;

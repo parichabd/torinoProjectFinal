@@ -5,6 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { setCookie } from "@/utils/cookie";
 import { toPersianNumber } from "@/utils/number";
 import { profileApi } from "@/lib/api";
+
 import Image from "next/image";
 import styles from "./paymentSimulator.module.css";
 

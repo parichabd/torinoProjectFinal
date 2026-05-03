@@ -7,10 +7,12 @@ import { IoMdNotifications } from "react-icons/io";
 import { toPersianNumber } from "@/utils/number";
 import { useRouter } from "next/navigation";
 import { getCookie, removeCookie } from "@/utils/cookie";
-import { profileApi } from "@/lib/api";  // ✅ اضافه شد
+import { profileApi } from "@/lib/api"; 
+
 import Link from "next/link";
 import AuthToast from "@/Components/Auth/AuthToast";
 import Cookies from "js-cookie";
+
 import styles from "./Layout.module.css";
 import Image from "next/image";
 
@@ -49,16 +51,15 @@ export default function Header() {
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [mobile, setMobile] = useState(null);  // ✅ از API میاد
+  const [mobile, setMobile] = useState(null);
   const [hasNotification, setHasNotification] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);  // ✅ برای لودینگ
+  const [isLoading, setIsLoading] = useState(true);
   const desktopRef = useRef(null);
   const mobileRef = useRef(null);
 
   const router = useRouter();
 
-  // ✅ تابع جدید برای گرفتن پروفایل از سرور
   const fetchUserProfile = async () => {
     try {
       const accessToken = getCookie("accessToken");
@@ -78,19 +79,18 @@ export default function Header() {
     }
   };
 
-  // ✅ گرفتن پروفایل هنگام لود اولیه
   useEffect(() => {
     fetchUserProfile();
   }, []);
 
-  // ✅ گوش دادن به رویداد لاگین
   useEffect(() => {
     const handleLoginSuccess = () => {
-      fetchUserProfile();  // ✅ از API میگیره نه localStorage
+      fetchUserProfile();
     };
 
     window.addEventListener("auth:login-success", handleLoginSuccess);
-    return () => window.removeEventListener("auth:login-success", handleLoginSuccess);
+    return () =>
+      window.removeEventListener("auth:login-success", handleLoginSuccess);
   }, []);
 
   useEffect(() => {
@@ -144,7 +144,6 @@ export default function Header() {
     setIsUserMenuOpen((prev) => !prev);
   };
 
-  // ✅ حذف localStorage.removeItem("mobile") و localStorage.removeItem("userName")
   const handleLogout = () => {
     removeCookie("lastUsedCard");
     removeCookie("fullCardNumber");
@@ -153,7 +152,7 @@ export default function Header() {
     removeCookie("passengerBirthDate");
     Cookies.remove("accessToken", { path: "/" });
     Cookies.remove("refreshToken", { path: "/" });
-    setMobile(null);  // ✅ فقط state رو پاک کن
+    setMobile(null);
     setIsUserMenuOpen(false);
     setHasNotification(false);
     setNotificationCount(0);
@@ -165,7 +164,6 @@ export default function Header() {
     setIsUserMenuOpen(false);
   };
 
-  // ✅ رندر مشروط - تا زمانی که لود نشده چیزی نشون نده
   const userMenuContent = (
     <div className={styles.userMenu}>
       {mobile && (
@@ -216,9 +214,8 @@ export default function Header() {
     </div>
   );
 
-  // ✅ رندر مشروط - فقط وقتی لود تموم شد
   const renderAuthSection = () => {
-    if (isLoading) return null;  // ✅ هنگام لود چیزی نشون نمیده
+    if (isLoading) return null;
 
     if (mobile) {
       return (

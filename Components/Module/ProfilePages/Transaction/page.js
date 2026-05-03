@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import styles from "./Transaction.module.css";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber, formatNumber } from "@/utils/number";
 import { transactionApi } from "@/lib/api";
+
+import styles from "./Transaction.module.css";
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
@@ -28,11 +29,10 @@ const Transaction = () => {
 
   const toggleExpand = (transactionId) => {
     setExpandedTransaction((prev) =>
-      prev === transactionId ? null : transactionId
+      prev === transactionId ? null : transactionId,
     );
   };
 
-  // تابع فرمت تاریخ و ساعت
   const formatDateTime = (dateString) => {
     if (!dateString) return { date: "-", time: "-" };
     const date = new Date(dateString);
@@ -50,18 +50,16 @@ const Transaction = () => {
     };
   };
 
-  // تابع فرمت مبلغ
   const formatAmount = (amount) => {
     if (!amount) return 0;
     return formatNumber(amount);
   };
 
-  // تابع نمایش نوع تراکنش
   const getTransactionType = (type) => {
     const types = {
       Purchase: "ثبت نام در تور گردشگری",
       Withdrawal: "لغو تور گردشگری",
-      Transfer:  "انتقال تور گردشگری",
+      Transfer: "انتقال تور گردشگری",
     };
     return types[type] || type || "-";
   };
@@ -200,7 +198,6 @@ const Transaction = () => {
                       {getTransactionType(transaction.type)}
                     </span>
                   </div>
-                  
                 </div>
               )}
             </div>
@@ -212,4 +209,3 @@ const Transaction = () => {
 };
 
 export default Transaction;
-

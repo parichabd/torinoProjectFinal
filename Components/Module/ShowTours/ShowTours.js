@@ -12,7 +12,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Image from "next/image";
 import styles from "./ShowTours.module.css";
 
-
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 const SKELETON_COUNT = 3;
 const INITIAL_VISIBLE_COUNT = 4;
@@ -34,18 +33,19 @@ const getVehicleName = (vehicleType) => {
     suv: "SUV",
     private: "ویژه",
   };
-  return map[vehicleType.toLowerCase()] || "پرواز"; 
+  return map[vehicleType.toLowerCase()] || "پرواز";
 };
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return "/default-tour.jpg";
   if (imagePath.startsWith("http")) return imagePath;
   const cleanBaseUrl = BACKEND_BASE_URL.replace(/\/$/, "");
-  const cleanImagePath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+  const cleanImagePath = imagePath.startsWith("/")
+    ? imagePath
+    : `/${imagePath}`;
   return `${cleanBaseUrl}${cleanImagePath}`;
 };
 
- 
 const formatDate = (dateString) => {
   if (!dateString) return "";
   try {
@@ -63,10 +63,10 @@ const calculateDays = (start, end) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return 0;
-    
+
     const diffTime = Math.abs(endDate - startDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays > 0 ? diffDays : 1; 
+    return diffDays > 0 ? diffDays : 1;
   } catch (e) {
     return 0;
   }
@@ -76,13 +76,16 @@ export default function ShowTours({ tours, isLoading, hasError }) {
   const [showAll, setShowAll] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
 
- 
   useEffect(() => {
     const updateCount = () => {
-      setVisibleCount(window.innerWidth >= LARGE_SCREEN_BREAKPOINT ? LARGE_SCREEN_COUNT : INITIAL_VISIBLE_COUNT);
+      setVisibleCount(
+        window.innerWidth >= LARGE_SCREEN_BREAKPOINT
+          ? LARGE_SCREEN_COUNT
+          : INITIAL_VISIBLE_COUNT,
+      );
     };
-    
-    updateCount();  
+
+    updateCount();
     window.addEventListener("resize", updateCount);
     return () => window.removeEventListener("resize", updateCount);
   }, []);
@@ -119,7 +122,9 @@ export default function ShowTours({ tours, isLoading, hasError }) {
         <div className={styles.headerTours}>
           <h1>همه تور ها</h1>
         </div>
-        <p className={styles.emptyMessage}>مشکل در اتصال به سرور. لطفاً بعداً تلاش کنید.</p>
+        <p className={styles.emptyMessage}>
+          مشکل در اتصال به سرور. لطفاً بعداً تلاش کنید.
+        </p>
       </div>
     );
   }
@@ -135,7 +140,6 @@ export default function ShowTours({ tours, isLoading, hasError }) {
     );
   }
 
-
   const displayedTours = showAll ? tours : tours.slice(0, visibleCount);
   const shouldShowMore = tours.length > visibleCount && !showAll;
 
@@ -144,10 +148,9 @@ export default function ShowTours({ tours, isLoading, hasError }) {
       <div className={styles.headerTours}>
         <h1>همه تور ها</h1>
       </div>
-      
+
       <ul className={styles.results}>
         {displayedTours.map((tour) => {
-
           const monthName = formatDate(tour.startDate);
           const days = calculateDays(tour.startDate, tour.endDate);
           const vehicleFa = getVehicleName(tour.fleetVehicle);
@@ -162,8 +165,8 @@ export default function ShowTours({ tours, isLoading, hasError }) {
                   alt={tour.title || "تور"}
                   width={400}
                   height={220}
-                  className={styles.tourImage} 
-                   unoptimized={true}  // ← همیشه true
+                  className={styles.tourImage}
+                  unoptimized={true}
                 />
                 <div className={styles.overlay}>
                   <span className={styles.zoomIcon}>
@@ -172,11 +175,13 @@ export default function ShowTours({ tours, isLoading, hasError }) {
                   <span className={styles.overlayText}>جزئیات تور</span>
                 </div>
               </Link>
-              
+
               <h2 className={styles.tourTitle}>{tour.title}</h2>
-              
+
               <p className={styles.tourMeta}>
-                {monthName && <span className={styles.metaItem}>{monthName} ماه</span>}
+                {monthName && (
+                  <span className={styles.metaItem}>{monthName} ماه</span>
+                )}
                 {days > 0 && (
                   <>
                     <span className={styles.metaSeparator}>·</span>
@@ -192,7 +197,7 @@ export default function ShowTours({ tours, isLoading, hasError }) {
               </p>
 
               <div className={styles.divider}></div>
-              
+
               <div className={styles.bottomRow}>
                 <Link href={`/bookTour/${tour.id}`} passHref>
                   <button className={styles.bookBtn}>رزرو</button>
@@ -219,4 +224,3 @@ export default function ShowTours({ tours, isLoading, hasError }) {
     </div>
   );
 }
-

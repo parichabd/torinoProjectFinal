@@ -6,9 +6,11 @@ import { useVerifyOtp } from "@/Hooks/useVerifyOtp";
 import { registerUser } from "@/Services/Auth";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
+
 import OtpInput from "react-otp-input";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+
 import styles from "./AuthToast.module.css";
 
 export default function AuthToast({ onClose, mode = "login" }) {

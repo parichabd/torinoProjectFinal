@@ -14,10 +14,9 @@ import {
   getCardType,
   formatSheba,
 } from "@/utils/bankValidation";
+
 import styles from "./Profile.module.css";
 import Image from "next/image";
-import AuthToast from "@/Components/Auth/AuthToast";
-
 
 const getCookie = (name) => {
   if (typeof document === "undefined") return null;
@@ -124,7 +123,6 @@ export default function Profile() {
         }
       } catch (error) {
         toast.error("مجوز دسترسی شما به پایان رسیده لطفا دوباره وارد شوید !");
-        
       } finally {
         setLoading(false);
       }
@@ -373,10 +371,7 @@ export default function Profile() {
 
   return (
     <div className={styles.container}>
-      <Toaster 
-      position="top-center"
-      reverseOrder={false}
-    />
+      <Toaster position="top-center" reverseOrder={false} />
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* ۱. اطلاعات حساب کاربری */}
         <div className={styles.section}>
@@ -447,7 +442,6 @@ export default function Profile() {
                 </div>
               </div>
             ) : (
-              // *** تغییر اصلی اینجا اعمال شد ***
               <div className={styles.accountGrid}>
                 <div className={styles.accountBox}>
                   <span className={styles.label}>شماره موبایل:</span>

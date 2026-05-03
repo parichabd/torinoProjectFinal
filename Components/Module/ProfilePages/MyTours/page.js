@@ -29,7 +29,6 @@ const MyTour = () => {
     }
   };
 
-  // تابع بررسی وضعیت تور
   const getTourStatus = (tour) => {
     const details = tour.tourDetails || {};
     const now = new Date();
@@ -52,20 +51,17 @@ const MyTour = () => {
     }
   };
 
-  // تابع ترجمه مبدا و مقصد
   const translateLocation = (location) => {
     if (!location) return "-";
     return originTranslations[location] || location;
   };
 
-  // تابع ترجمه وسیله نقلیه
   const translateVehicle = (vehicle) => {
     if (!vehicle) return "وسیله نقلیه";
     const translated = vehicleMap[vehicle.toLowerCase()] || vehicleMap[vehicle];
     return translated || vehicle;
   };
 
-  // تابع انتخاب آیکون وسیله نقلیه
   const getVehicleIcon = (vehicle) => {
     if (!vehicle) return "car.svg";
 
@@ -142,7 +138,6 @@ const MyTour = () => {
               key={`${tour.id}-${index}`}
               className={`${styles.tourCard} ${isCompleted ? styles.completedCard : ""}`}
             >
-              {/* windows */}
               {/* windows */}
               <div>
                 <div className={styles.windowsMytour}>

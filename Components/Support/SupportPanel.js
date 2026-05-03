@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import styles from "./Support.module.css";
 import { toPersianNumber } from "@/utils/number";
+
+import styles from "./Support.module.css";
 
 const SupportPanel = ({ isOpen, onClose }) => {
   const [message, setMessage] = useState("");
@@ -19,7 +20,6 @@ const SupportPanel = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (!message.trim()) return;
 
-    // اضافه کردن پیام کاربر
     const newMessage = {
       id: Date.now(),
       text: message,
@@ -29,7 +29,6 @@ const SupportPanel = ({ isOpen, onClose }) => {
     setMessages([...messages, newMessage]);
     setMessage("");
 
-    // شبیه‌سازی پاسخ پشتیبان
     setIsTyping(true);
     setTimeout(() => {
       setMessages((prev) => [
@@ -66,7 +65,13 @@ const SupportPanel = ({ isOpen, onClose }) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
+              <circle
+                cx="12"
+                cy="7"
+                r="4"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
             </svg>
           </div>
           <div>
@@ -130,7 +135,11 @@ const SupportPanel = ({ isOpen, onClose }) => {
           placeholder="پیام خود را بنویسید..."
           className={styles.messageInput}
         />
-        <button type="submit" className={styles.sendBtn} disabled={!message.trim()}>
+        <button
+          type="submit"
+          className={styles.sendBtn}
+          disabled={!message.trim()}
+        >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path
               d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
