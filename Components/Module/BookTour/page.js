@@ -4,11 +4,13 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { profileApi } from "@/lib/api";
+
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import PaymentLoadingModal from "@/Components/Spinner/PaymentLoadingModal";
 import api from "@/lib/api";
+
 import Image from "next/image";
 import styles from "./bookTour.module.css";
 
@@ -20,15 +22,43 @@ const setCookie = (name, value, days = 30) => {
 };
 
 const INVALID_PERSIAN_WORDS = [
-  "نام", "نام خانوادگی", "نام و نام خانوادگی", "نام ونام خانوادگی",
-  "test", "asdf", "qwerty", "abc", "test123", "name", "username",
-  "کاربر", "مسافر", "مشتری", "خریدار", "ثبت نام", "ثبت", "آزمایشی",
-  "فیک", "نامشخص", "نامحدود",
+  "نام",
+  "نام خانوادگی",
+  "نام و نام خانوادگی",
+  "نام ونام خانوادگی",
+  "test",
+  "asdf",
+  "qwerty",
+  "abc",
+  "test123",
+  "name",
+  "username",
+  "کاربر",
+  "مسافر",
+  "مشتری",
+  "خریدار",
+  "ثبت نام",
+  "ثبت",
+  "آزمایشی",
+  "فیک",
+  "نامشخص",
+  "نامحدود",
 ];
 
 const INVALID_ENGLISH_WORDS = [
-  "test", "asdf", "qwerty", "abc", "name", "username", "user",
-  "fake", "dummy", "sample", "example", "demo", "temp",
+  "test",
+  "asdf",
+  "qwerty",
+  "abc",
+  "name",
+  "username",
+  "user",
+  "fake",
+  "dummy",
+  "sample",
+  "example",
+  "demo",
+  "temp",
 ];
 
 const persianToEnglish = (str) => {
@@ -48,7 +78,6 @@ export default function BookingForm({ initialTourId }) {
   const pathname = usePathname();
   const source = searchParams.get("source");
 
-  // ✅ اضافه شد - state برای موقعیت تقویم
   const [calendarPosition, setCalendarPosition] = useState("bottom-right");
 
   useEffect(() => {
@@ -64,9 +93,11 @@ export default function BookingForm({ initialTourId }) {
   // ✅ اضافه شد - useEffect برای تشخیص عرض صفحه
   useEffect(() => {
     const updatePosition = () => {
-      setCalendarPosition(window.innerWidth < 768 ? "bottom-center" : "bottom-right");
+      setCalendarPosition(
+        window.innerWidth < 768 ? "bottom-center" : "bottom-right",
+      );
     };
-    
+
     updatePosition();
     window.addEventListener("resize", updatePosition);
     return () => window.removeEventListener("resize", updatePosition);
@@ -211,9 +242,7 @@ export default function BookingForm({ initialTourId }) {
           nationalCode: persianToEnglish(data.nationalId),
           birthDate: gregorianBirthDate,
         });
-      } catch (profileError) {
-        // ignore profile update error
-      }
+      } catch (profileError) {}
       setShowLoadingModal(true);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setShowLoadingModal(false);
@@ -223,7 +252,11 @@ export default function BookingForm({ initialTourId }) {
         `/payment-simulator?orderId=${orderId}&amount=${amount}&tourTitle=${encodeURIComponent(tourData?.title || "تور")}`,
       );
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message || "مشکلی در ثبت سفارش پیش آمد");
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "مشکلی در ثبت سفارش پیش آمد",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -299,10 +332,19 @@ export default function BookingForm({ initialTourId }) {
     <div className={styles.mainContainer}>
       <Toaster />
       <PaymentLoadingModal isOpen={showLoadingModal} />
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className={styles.deskfORM}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className={styles.deskfORM}
+      >
         <div className={styles.formSection}>
           <div className={styles.formInfo}>
-            <Image width={24} height={24} alt="user" src="/SVG/profile/psrofile.svg" />
+            <Image
+              width={24}
+              height={24}
+              alt="user"
+              src="/SVG/profile/psrofile.svg"
+            />
             <h1>مشخصات مسافر</h1>
             {source && (
               <span style={{ fontSize: "12px", color: "#666" }}>
@@ -331,7 +373,9 @@ export default function BookingForm({ initialTourId }) {
                     value !== "default" || "لطفاً جنسیت را انتخاب کنید",
                 })}
               >
-                <option value="default" disabled>جنسیت</option>
+                <option value="default" disabled>
+                  جنسیت
+                </option>
                 <option value="male">مرد</option>
                 <option value="female">زن</option>
                 <option value="other">سایر</option>
@@ -370,7 +414,9 @@ export default function BookingForm({ initialTourId }) {
                 render={({ field }) => (
                   <DatePicker
                     value={field.value || null}
-                    onChange={(date) => handleBirthDateChange(date, field.onChange)}
+                    onChange={(date) =>
+                      handleBirthDateChange(date, field.onChange)
+                    }
                     calendar={persian}
                     locale={persian_fa}
                     calendarPosition={calendarPosition}
@@ -379,12 +425,16 @@ export default function BookingForm({ initialTourId }) {
                     containerClassName={styles.datePickerContainer}
                     format="YYYY/MM/DD"
                     maxDate={new Date()}
-                    minDate={new Date().setFullYear(new Date().getFullYear() - 120)}
+                    minDate={new Date().setFullYear(
+                      new Date().getFullYear() - 120,
+                    )}
                     editable={false}
                   />
                 )}
               />
-              <ErrorMessage message={birthDateError || errors.birthDate?.message} />
+              <ErrorMessage
+                message={birthDateError || errors.birthDate?.message}
+              />
             </div>
           </div>
         </div>

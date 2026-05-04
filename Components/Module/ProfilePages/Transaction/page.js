@@ -1,8 +1,11 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { toPersianNumber, formatNumber } from "@/utils/number";
+import { formatDateTime } from "@/utils/date";
 import { transactionApi } from "@/lib/api";
+
 
 import styles from "./Transaction.module.css";
 
@@ -31,23 +34,6 @@ const Transaction = () => {
     setExpandedTransaction((prev) =>
       prev === transactionId ? null : transactionId,
     );
-  };
-
-  const formatDateTime = (dateString) => {
-    if (!dateString) return { date: "-", time: "-" };
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const formattedDate = `${year}/${month}/${day}`;
-    const timeOptions = {
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return {
-      date: toPersianNumber(formattedDate),
-      time: date.toLocaleTimeString("fa-IR", timeOptions),
-    };
   };
 
   const formatAmount = (amount) => {
