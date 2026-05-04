@@ -316,7 +316,7 @@ torino-travel/
 - Modal ورود/ثبت نام
 - Loader / Spinner
 - Error / Not Found
-- Pagination
+- Paginations
 
 ---
 
